@@ -30,7 +30,7 @@ fi
 
 echo "creating test-directory $OUTDIR ..."
 cp $test_dir/* $OUTDIR
-rm $OUTDIR/*~
+rm -f $OUTDIR/*~
 mkdir $OUTDIR/results
 
 cd $OUTDIR
