@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash -e
 
 # this script is intended to check trace files and produce some 
 # evidence for later runs
