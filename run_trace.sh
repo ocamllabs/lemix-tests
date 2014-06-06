@@ -11,9 +11,11 @@
 
 
 # adapt to fit the dirs in your installation
-check_command=`readlink -f src_ext/fs/fs_test/check.native`
-posix_command=`readlink -f src_ext/fs/fs_test/posix.native`
+check_command=`readlink -f ../src_ext/fs/fs_test/check.native`
+posix_command=`readlink -f ../src_ext/fs/fs_test/posix.native`
 
+echo "Using check command \"$check_command\""
+echo "Using posix command \"$posix_command\""
 
 # the default output
 out=/dev/stdout
