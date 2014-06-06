@@ -11,8 +11,8 @@
 
 
 # adapt to fit the dirs in your installation
-check_command=`realpath ../src_ext/fs/fs_test/check.native`
-posix_command=`realpath ../src_ext/fs/fs_test/posix.native`
+check_command=`readlink -f src_ext/fs/fs_test/check.native`
+posix_command=`readlink -f src_ext/fs/fs_test/posix.native`
 
 
 # the default output
