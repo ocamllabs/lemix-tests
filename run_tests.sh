@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # call this script with the argument directory of traces to test test 
 # e.g. ./this_script.sh current_tests/open_read_write
