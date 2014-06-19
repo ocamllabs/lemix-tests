@@ -1,6 +1,9 @@
 #!/bin/sh -ex
 
-xl destroy $2 || true
-./restore_fs.sh $1 $2
-./start_vm.sh $2
+HOST=$1
+IMAGE=$2
+
+xl destroy $HOST || true
+./restore_fs.sh $HOST $IMAGE
+./start_vm.sh $HOST
 

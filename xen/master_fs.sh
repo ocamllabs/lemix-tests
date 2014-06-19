@@ -1,5 +1,8 @@
 #!/bin/sh -ex
 
-mkdir -p fs_images/masters/$1
-cp -R fs_images/domains/$2 fs_images/masters/$1
+HOST=$1
+IMAGE=$2
+
+mkdir -p fs_images/masters/$IMAGE
+cp -R fs_images/domains/$HOST fs_images/masters/$IMAGE
 

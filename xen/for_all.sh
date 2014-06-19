@@ -1,5 +1,7 @@
 #!/bin/sh
 
-$* fs-lucid-ext4
-$* fs-precise-ext4
-$* fs-trusty-ext4
+CMD=$1
+
+shift
+
+parallel -j0 $CMD {} $* < ubuntus

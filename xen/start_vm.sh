@@ -1,3 +1,5 @@
 #!/bin/sh -xe
 
-xl create /etc/xen/$1.cfg &
+HOST=$1
+
+xl create /etc/xen/$HOST.cfg &

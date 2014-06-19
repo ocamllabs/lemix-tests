@@ -1,4 +1,7 @@
 #!/bin/sh -ex
 
-cp -R fs_images/masters/$1/$2 fs_images/domains
+HOST=$1
+IMAGE=$2
+
+cp -R fs_images/masters/$IMAGE/$HOST fs_images/domains
 
