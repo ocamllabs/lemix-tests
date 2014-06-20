@@ -11,8 +11,8 @@ make ocaml-libs
 cd -
 git clone git@bitbucket.org:tomridge/fs.git
 cd fs
-git fetch origin posix:posix
-git checkout posix
+git fetch origin clean_c:clean_c
+git checkout clean_c
 ln -s ../../lem src_ext/lem
 ln -s ../../ocaml-4.01.0 src_ext/ocaml
 opam install -y ocamlfind
