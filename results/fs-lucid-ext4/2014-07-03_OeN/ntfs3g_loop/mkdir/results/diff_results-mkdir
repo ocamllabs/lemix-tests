@@ -1,0 +1,3464 @@
+        #####################################
+        # Test 1
+        #####################################
+     4: mkdir /test_dir_0001 0o777
+        Tau
+        RV_none
+
+     5: chdir /test_dir_0001
+        Tau
+        RV_none
+
+     6: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+     7: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+     8: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+     9: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    10: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+    11: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    12: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+    13: close (FD 3)
+        Tau
+        RV_none
+
+    14: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+    15: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+    16: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    17: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    18: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+    19: close (FD 3)
+        Tau
+        RV_none
+
+    20: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+    21: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+    22: mkdir empty_dir1 0o777
+        Tau
+        EEXIST
+
+    23: dump-result /test_dir_0001
+           /test_dir_0001|D|2048
+           /test_dir_0001/empty_dir1|D|2049
+           /test_dir_0001/empty_dir2|D|2053
+           /test_dir_0001/nonempty_dir1|D|2055
+           /test_dir_0001/nonempty_dir2|D|2064
+           /test_dir_0001/nonempty_dir1/d2|D|2058
+           /test_dir_0001/nonempty_dir1/f1.txt|F|2056|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0001/nonempty_dir1/d2/d3|D|2062
+           /test_dir_0001/nonempty_dir1/d2/f3.txt|F|2060|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0001/nonempty_dir2/d2|D|2071
+           /test_dir_0001/nonempty_dir2/f1.txt|F|2067|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0001/nonempty_dir2/f2.txt|F|2069|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0001/nonempty_dir2/d2/d3|D|2073
+        end dump-result
+
+
+        #####################################
+        # Test 2
+        #####################################
+    29: mkdir /test_dir_0002 0o777
+        Tau
+        RV_none
+
+    30: chdir /test_dir_0002
+        Tau
+        RV_none
+
+    31: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+    32: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+    33: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+    34: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    35: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+    36: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    37: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+    38: close (FD 3)
+        Tau
+        RV_none
+
+    39: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+    40: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+    41: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    42: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    43: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+    44: close (FD 3)
+        Tau
+        RV_none
+
+    45: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+    46: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+    47: mkdir empty_dir1/ 0o777
+        Tau
+        EEXIST
+
+    48: dump-result /test_dir_0002
+           /test_dir_0002|D|2257
+           /test_dir_0002/empty_dir1|D|2260
+           /test_dir_0002/empty_dir2|D|2262
+           /test_dir_0002/nonempty_dir1|D|2263
+           /test_dir_0002/nonempty_dir2|D|2270
+           /test_dir_0002/nonempty_dir1/d2|D|2265
+           /test_dir_0002/nonempty_dir1/f1.txt|F|2264|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0002/nonempty_dir1/d2/d3|D|2268
+           /test_dir_0002/nonempty_dir1/d2/f3.txt|F|2266|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0002/nonempty_dir2/d2|D|2284
+           /test_dir_0002/nonempty_dir2/f1.txt|F|2273|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0002/nonempty_dir2/f2.txt|F|2280|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0002/nonempty_dir2/d2/d3|D|2288
+        end dump-result
+
+
+        #####################################
+        # Test 3
+        #####################################
+    54: mkdir /test_dir_0003 0o777
+        Tau
+        RV_none
+
+    55: chdir /test_dir_0003
+        Tau
+        RV_none
+
+    56: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+    57: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+    58: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+    59: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    60: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+    61: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    62: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+    63: close (FD 3)
+        Tau
+        RV_none
+
+    64: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+    65: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+    66: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    67: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    68: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+    69: close (FD 3)
+        Tau
+        RV_none
+
+    70: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+    71: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+    72: mkdir empty_dir2 0o777
+        Tau
+        EEXIST
+
+    73: dump-result /test_dir_0003
+           /test_dir_0003|D|2476
+           /test_dir_0003/empty_dir1|D|2480
+           /test_dir_0003/empty_dir2|D|2539
+           /test_dir_0003/nonempty_dir1|D|2541
+           /test_dir_0003/nonempty_dir2|D|2550
+           /test_dir_0003/nonempty_dir1/d2|D|2544
+           /test_dir_0003/nonempty_dir1/f1.txt|F|2542|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0003/nonempty_dir1/d2/d3|D|2548
+           /test_dir_0003/nonempty_dir1/d2/f3.txt|F|2546|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0003/nonempty_dir2/d2|D|2559
+           /test_dir_0003/nonempty_dir2/f1.txt|F|2553|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0003/nonempty_dir2/f2.txt|F|2556|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0003/nonempty_dir2/d2/d3|D|2562
+        end dump-result
+
+
+        #####################################
+        # Test 4
+        #####################################
+    79: mkdir /test_dir_0004 0o777
+        Tau
+        RV_none
+
+    80: chdir /test_dir_0004
+        Tau
+        RV_none
+
+    81: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+    82: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+    83: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+    84: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    85: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+    86: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    87: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+    88: close (FD 3)
+        Tau
+        RV_none
+
+    89: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+    90: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+    91: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+    92: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+    93: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+    94: close (FD 3)
+        Tau
+        RV_none
+
+    95: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+    96: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+    97: mkdir empty_dir2/ 0o777
+        Tau
+        EEXIST
+
+    98: dump-result /test_dir_0004
+           /test_dir_0004|D|378
+           /test_dir_0004/empty_dir1|D|379
+           /test_dir_0004/empty_dir2|D|410
+           /test_dir_0004/nonempty_dir1|D|423
+           /test_dir_0004/nonempty_dir2|D|433
+           /test_dir_0004/nonempty_dir1/d2|D|427
+           /test_dir_0004/nonempty_dir1/f1.txt|F|425|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0004/nonempty_dir1/d2/d3|D|430
+           /test_dir_0004/nonempty_dir1/d2/f3.txt|F|429|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0004/nonempty_dir2/d2|D|437
+           /test_dir_0004/nonempty_dir2/f1.txt|F|434|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0004/nonempty_dir2/f2.txt|F|435|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0004/nonempty_dir2/d2/d3|D|440
+        end dump-result
+
+
+        #####################################
+        # Test 5
+        #####################################
+   104: mkdir /test_dir_0005 0o777
+        Tau
+        RV_none
+
+   105: chdir /test_dir_0005
+        Tau
+        RV_none
+
+   106: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   107: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   108: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   109: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   110: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   111: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   112: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   113: close (FD 3)
+        Tau
+        RV_none
+
+   114: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   115: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   116: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   117: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   118: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   119: close (FD 3)
+        Tau
+        RV_none
+
+   120: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   121: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   122: mkdir nonempty_dir1 0o777
+        Tau
+        EEXIST
+
+   123: dump-result /test_dir_0005
+           /test_dir_0005|D|515
+           /test_dir_0005/empty_dir1|D|516
+           /test_dir_0005/empty_dir2|D|519
+           /test_dir_0005/nonempty_dir1|D|520
+           /test_dir_0005/nonempty_dir2|D|528
+           /test_dir_0005/nonempty_dir1/d2|D|523
+           /test_dir_0005/nonempty_dir1/f1.txt|F|522|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0005/nonempty_dir1/d2/d3|D|526
+           /test_dir_0005/nonempty_dir1/d2/f3.txt|F|525|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0005/nonempty_dir2/d2|D|537
+           /test_dir_0005/nonempty_dir2/f1.txt|F|530|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0005/nonempty_dir2/f2.txt|F|534|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0005/nonempty_dir2/d2/d3|D|539
+        end dump-result
+
+
+        #####################################
+        # Test 6
+        #####################################
+   129: mkdir /test_dir_0006 0o777
+        Tau
+        RV_none
+
+   130: chdir /test_dir_0006
+        Tau
+        RV_none
+
+   131: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   132: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   133: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   134: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   135: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   136: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   137: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   138: close (FD 3)
+        Tau
+        RV_none
+
+   139: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   140: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   141: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   142: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   143: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   144: close (FD 3)
+        Tau
+        RV_none
+
+   145: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   146: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   147: mkdir nonempty_dir1/ 0o777
+        Tau
+        EEXIST
+
+   148: dump-result /test_dir_0006
+           /test_dir_0006|D|608
+           /test_dir_0006/empty_dir1|D|609
+           /test_dir_0006/empty_dir2|D|611
+           /test_dir_0006/nonempty_dir1|D|613
+           /test_dir_0006/nonempty_dir2|D|623
+           /test_dir_0006/nonempty_dir1/d2|D|616
+           /test_dir_0006/nonempty_dir1/f1.txt|F|614|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0006/nonempty_dir1/d2/d3|D|620
+           /test_dir_0006/nonempty_dir1/d2/f3.txt|F|617|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0006/nonempty_dir2/d2|D|630
+           /test_dir_0006/nonempty_dir2/f1.txt|F|625|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0006/nonempty_dir2/f2.txt|F|627|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0006/nonempty_dir2/d2/d3|D|636
+        end dump-result
+
+
+        #####################################
+        # Test 7
+        #####################################
+   154: mkdir /test_dir_0007 0o777
+        Tau
+        RV_none
+
+   155: chdir /test_dir_0007
+        Tau
+        RV_none
+
+   156: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   157: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   158: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   159: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   160: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   161: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   162: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   163: close (FD 3)
+        Tau
+        RV_none
+
+   164: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   165: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   166: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   167: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   168: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   169: close (FD 3)
+        Tau
+        RV_none
+
+   170: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   171: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   172: mkdir nonempty_dir1/d2 0o777
+        Tau
+        EEXIST
+
+   173: dump-result /test_dir_0007
+           /test_dir_0007|D|697
+           /test_dir_0007/empty_dir1|D|698
+           /test_dir_0007/empty_dir2|D|699
+           /test_dir_0007/nonempty_dir1|D|701
+           /test_dir_0007/nonempty_dir2|D|714
+           /test_dir_0007/nonempty_dir1/d2|D|705
+           /test_dir_0007/nonempty_dir1/f1.txt|F|703|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0007/nonempty_dir1/d2/d3|D|711
+           /test_dir_0007/nonempty_dir1/d2/f3.txt|F|706|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0007/nonempty_dir2/d2|D|726
+           /test_dir_0007/nonempty_dir2/f1.txt|F|716|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0007/nonempty_dir2/f2.txt|F|718|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0007/nonempty_dir2/d2/d3|D|731
+        end dump-result
+
+
+        #####################################
+        # Test 8
+        #####################################
+   179: mkdir /test_dir_0008 0o777
+        Tau
+        RV_none
+
+   180: chdir /test_dir_0008
+        Tau
+        RV_none
+
+   181: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   182: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   183: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   184: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   185: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   186: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   187: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   188: close (FD 3)
+        Tau
+        RV_none
+
+   189: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   190: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   191: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   192: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   193: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   194: close (FD 3)
+        Tau
+        RV_none
+
+   195: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   196: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   197: mkdir nonempty_dir1/d2/ 0o777
+        Tau
+        EEXIST
+
+   198: dump-result /test_dir_0008
+           /test_dir_0008|D|791
+           /test_dir_0008/empty_dir1|D|793
+           /test_dir_0008/empty_dir2|D|794
+           /test_dir_0008/nonempty_dir1|D|795
+           /test_dir_0008/nonempty_dir2|D|806
+           /test_dir_0008/nonempty_dir1/d2|D|799
+           /test_dir_0008/nonempty_dir1/f1.txt|F|797|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0008/nonempty_dir1/d2/d3|D|804
+           /test_dir_0008/nonempty_dir1/d2/f3.txt|F|801|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0008/nonempty_dir2/d2|D|821
+           /test_dir_0008/nonempty_dir2/f1.txt|F|809|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0008/nonempty_dir2/f2.txt|F|815|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0008/nonempty_dir2/d2/d3|D|828
+        end dump-result
+
+
+        #####################################
+        # Test 9
+        #####################################
+   204: mkdir /test_dir_0009 0o777
+        Tau
+        RV_none
+
+   205: chdir /test_dir_0009
+        Tau
+        RV_none
+
+   206: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   207: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   208: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   209: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   210: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   211: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   212: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   213: close (FD 3)
+        Tau
+        RV_none
+
+   214: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   215: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   216: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   217: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   218: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   219: close (FD 3)
+        Tau
+        RV_none
+
+   220: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   221: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   222: mkdir nonempty_dir1/d2/broken_sl/nonexist_6 0o777
+        Tau
+        ENOENT
+
+   223: dump-result /test_dir_0009
+           /test_dir_0009|D|904
+           /test_dir_0009/empty_dir1|D|905
+           /test_dir_0009/empty_dir2|D|907
+           /test_dir_0009/nonempty_dir1|D|909
+           /test_dir_0009/nonempty_dir2|D|961
+           /test_dir_0009/nonempty_dir1/d2|D|919
+           /test_dir_0009/nonempty_dir1/f1.txt|F|912|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0009/nonempty_dir1/d2/d3|D|931
+           /test_dir_0009/nonempty_dir1/d2/f3.txt|F|924|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0009/nonempty_dir2/d2|D|969
+           /test_dir_0009/nonempty_dir2/f1.txt|F|963|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0009/nonempty_dir2/f2.txt|F|966|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0009/nonempty_dir2/d2/d3|D|971
+        end dump-result
+
+
+        #####################################
+        # Test 10
+        #####################################
+   229: mkdir /test_dir_0010 0o777
+        Tau
+        RV_none
+
+   230: chdir /test_dir_0010
+        Tau
+        RV_none
+
+   231: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   232: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   233: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   234: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   235: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   236: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   237: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   238: close (FD 3)
+        Tau
+        RV_none
+
+   239: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   240: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   241: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   242: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   243: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   244: close (FD 3)
+        Tau
+        RV_none
+
+   245: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   246: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   247: mkdir nonempty_dir1/d2/broken_sl/nonexist_6/ 0o777
+        Tau
+        ENOENT
+
+   248: dump-result /test_dir_0010
+           /test_dir_0010|D|1014
+           /test_dir_0010/empty_dir1|D|1015
+           /test_dir_0010/empty_dir2|D|1020
+           /test_dir_0010/nonempty_dir1|D|1021
+           /test_dir_0010/nonempty_dir2|D|1061
+           /test_dir_0010/nonempty_dir1/d2|D|1054
+           /test_dir_0010/nonempty_dir1/f1.txt|F|1022|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0010/nonempty_dir1/d2/d3|D|1059
+           /test_dir_0010/nonempty_dir1/d2/f3.txt|F|1056|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0010/nonempty_dir2/d2|D|1068
+           /test_dir_0010/nonempty_dir2/f1.txt|F|1063|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0010/nonempty_dir2/f2.txt|F|1065|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0010/nonempty_dir2/d2/d3|D|1072
+        end dump-result
+
+
+        #####################################
+        # Test 11
+        #####################################
+   254: mkdir /test_dir_0011 0o777
+        Tau
+        RV_none
+
+   255: chdir /test_dir_0011
+        Tau
+        RV_none
+
+   256: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   257: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   258: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   259: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   260: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   261: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   262: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   263: close (FD 3)
+        Tau
+        RV_none
+
+   264: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   265: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   266: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   267: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   268: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   269: close (FD 3)
+        Tau
+        RV_none
+
+   270: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   271: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   272: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        EEXIST
+
+   273: dump-result /test_dir_0011
+           /test_dir_0011|D|1152
+           /test_dir_0011/empty_dir1|D|1154
+           /test_dir_0011/empty_dir2|D|1155
+           /test_dir_0011/nonempty_dir1|D|1156
+           /test_dir_0011/nonempty_dir2|D|1174
+           /test_dir_0011/nonempty_dir1/d2|D|1162
+           /test_dir_0011/nonempty_dir1/f1.txt|F|1159|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0011/nonempty_dir1/d2/d3|D|1170
+           /test_dir_0011/nonempty_dir1/d2/f3.txt|F|1164|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0011/nonempty_dir2/d2|D|1183
+           /test_dir_0011/nonempty_dir2/f1.txt|F|1178|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0011/nonempty_dir2/f2.txt|F|1179|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0011/nonempty_dir2/d2/d3|D|1187
+        end dump-result
+
+
+        #####################################
+        # Test 12
+        #####################################
+   279: mkdir /test_dir_0012 0o777
+        Tau
+        RV_none
+
+   280: chdir /test_dir_0012
+        Tau
+        RV_none
+
+   281: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   282: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   283: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   284: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   285: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   286: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   287: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   288: close (FD 3)
+        Tau
+        RV_none
+
+   289: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   290: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   291: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   292: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   293: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   294: close (FD 3)
+        Tau
+        RV_none
+
+   295: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   296: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   297: mkdir nonempty_dir1/d2/d3/ 0o777
+        Tau
+        EEXIST
+
+   298: dump-result /test_dir_0012
+           /test_dir_0012|D|1286
+           /test_dir_0012/empty_dir1|D|1288
+           /test_dir_0012/empty_dir2|D|1291
+           /test_dir_0012/nonempty_dir1|D|1325
+           /test_dir_0012/nonempty_dir2|D|1337
+           /test_dir_0012/nonempty_dir1/d2|D|1328
+           /test_dir_0012/nonempty_dir1/f1.txt|F|1326|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0012/nonempty_dir1/d2/d3|D|1335
+           /test_dir_0012/nonempty_dir1/d2/f3.txt|F|1331|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0012/nonempty_dir2/d2|D|1345
+           /test_dir_0012/nonempty_dir2/f1.txt|F|1340|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0012/nonempty_dir2/f2.txt|F|1343|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0012/nonempty_dir2/d2/d3|D|1348
+        end dump-result
+
+
+        #####################################
+        # Test 13
+        #####################################
+   304: mkdir /test_dir_0013 0o777
+        Tau
+        RV_none
+
+   305: chdir /test_dir_0013
+        Tau
+        RV_none
+
+   306: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   307: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   308: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   309: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   310: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   311: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   312: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   313: close (FD 3)
+        Tau
+        RV_none
+
+   314: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   315: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   316: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   317: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   318: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   319: close (FD 3)
+        Tau
+        RV_none
+
+   320: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   321: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   322: mkdir nonempty_dir1/d2/f3.txt 0o777
+        Tau
+        EEXIST
+
+   323: dump-result /test_dir_0013
+           /test_dir_0013|D|1439
+           /test_dir_0013/empty_dir1|D|1442
+           /test_dir_0013/empty_dir2|D|1444
+           /test_dir_0013/nonempty_dir1|D|1446
+           /test_dir_0013/nonempty_dir2|D|1473
+           /test_dir_0013/nonempty_dir1/d2|D|1454
+           /test_dir_0013/nonempty_dir1/f1.txt|F|1450|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0013/nonempty_dir1/d2/d3|D|1466
+           /test_dir_0013/nonempty_dir1/d2/f3.txt|F|1459|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0013/nonempty_dir2/d2|D|1511
+           /test_dir_0013/nonempty_dir2/f1.txt|F|1506|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0013/nonempty_dir2/f2.txt|F|1508|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0013/nonempty_dir2/d2/d3|D|1514
+        end dump-result
+
+
+        #####################################
+        # Test 14
+        #####################################
+   329: mkdir /test_dir_0014 0o777
+        Tau
+        RV_none
+
+   330: chdir /test_dir_0014
+        Tau
+        RV_none
+
+   331: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   332: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   333: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   334: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   335: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   336: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   337: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   338: close (FD 3)
+        Tau
+        RV_none
+
+   339: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   340: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   341: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   342: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   343: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   344: close (FD 3)
+        Tau
+        RV_none
+
+   345: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   346: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   347: mkdir nonempty_dir1/d2/f3.txt/ 0o777
+        Tau
+        EEXIST
+
+   348: dump-result /test_dir_0014
+           /test_dir_0014|D|1600
+           /test_dir_0014/empty_dir1|D|1603
+           /test_dir_0014/empty_dir2|D|1606
+           /test_dir_0014/nonempty_dir1|D|1609
+           /test_dir_0014/nonempty_dir2|D|1630
+           /test_dir_0014/nonempty_dir1/d2|D|1616
+           /test_dir_0014/nonempty_dir1/f1.txt|F|1611|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0014/nonempty_dir1/d2/d3|D|1628
+           /test_dir_0014/nonempty_dir1/d2/f3.txt|F|1619|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0014/nonempty_dir2/d2|D|1643
+           /test_dir_0014/nonempty_dir2/f1.txt|F|1637|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0014/nonempty_dir2/f2.txt|F|1641|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0014/nonempty_dir2/d2/d3|D|1650
+        end dump-result
+
+
+        #####################################
+        # Test 15
+        #####################################
+   354: mkdir /test_dir_0015 0o777
+        Tau
+        RV_none
+
+   355: chdir /test_dir_0015
+        Tau
+        RV_none
+
+   356: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   357: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   358: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   359: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   360: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   361: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   362: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   363: close (FD 3)
+        Tau
+        RV_none
+
+   364: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   365: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   366: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   367: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   368: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   369: close (FD 3)
+        Tau
+        RV_none
+
+   370: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   371: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   372: mkdir nonempty_dir1/f1.txt 0o777
+        Tau
+        EEXIST
+
+   373: dump-result /test_dir_0015
+           /test_dir_0015|D|1735
+           /test_dir_0015/empty_dir1|D|1740
+           /test_dir_0015/empty_dir2|D|1744
+           /test_dir_0015/nonempty_dir1|D|1748
+           /test_dir_0015/nonempty_dir2|D|1792
+           /test_dir_0015/nonempty_dir1/d2|D|1757
+           /test_dir_0015/nonempty_dir1/f1.txt|F|1751|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0015/nonempty_dir1/d2/d3|D|1789
+           /test_dir_0015/nonempty_dir1/d2/f3.txt|F|1780|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0015/nonempty_dir2/d2|D|1805
+           /test_dir_0015/nonempty_dir2/f1.txt|F|1797|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0015/nonempty_dir2/f2.txt|F|1801|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0015/nonempty_dir2/d2/d3|D|1810
+        end dump-result
+
+
+        #####################################
+        # Test 16
+        #####################################
+   379: mkdir /test_dir_0016 0o777
+        Tau
+        RV_none
+
+   380: chdir /test_dir_0016
+        Tau
+        RV_none
+
+   381: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   382: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   383: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   384: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   385: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   386: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   387: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   388: close (FD 3)
+        Tau
+        RV_none
+
+   389: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   390: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   391: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   392: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   393: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   394: close (FD 3)
+        Tau
+        RV_none
+
+   395: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   396: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   397: mkdir nonempty_dir1/f1.txt/ 0o777
+        Tau
+        EEXIST
+
+   398: dump-result /test_dir_0016
+           /test_dir_0016|D|1913
+           /test_dir_0016/empty_dir1|D|1925
+           /test_dir_0016/empty_dir2|D|1934
+           /test_dir_0016/nonempty_dir1|D|1939
+           /test_dir_0016/nonempty_dir2|D|1971
+           /test_dir_0016/nonempty_dir1/d2|D|1957
+           /test_dir_0016/nonempty_dir1/f1.txt|F|1942|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0016/nonempty_dir1/d2/d3|D|1967
+           /test_dir_0016/nonempty_dir1/d2/f3.txt|F|1960|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0016/nonempty_dir2/d2|D|1997
+           /test_dir_0016/nonempty_dir2/f1.txt|F|1978|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0016/nonempty_dir2/f2.txt|F|1989|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0016/nonempty_dir2/d2/d3|D|1998
+        end dump-result
+
+
+        #####################################
+        # Test 17
+        #####################################
+   404: mkdir /test_dir_0017 0o777
+        Tau
+        RV_none
+
+   405: chdir /test_dir_0017
+        Tau
+        RV_none
+
+   406: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   407: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   408: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   409: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   410: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   411: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   412: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   413: close (FD 3)
+        Tau
+        RV_none
+
+   414: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   415: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   416: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   417: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   418: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   419: close (FD 3)
+        Tau
+        RV_none
+
+   420: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   421: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   422: mkdir nonempty_dir1/f1.txt/nonexist_5 0o777
+        Tau
+        ENOTDIR
+
+   423: dump-result /test_dir_0017
+           /test_dir_0017|D|2114
+           /test_dir_0017/empty_dir1|D|2118
+           /test_dir_0017/empty_dir2|D|2122
+           /test_dir_0017/nonempty_dir1|D|2139
+           /test_dir_0017/nonempty_dir2|D|2174
+           /test_dir_0017/nonempty_dir1/d2|D|2145
+           /test_dir_0017/nonempty_dir1/f1.txt|F|2142|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0017/nonempty_dir1/d2/d3|D|2157
+           /test_dir_0017/nonempty_dir1/d2/f3.txt|F|2147|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0017/nonempty_dir2/d2|D|2188
+           /test_dir_0017/nonempty_dir2/f1.txt|F|2179|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0017/nonempty_dir2/f2.txt|F|2183|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0017/nonempty_dir2/d2/d3|D|2191
+        end dump-result
+
+
+        #####################################
+        # Test 18
+        #####################################
+   429: mkdir /test_dir_0018 0o777
+        Tau
+        RV_none
+
+   430: chdir /test_dir_0018
+        Tau
+        RV_none
+
+   431: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   432: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   433: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   434: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   435: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   436: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   437: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   438: close (FD 3)
+        Tau
+        RV_none
+
+   439: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   440: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   441: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   442: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   443: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   444: close (FD 3)
+        Tau
+        RV_none
+
+   445: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   446: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   447: mkdir nonempty_dir1/f1.txt/nonexist_5/ 0o777
+        Tau
+        ENOTDIR
+
+   448: dump-result /test_dir_0018
+           /test_dir_0018|D|2272
+           /test_dir_0018/empty_dir1|D|2277
+           /test_dir_0018/empty_dir2|D|2283
+           /test_dir_0018/nonempty_dir1|D|2289
+           /test_dir_0018/nonempty_dir2|D|2311
+           /test_dir_0018/nonempty_dir1/d2|D|2295
+           /test_dir_0018/nonempty_dir1/f1.txt|F|2291|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0018/nonempty_dir1/d2/d3|D|2307
+           /test_dir_0018/nonempty_dir1/d2/f3.txt|F|2300|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0018/nonempty_dir2/d2|D|2334
+           /test_dir_0018/nonempty_dir2/f1.txt|F|2326|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0018/nonempty_dir2/f2.txt|F|2330|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0018/nonempty_dir2/d2/d3|D|2336
+        end dump-result
+
+
+        #####################################
+        # Test 19
+        #####################################
+   454: mkdir /test_dir_0019 0o777
+        Tau
+        RV_none
+
+   455: chdir /test_dir_0019
+        Tau
+        RV_none
+
+   456: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   457: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   458: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   459: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   460: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   461: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   462: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   463: close (FD 3)
+        Tau
+        RV_none
+
+   464: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   465: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   466: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   467: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   468: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   469: close (FD 3)
+        Tau
+        RV_none
+
+   470: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   471: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   472: mkdir nonempty_dir1/nonexist_4 0o777
+        Tau
+        RV_none
+
+   473: dump-result /test_dir_0019
+           /test_dir_0019|D|2415
+           /test_dir_0019/empty_dir1|D|2419
+           /test_dir_0019/empty_dir2|D|2422
+           /test_dir_0019/nonempty_dir1|D|2427
+           /test_dir_0019/nonempty_dir2|D|2478
+           /test_dir_0019/nonempty_dir1/d2|D|2457
+           /test_dir_0019/nonempty_dir1/f1.txt|F|2432|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0019/nonempty_dir1/nonexist_4|D|2497
+           /test_dir_0019/nonempty_dir1/d2/d3|D|2475
+           /test_dir_0019/nonempty_dir1/d2/f3.txt|F|2463|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0019/nonempty_dir2/d2|D|2491
+           /test_dir_0019/nonempty_dir2/f1.txt|F|2482|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0019/nonempty_dir2/f2.txt|F|2486|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0019/nonempty_dir2/d2/d3|D|2493
+        end dump-result
+
+
+        #####################################
+        # Test 20
+        #####################################
+   479: mkdir /test_dir_0020 0o777
+        Tau
+        RV_none
+
+   480: chdir /test_dir_0020
+        Tau
+        RV_none
+
+   481: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   482: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   483: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   484: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   485: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   486: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   487: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   488: close (FD 3)
+        Tau
+        RV_none
+
+   489: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   490: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   491: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   492: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   493: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   494: close (FD 3)
+        Tau
+        RV_none
+
+   495: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   496: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   497: mkdir nonempty_dir1/nonexist_4/ 0o777
+        Tau
+        RV_none
+
+   498: dump-result /test_dir_0020
+           /test_dir_0020|D|2587
+           /test_dir_0020/empty_dir1|D|2590
+           /test_dir_0020/empty_dir2|D|2597
+           /test_dir_0020/nonempty_dir1|D|2601
+           /test_dir_0020/nonempty_dir2|D|2653
+           /test_dir_0020/nonempty_dir1/d2|D|2609
+           /test_dir_0020/nonempty_dir1/f1.txt|F|2605|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0020/nonempty_dir1/nonexist_4|D|2670
+           /test_dir_0020/nonempty_dir1/d2/d3|D|2651
+           /test_dir_0020/nonempty_dir1/d2/f3.txt|F|2644|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0020/nonempty_dir2/d2|D|2664
+           /test_dir_0020/nonempty_dir2/f1.txt|F|2655|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0020/nonempty_dir2/f2.txt|F|2659|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0020/nonempty_dir2/d2/d3|D|2668
+        end dump-result
+
+
+        #####################################
+        # Test 21
+        #####################################
+   504: mkdir /test_dir_0021 0o777
+        Tau
+        RV_none
+
+   505: chdir /test_dir_0021
+        Tau
+        RV_none
+
+   506: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   507: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   508: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   509: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   510: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   511: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   512: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   513: close (FD 3)
+        Tau
+        RV_none
+
+   514: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   515: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   516: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   517: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   518: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   519: close (FD 3)
+        Tau
+        RV_none
+
+   520: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   521: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   522: mkdir nonempty_dir2 0o777
+        Tau
+        EEXIST
+
+   523: dump-result /test_dir_0021
+           /test_dir_0021|D|2758
+           /test_dir_0021/empty_dir1|D|2760
+           /test_dir_0021/empty_dir2|D|2763
+           /test_dir_0021/nonempty_dir1|D|2766
+           /test_dir_0021/nonempty_dir2|D|2781
+           /test_dir_0021/nonempty_dir1/d2|D|2770
+           /test_dir_0021/nonempty_dir1/f1.txt|F|2768|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0021/nonempty_dir1/d2/d3|D|2777
+           /test_dir_0021/nonempty_dir1/d2/f3.txt|F|2772|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0021/nonempty_dir2/d2|D|2811
+           /test_dir_0021/nonempty_dir2/f1.txt|F|2803|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0021/nonempty_dir2/f2.txt|F|2805|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0021/nonempty_dir2/d2/d3|D|2813
+        end dump-result
+
+
+        #####################################
+        # Test 22
+        #####################################
+   529: mkdir /test_dir_0022 0o777
+        Tau
+        RV_none
+
+   530: chdir /test_dir_0022
+        Tau
+        RV_none
+
+   531: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   532: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   533: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   534: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   535: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   536: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   537: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   538: close (FD 3)
+        Tau
+        RV_none
+
+   539: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   540: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   541: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   542: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   543: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   544: close (FD 3)
+        Tau
+        RV_none
+
+   545: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   546: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   547: mkdir nonempty_dir2/ 0o777
+        Tau
+        EEXIST
+
+   548: dump-result /test_dir_0022
+           /test_dir_0022|D|2890
+           /test_dir_0022/empty_dir1|D|2898
+           /test_dir_0022/empty_dir2|D|2901
+           /test_dir_0022/nonempty_dir1|D|2906
+           /test_dir_0022/nonempty_dir2|D|2919
+           /test_dir_0022/nonempty_dir1/d2|D|2912
+           /test_dir_0022/nonempty_dir1/f1.txt|F|2909|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0022/nonempty_dir1/d2/d3|D|2917
+           /test_dir_0022/nonempty_dir1/d2/f3.txt|F|2913|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0022/nonempty_dir2/d2|D|2925
+           /test_dir_0022/nonempty_dir2/f1.txt|F|2921|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0022/nonempty_dir2/f2.txt|F|2922|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0022/nonempty_dir2/d2/d3|D|2926
+        end dump-result
+
+
+        #####################################
+        # Test 23
+        #####################################
+   554: mkdir /test_dir_0023 0o777
+        Tau
+        RV_none
+
+   555: chdir /test_dir_0023
+        Tau
+        RV_none
+
+   556: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   557: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   558: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   559: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   560: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   561: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   562: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   563: close (FD 3)
+        Tau
+        RV_none
+
+   564: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   565: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   566: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   567: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   568: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   569: close (FD 3)
+        Tau
+        RV_none
+
+   570: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   571: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   572: mkdir nonempty_dir2/d2 0o777
+        Tau
+        EEXIST
+
+   573: dump-result /test_dir_0023
+           /test_dir_0023|D|3002
+           /test_dir_0023/empty_dir1|D|3009
+           /test_dir_0023/empty_dir2|D|3014
+           /test_dir_0023/nonempty_dir1|D|3028
+           /test_dir_0023/nonempty_dir2|D|3055
+           /test_dir_0023/nonempty_dir1/d2|D|3044
+           /test_dir_0023/nonempty_dir1/f1.txt|F|3037|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0023/nonempty_dir1/d2/d3|D|3051
+           /test_dir_0023/nonempty_dir1/d2/f3.txt|F|3045|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0023/nonempty_dir2/d2|D|3065
+           /test_dir_0023/nonempty_dir2/f1.txt|F|3059|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0023/nonempty_dir2/f2.txt|F|3061|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0023/nonempty_dir2/d2/d3|D|3066
+        end dump-result
+
+
+        #####################################
+        # Test 24
+        #####################################
+   579: mkdir /test_dir_0024 0o777
+        Tau
+        RV_none
+
+   580: chdir /test_dir_0024
+        Tau
+        RV_none
+
+   581: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   582: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   583: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   584: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   585: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   586: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   587: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   588: close (FD 3)
+        Tau
+        RV_none
+
+   589: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   590: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   591: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   592: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   593: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   594: close (FD 3)
+        Tau
+        RV_none
+
+   595: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   596: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   597: mkdir nonempty_dir2/d2/ 0o777
+        Tau
+        EEXIST
+
+   598: dump-result /test_dir_0024
+           /test_dir_0024|D|3133
+           /test_dir_0024/empty_dir1|D|3141
+           /test_dir_0024/empty_dir2|D|3146
+           /test_dir_0024/nonempty_dir1|D|3153
+           /test_dir_0024/nonempty_dir2|D|3171
+           /test_dir_0024/nonempty_dir1/d2|D|3162
+           /test_dir_0024/nonempty_dir1/f1.txt|F|3158|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0024/nonempty_dir1/d2/d3|D|3169
+           /test_dir_0024/nonempty_dir1/d2/f3.txt|F|3164|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0024/nonempty_dir2/d2|D|3181
+           /test_dir_0024/nonempty_dir2/f1.txt|F|3174|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0024/nonempty_dir2/f2.txt|F|3176|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0024/nonempty_dir2/d2/d3|D|3184
+        end dump-result
+
+
+        #####################################
+        # Test 25
+        #####################################
+   604: mkdir /test_dir_0025 0o777
+        Tau
+        RV_none
+
+   605: chdir /test_dir_0025
+        Tau
+        RV_none
+
+   606: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   607: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   608: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   609: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   610: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   611: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   612: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   613: close (FD 3)
+        Tau
+        RV_none
+
+   614: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   615: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   616: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   617: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   618: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   619: close (FD 3)
+        Tau
+        RV_none
+
+   620: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   621: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   622: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        EEXIST
+
+   623: dump-result /test_dir_0025
+           /test_dir_0025|D|3266
+           /test_dir_0025/empty_dir1|D|3273
+           /test_dir_0025/empty_dir2|D|3276
+           /test_dir_0025/nonempty_dir1|D|3281
+           /test_dir_0025/nonempty_dir2|D|3303
+           /test_dir_0025/nonempty_dir1/d2|D|3289
+           /test_dir_0025/nonempty_dir1/f1.txt|F|3286|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0025/nonempty_dir1/d2/d3|D|3298
+           /test_dir_0025/nonempty_dir1/d2/f3.txt|F|3291|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0025/nonempty_dir2/d2|D|3315
+           /test_dir_0025/nonempty_dir2/f1.txt|F|3309|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0025/nonempty_dir2/f2.txt|F|3311|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0025/nonempty_dir2/d2/d3|D|3317
+        end dump-result
+
+
+        #####################################
+        # Test 26
+        #####################################
+   629: mkdir /test_dir_0026 0o777
+        Tau
+        RV_none
+
+   630: chdir /test_dir_0026
+        Tau
+        RV_none
+
+   631: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   632: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   633: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   634: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   635: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   636: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   637: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   638: close (FD 3)
+        Tau
+        RV_none
+
+   639: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   640: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   641: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   642: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   643: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   644: close (FD 3)
+        Tau
+        RV_none
+
+   645: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   646: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   647: mkdir nonempty_dir2/d2/d3/ 0o777
+        Tau
+        EEXIST
+
+   648: dump-result /test_dir_0026
+           /test_dir_0026|D|214
+           /test_dir_0026/empty_dir1|D|226
+           /test_dir_0026/empty_dir2|D|242
+           /test_dir_0026/nonempty_dir1|D|254
+           /test_dir_0026/nonempty_dir2|D|291
+           /test_dir_0026/nonempty_dir1/d2|D|268
+           /test_dir_0026/nonempty_dir1/f1.txt|F|257|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0026/nonempty_dir1/d2/d3|D|283
+           /test_dir_0026/nonempty_dir1/d2/f3.txt|F|275|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0026/nonempty_dir2/d2|D|332
+           /test_dir_0026/nonempty_dir2/f1.txt|F|303|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0026/nonempty_dir2/f2.txt|F|309|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0026/nonempty_dir2/d2/d3|D|335
+        end dump-result
+
+
+        #####################################
+        # Test 27
+        #####################################
+   654: mkdir /test_dir_0027 0o777
+        Tau
+        RV_none
+
+   655: chdir /test_dir_0027
+        Tau
+        RV_none
+
+   656: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   657: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   658: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   659: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   660: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   661: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   662: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   663: close (FD 3)
+        Tau
+        RV_none
+
+   664: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   665: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   666: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   667: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   668: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   669: close (FD 3)
+        Tau
+        RV_none
+
+   670: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   671: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   672: mkdir nonempty_dir2/f1.txt 0o777
+        Tau
+        EEXIST
+
+   673: dump-result /test_dir_0027
+           /test_dir_0027|D|730
+           /test_dir_0027/empty_dir1|D|742
+           /test_dir_0027/empty_dir2|D|752
+           /test_dir_0027/nonempty_dir1|D|1090
+           /test_dir_0027/nonempty_dir2|D|3332
+           /test_dir_0027/nonempty_dir1/d2|D|2421
+           /test_dir_0027/nonempty_dir1/f1.txt|F|2085|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0027/nonempty_dir1/d2/d3|D|3330
+           /test_dir_0027/nonempty_dir1/d2/f3.txt|F|108|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0027/nonempty_dir2/d2|D|3338
+           /test_dir_0027/nonempty_dir2/f1.txt|F|3334|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0027/nonempty_dir2/f2.txt|F|3336|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0027/nonempty_dir2/d2/d3|D|3340
+        end dump-result
+
+
+        #####################################
+        # Test 28
+        #####################################
+   679: mkdir /test_dir_0028 0o777
+        Tau
+        RV_none
+
+   680: chdir /test_dir_0028
+        Tau
+        RV_none
+
+   681: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   682: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   683: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   684: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   685: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   686: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   687: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   688: close (FD 3)
+        Tau
+        RV_none
+
+   689: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   690: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   691: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   692: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   693: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   694: close (FD 3)
+        Tau
+        RV_none
+
+   695: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   696: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   697: mkdir nonempty_dir2/f1.txt/ 0o777
+        Tau
+        EEXIST
+
+   698: dump-result /test_dir_0028
+           /test_dir_0028|D|3373
+           /test_dir_0028/empty_dir1|D|3376
+           /test_dir_0028/empty_dir2|D|3378
+           /test_dir_0028/nonempty_dir1|D|3381
+           /test_dir_0028/nonempty_dir2|D|3396
+           /test_dir_0028/nonempty_dir1/d2|D|3387
+           /test_dir_0028/nonempty_dir1/f1.txt|F|3384|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0028/nonempty_dir1/d2/d3|D|3393
+           /test_dir_0028/nonempty_dir1/d2/f3.txt|F|3390|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0028/nonempty_dir2/d2|D|3402
+           /test_dir_0028/nonempty_dir2/f1.txt|F|3398|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0028/nonempty_dir2/f2.txt|F|3400|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0028/nonempty_dir2/d2/d3|D|3404
+        end dump-result
+
+
+        #####################################
+        # Test 29
+        #####################################
+   704: mkdir /test_dir_0029 0o777
+        Tau
+        RV_none
+
+   705: chdir /test_dir_0029
+        Tau
+        RV_none
+
+   706: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   707: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   708: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   709: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   710: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   711: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   712: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   713: close (FD 3)
+        Tau
+        RV_none
+
+   714: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   715: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   716: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   717: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   718: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   719: close (FD 3)
+        Tau
+        RV_none
+
+   720: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   721: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   722: mkdir nonempty_dir2/f2.txt 0o777
+        Tau
+        EEXIST
+
+   723: dump-result /test_dir_0029
+           /test_dir_0029|D|3435
+           /test_dir_0029/empty_dir1|D|3438
+           /test_dir_0029/empty_dir2|D|3441
+           /test_dir_0029/nonempty_dir1|D|3444
+           /test_dir_0029/nonempty_dir2|D|3458
+           /test_dir_0029/nonempty_dir1/d2|D|3449
+           /test_dir_0029/nonempty_dir1/f1.txt|F|3446|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0029/nonempty_dir1/d2/d3|D|3456
+           /test_dir_0029/nonempty_dir1/d2/f3.txt|F|3452|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0029/nonempty_dir2/d2|D|3466
+           /test_dir_0029/nonempty_dir2/f1.txt|F|3461|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0029/nonempty_dir2/f2.txt|F|3464|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0029/nonempty_dir2/d2/d3|D|3468
+        end dump-result
+
+
+        #####################################
+        # Test 30
+        #####################################
+   729: mkdir /test_dir_0030 0o777
+        Tau
+        RV_none
+
+   730: chdir /test_dir_0030
+        Tau
+        RV_none
+
+   731: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   732: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   733: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   734: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   735: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   736: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   737: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   738: close (FD 3)
+        Tau
+        RV_none
+
+   739: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   740: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   741: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   742: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   743: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   744: close (FD 3)
+        Tau
+        RV_none
+
+   745: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   746: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   747: mkdir nonempty_dir2/f2.txt/ 0o777
+        Tau
+        EEXIST
+
+   748: dump-result /test_dir_0030
+           /test_dir_0030|D|3497
+           /test_dir_0030/empty_dir1|D|3500
+           /test_dir_0030/empty_dir2|D|3503
+           /test_dir_0030/nonempty_dir1|D|3506
+           /test_dir_0030/nonempty_dir2|D|3521
+           /test_dir_0030/nonempty_dir1/d2|D|3512
+           /test_dir_0030/nonempty_dir1/f1.txt|F|3509|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0030/nonempty_dir1/d2/d3|D|3518
+           /test_dir_0030/nonempty_dir1/d2/f3.txt|F|3515|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0030/nonempty_dir2/d2|D|3530
+           /test_dir_0030/nonempty_dir2/f1.txt|F|3524|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0030/nonempty_dir2/f2.txt|F|3527|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0030/nonempty_dir2/d2/d3|D|3533
+        end dump-result
+
+
+        #####################################
+        # Test 31
+        #####################################
+   754: mkdir /test_dir_0031 0o777
+        Tau
+        RV_none
+
+   755: chdir /test_dir_0031
+        Tau
+        RV_none
+
+   756: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   757: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   758: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   759: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   760: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   761: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   762: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   763: close (FD 3)
+        Tau
+        RV_none
+
+   764: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   765: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   766: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   767: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   768: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   769: close (FD 3)
+        Tau
+        RV_none
+
+   770: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   771: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   772: mkdir nonexist_1 0o777
+        Tau
+        RV_none
+
+   773: dump-result /test_dir_0031
+           /test_dir_0031|D|3561
+           /test_dir_0031/empty_dir1|D|3563
+           /test_dir_0031/empty_dir2|D|3565
+           /test_dir_0031/nonempty_dir1|D|3567
+           /test_dir_0031/nonempty_dir2|D|3582
+           /test_dir_0031/nonexist_1|D|3596
+           /test_dir_0031/nonempty_dir1/d2|D|3572
+           /test_dir_0031/nonempty_dir1/f1.txt|F|3569|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0031/nonempty_dir1/d2/d3|D|3579
+           /test_dir_0031/nonempty_dir1/d2/f3.txt|F|3575|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0031/nonempty_dir2/d2|D|3591
+           /test_dir_0031/nonempty_dir2/f1.txt|F|3585|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0031/nonempty_dir2/f2.txt|F|3588|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0031/nonempty_dir2/d2/d3|D|3594
+        end dump-result
+
+
+        #####################################
+        # Test 32
+        #####################################
+   779: mkdir /test_dir_0032 0o777
+        Tau
+        RV_none
+
+   780: chdir /test_dir_0032
+        Tau
+        RV_none
+
+   781: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   782: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   783: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   784: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   785: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   786: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   787: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   788: close (FD 3)
+        Tau
+        RV_none
+
+   789: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   790: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   791: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   792: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   793: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   794: close (FD 3)
+        Tau
+        RV_none
+
+   795: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   796: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   797: mkdir nonexist_1/ 0o777
+        Tau
+        RV_none
+
+   798: dump-result /test_dir_0032
+           /test_dir_0032|D|3631
+           /test_dir_0032/empty_dir1|D|3633
+           /test_dir_0032/empty_dir2|D|3635
+           /test_dir_0032/nonempty_dir1|D|3637
+           /test_dir_0032/nonempty_dir2|D|3653
+           /test_dir_0032/nonexist_1|D|3663
+           /test_dir_0032/nonempty_dir1/d2|D|3643
+           /test_dir_0032/nonempty_dir1/f1.txt|F|3640|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0032/nonempty_dir1/d2/d3|D|3650
+           /test_dir_0032/nonempty_dir1/d2/f3.txt|F|3646|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0032/nonempty_dir2/d2|D|3660
+           /test_dir_0032/nonempty_dir2/f1.txt|F|3655|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0032/nonempty_dir2/f2.txt|F|3657|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0032/nonempty_dir2/d2/d3|D|3662
+        end dump-result
+
+
+        #####################################
+        # Test 33
+        #####################################
+   804: mkdir /test_dir_0033 0o777
+        Tau
+        RV_none
+
+   805: chdir /test_dir_0033
+        Tau
+        RV_none
+
+   806: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   807: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   808: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   809: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   810: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   811: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   812: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   813: close (FD 3)
+        Tau
+        RV_none
+
+   814: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   815: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   816: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   817: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   818: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   819: close (FD 3)
+        Tau
+        RV_none
+
+   820: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   821: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   822: mkdir nonexist_2 0o777
+        Tau
+        RV_none
+
+   823: dump-result /test_dir_0033
+           /test_dir_0033|D|3700
+           /test_dir_0033/empty_dir1|D|3703
+           /test_dir_0033/empty_dir2|D|3706
+           /test_dir_0033/nonempty_dir1|D|3709
+           /test_dir_0033/nonempty_dir2|D|3721
+           /test_dir_0033/nonexist_2|D|3731
+           /test_dir_0033/nonempty_dir1/d2|D|3714
+           /test_dir_0033/nonempty_dir1/f1.txt|F|3711|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0033/nonempty_dir1/d2/d3|D|3719
+           /test_dir_0033/nonempty_dir1/d2/f3.txt|F|3717|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0033/nonempty_dir2/d2|D|3727
+           /test_dir_0033/nonempty_dir2/f1.txt|F|3723|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0033/nonempty_dir2/f2.txt|F|3725|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0033/nonempty_dir2/d2/d3|D|3729
+        end dump-result
+
+
+        #####################################
+        # Test 34
+        #####################################
+   829: mkdir /test_dir_0034 0o777
+        Tau
+        RV_none
+
+   830: chdir /test_dir_0034
+        Tau
+        RV_none
+
+   831: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   832: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   833: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   834: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   835: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   836: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   837: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   838: close (FD 3)
+        Tau
+        RV_none
+
+   839: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   840: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   841: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   842: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   843: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   844: close (FD 3)
+        Tau
+        RV_none
+
+   845: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   846: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   847: mkdir nonexist_2/ 0o777
+        Tau
+        RV_none
+
+   848: dump-result /test_dir_0034
+           /test_dir_0034|D|3773
+           /test_dir_0034/empty_dir1|D|3776
+           /test_dir_0034/empty_dir2|D|3779
+           /test_dir_0034/nonempty_dir1|D|3780
+           /test_dir_0034/nonempty_dir2|D|3790
+           /test_dir_0034/nonexist_2|D|3799
+           /test_dir_0034/nonempty_dir1/d2|D|3784
+           /test_dir_0034/nonempty_dir1/f1.txt|F|3782|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0034/nonempty_dir1/d2/d3|D|3788
+           /test_dir_0034/nonempty_dir1/d2/f3.txt|F|3786|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0034/nonempty_dir2/d2|D|3795
+           /test_dir_0034/nonempty_dir2/f1.txt|F|3792|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0034/nonempty_dir2/f2.txt|F|3793|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0034/nonempty_dir2/d2/d3|D|3797
+        end dump-result
+
+
+        #####################################
+        # Test 35
+        #####################################
+   854: mkdir /test_dir_0035 0o777
+        Tau
+        RV_none
+
+   855: chdir /test_dir_0035
+        Tau
+        RV_none
+
+   856: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   857: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   858: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   859: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   860: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   861: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   862: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   863: close (FD 3)
+        Tau
+        RV_none
+
+   864: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   865: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   866: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   867: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   868: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   869: close (FD 3)
+        Tau
+        RV_none
+
+   870: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   871: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   872: mkdir nonexist_dir/nonexist_3 0o777
+        Tau
+        ENOENT
+
+   873: dump-result /test_dir_0035
+           /test_dir_0035|D|3843
+           /test_dir_0035/empty_dir1|D|3845
+           /test_dir_0035/empty_dir2|D|3847
+           /test_dir_0035/nonempty_dir1|D|3849
+           /test_dir_0035/nonempty_dir2|D|3856
+           /test_dir_0035/nonempty_dir1/d2|D|3852
+           /test_dir_0035/nonempty_dir1/f1.txt|F|3850|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0035/nonempty_dir1/d2/d3|D|3855
+           /test_dir_0035/nonempty_dir1/d2/f3.txt|F|3854|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0035/nonempty_dir2/d2|D|3862
+           /test_dir_0035/nonempty_dir2/f1.txt|F|3857|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0035/nonempty_dir2/f2.txt|F|3859|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0035/nonempty_dir2/d2/d3|D|3864
+        end dump-result
+
+
+        #####################################
+        # Test 36
+        #####################################
+   879: mkdir /test_dir_0036 0o777
+        Tau
+        RV_none
+
+   880: chdir /test_dir_0036
+        Tau
+        RV_none
+
+   881: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+
+   882: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+
+   883: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+
+   884: open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   885: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+
+   886: open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   887: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+
+   888: close (FD 3)
+        Tau
+        RV_none
+
+   889: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+
+   890: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+
+   891: open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+   892: open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+        Tau
+        RV_num(3)
+
+   893: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+
+   894: close (FD 3)
+        Tau
+        RV_none
+
+   895: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+
+   896: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+
+   897: mkdir nonexist_dir/nonexist_3/ 0o777
+        Tau
+        ENOENT
+
+   898: dump-result /test_dir_0036
+           /test_dir_0036|D|3907
+           /test_dir_0036/empty_dir1|D|3909
+           /test_dir_0036/empty_dir2|D|3911
+           /test_dir_0036/nonempty_dir1|D|3913
+           /test_dir_0036/nonempty_dir2|D|3921
+           /test_dir_0036/nonempty_dir1/d2|D|3916
+           /test_dir_0036/nonempty_dir1/f1.txt|F|3915|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0036/nonempty_dir1/d2/d3|D|3920
+           /test_dir_0036/nonempty_dir1/d2/f3.txt|F|3918|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+           /test_dir_0036/nonempty_dir2/d2|D|3927
+           /test_dir_0036/nonempty_dir2/f1.txt|F|3922|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_0036/nonempty_dir2/f2.txt|F|3924|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+           /test_dir_0036/nonempty_dir2/d2/d3|D|3929
+        end dump-result
+
+
+
+trace accepted

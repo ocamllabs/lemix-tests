@@ -1,0 +1,80 @@
+        # Tests for close
+
+        # close on an fd that was never used
+     4: close (FD 3)
+        EBADF
+
+        # and again
+     7: close (FD 4)
+        EBADF
+
+        # open a normal file, and close
+    10: open f1.txt [O_WRONLY;O_CREAT] 0o644
+        RV_num(3)
+    11: write (FD 3) "0123456789" 10
+
+Warning:     11: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(8)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(8)
+    12: close (FD 3)
+        RV_none
+
+        # open a normal file, and close twice
+    15: open f2.txt [O_WRONLY;O_CREAT] 0o644
+        RV_num(3)
+    16: close (FD 3)
+        RV_none
+    17: close (FD 3)
+        EBADF
+
+        # open and close a recently closed fd
+    20: open f1.txt [O_RDWR]
+        RV_num(3)
+    21: close (FD 3)
+        RV_none
+
+    23: open f1 [O_RDWR]
+        ENOENT
+    24: close (FD 3)
+        EBADF
+
+
+        # multiple overlapping opens
+    28: open f1.txt [O_RDWR]
+        RV_num(3)
+    29: open f2.txt [O_RDWR]
+        RV_num(4)
+    30: close (FD 3)
+        RV_none
+    31: open f1.txt [O_RDWR]
+        RV_num(3)
+    32: close (FD 4)
+        RV_none
+    33: close (FD 3)
+        RV_none
+
+
+        # opening a directory
+    37: mkdir d1 0o755
+        RV_none
+    38: open d1 [O_RDWR]
+        EISDIR
+    39: close (FD 3)
+        EBADF
+    40: open d1 [O_RDWR]
+        EISDIR
+    41: close (FD 3)
+        EBADF
+
+        # closing stdin
+    44: close (FD 0)
+        RV_none
+
+        # FIXME we can't close stdout because we are using it to return results of tests!
+        # close (FD 1)
+
+        # FIXME we probably shouldn't close stderr either
+        # close (FD 2)
+

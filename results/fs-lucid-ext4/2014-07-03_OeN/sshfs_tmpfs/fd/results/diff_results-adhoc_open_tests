@@ -1,0 +1,1282 @@
+        # Tests for open and close
+
+        ##############################################
+        # basic cases that should work
+        ##############################################
+
+        # create a file with some content
+     8: open f1.txt [O_WRONLY;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+     9: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+Warning:      9: write (FD 3) "0123456789" 10
+                 Tau
+                 RV_num(10)
+   more than one possible result value
+
+    10: close (FD 3)
+        Tau
+        RV_none
+
+
+        # read that file again
+    13: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+    14: read (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+Warning:     14: read (FD 3) 100
+                 Tau
+                 RV_bytes("0123456789")
+   more than one possible result value
+
+    15: close (FD 3)
+        Tau
+        RV_none
+
+
+        # read-write 
+    18: open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+    19: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+Warning:     19: write (FD 3) "ABCDE" 5
+                 Tau
+                 RV_num(5)
+   more than one possible result value
+
+    20: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+    21: read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE56789")
+
+Warning:     21: read (FD 3) 100
+                 Tau
+                 RV_bytes("ABCDE56789")
+   more than one possible result value
+
+    22: close (FD 3)
+        Tau
+        RV_none
+
+
+        # write only on existing file
+    25: open f1.txt [O_WRONLY]
+        Tau
+        RV_num(3)
+
+    26: write (FD 3) "012" 3
+        Tau
+        RV_num(3)
+
+Warning:     26: write (FD 3) "012" 3
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+    27: close (FD 3)
+        Tau
+        RV_none
+
+
+        # read that file again
+    30: open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+    31: read (FD 3) 100
+        Tau
+        RV_bytes("012DE56789")
+
+Warning:     31: read (FD 3) 100
+                 Tau
+                 RV_bytes("012DE56789")
+   more than one possible result value
+
+    32: close (FD 3)
+        Tau
+        RV_none
+
+
+        # open for execute 
+    35: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+    36: read (FD 3) 100
+        Tau
+        RV_bytes("012DE56789")
+
+Warning:     36: read (FD 3) 100
+                 Tau
+                 RV_bytes("012DE56789")
+   more than one possible result value
+
+    37: close (FD 3)
+        Tau
+        RV_none
+
+
+
+    40: mkdir d1 0o755
+        Tau
+        RV_none
+
+
+        # open directory for searching
+    43: open d1 [O_RDONLY]
+        Tau
+        RV_num(3)
+
+    44: read (FD 3) 100
+        Tau
+        EISDIR
+
+    45: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ##############################################
+        # opening problems with 
+        # non-existing files and dirs
+        ##############################################
+
+    53: open non-such-file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+    54: read (FD 3) 100
+        Tau
+        EBADF
+
+    55: close (FD 3)
+        Tau
+        EBADF
+
+
+    57: open /no_such_dir/non-such-file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+    58: read (FD 3) 100
+        Tau
+        EBADF
+
+    59: close (FD 3)
+        Tau
+        EBADF
+
+
+    61: open non-such-dir/ [O_RDONLY]
+        Tau
+        ENOENT
+
+    62: read (FD 3) 100
+        Tau
+        EBADF
+
+    63: close (FD 3)
+        Tau
+        EBADF
+
+
+    65: open /no_such_dir/non-such-dir2/ [O_RDONLY]
+        Tau
+        ENOENT
+
+    66: read (FD 3) 100
+        Tau
+        EBADF
+
+    67: close (FD 3)
+        Tau
+        EBADF
+
+
+        # opening an existing file with a slash at the end
+    70: open f1.txt/ [O_RDONLY]
+        Tau
+        ENOTDIR
+
+    71: read (FD 3) 100
+        Tau
+        EBADF
+
+    72: close (FD 3)
+        Tau
+        EBADF
+
+
+
+        ##############################################
+        # O_CREAT
+        ##############################################
+
+        # create without write flag is fine. It create
+        # a file (if it does not exist before), but
+        # we can only read from it
+    82: open f1.txt [O_RDONLY;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+    83: write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+
+    84: read (FD 3) 100
+        Tau
+        RV_bytes("012DE56789")
+
+Warning:     84: read (FD 3) 100
+                 Tau
+                 RV_bytes("012DE56789")
+   more than one possible result value
+
+    85: close (FD 3)
+        Tau
+        RV_none
+
+
+    87: open f2.txt [O_RDONLY;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+    88: write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+
+    89: pread (FD 3) 100 0
+        Tau
+        RV_bytes("")
+
+    90: close (FD 3)
+        Tau
+        RV_none
+
+    91: unlink f2.txt
+        Tau
+        RV_none
+
+
+        # if O_EXCL is given the file must not exist
+    94: open f1.txt [O_RDWR;O_CREAT;O_EXCL] 0o644
+        Tau
+        EEXIST
+
+    95: close (FD 3)
+        Tau
+        EBADF
+
+
+    97: open f2.txt [O_RDWR;O_CREAT;O_EXCL] 0o644
+        Tau
+        RV_num(3)
+
+    98: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+Warning:     98: write (FD 3) "ABCDE" 5
+                 Tau
+                 RV_num(5)
+   more than one possible result value
+
+    99: pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+Warning:     99: pread (FD 3) 100 0
+                 Tau
+                 RV_bytes("ABCDE")
+   more than one possible result value
+
+   100: close (FD 3)
+        Tau
+        RV_none
+
+   101: unlink f2.txt
+        Tau
+        RV_none
+
+
+        # if O_EXCL but not O_CREATE is set, the result is undefined
+        # open f1.txt [O_RDWR;O_EXCL] 0o777
+        # close (FD 3)
+
+        # to create a file, we need write access to the parent dir
+        #chmod /d1 r-xr-xr-x
+   109: open /d1/f3.txt [O_WRONLY;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+   110: close (FD 3)
+        Tau
+        RV_none
+
+
+        #chmod /d1 rwxr-xr-x
+   113: open /d1/f3.txt [O_RDWR;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+   114: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+Warning:    114: write (FD 3) "ABCDE" 5
+                 Tau
+                 RV_num(5)
+   more than one possible result value
+
+   115: pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+Warning:    115: pread (FD 3) 100 0
+                 Tau
+                 RV_bytes("ABCDE")
+   more than one possible result value
+
+   116: close (FD 3)
+        Tau
+        RV_none
+
+   117: unlink /d1/f3.txt
+        Tau
+        RV_none
+
+
+        # the file-permissions of a newly created file don't matter
+   120: open /d1/f3.txt [O_RDWR;O_CREAT] 0o444
+        Tau
+        RV_num(3)
+
+   121: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+Warning:    121: write (FD 3) "ABCDE" 5
+                 Tau
+                 RV_num(5)
+   more than one possible result value
+
+   122: pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+Warning:    122: pread (FD 3) 100 0
+                 Tau
+                 RV_bytes("ABCDE")
+   more than one possible result value
+
+   123: close (FD 3)
+        Tau
+        RV_none
+
+
+   125: open /d1/f3.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+   126: close (FD 3)
+        Tau
+        RV_none
+
+
+   128: open /d1/f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   129: read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE")
+
+Warning:    129: read (FD 3) 100
+                 Tau
+                 RV_bytes("ABCDE")
+   more than one possible result value
+
+   130: close (FD 3)
+        Tau
+        RV_none
+
+
+        # open does not change the permissions on existing files
+   133: open /d1/f3.txt [O_RDONLY;O_CREAT] 0o000
+        Tau
+        RV_num(3)
+
+   134: pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+Warning:    134: pread (FD 3) 100 0
+                 Tau
+                 RV_bytes("ABCDE")
+   more than one possible result value
+
+   135: close (FD 3)
+        Tau
+        RV_none
+
+
+   137: open /d1/f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   138: read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE")
+
+Warning:    138: read (FD 3) 100
+                 Tau
+                 RV_bytes("ABCDE")
+   more than one possible result value
+
+   139: close (FD 3)
+        Tau
+        RV_none
+
+   140: unlink /d1/f3.txt
+        Tau
+        RV_none
+
+
+        # not even read permission is needed on newly created files
+   143: open /d1/f3.txt [O_RDONLY;O_CREAT] 0o000
+        Tau
+        RV_num(3)
+
+   144: pread (FD 3) 100 0
+        Tau
+        RV_bytes("")
+
+   145: close (FD 3)
+        Tau
+        RV_none
+
+
+   147: open /d1/f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   148: read (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   149: close (FD 3)
+        Tau
+        RV_none
+
+   150: unlink /d1/f3.txt
+        Tau
+        RV_none
+
+
+
+        # O_CREAT flag only creates files not the dirs in path
+   154: open /no-such-dir/file.txt [O_RDONLY;O_CREAT] 0o644
+        Tau
+        ENOENT
+
+   155: close (FD 3)
+        Tau
+        EBADF
+
+
+
+        # creating a file without providing a mode is
+        # unspecified in Posix. For Linux, the
+        # default mode is 0o101
+   161: open f2.txt [O_WRONLY;O_CREAT]
+        Tau
+        RV_num(3)
+
+   162: close (FD 3)
+        Tau
+        RV_none
+
+   163: stat f2.txt
+        Tau
+        { st_dev=21; st_ino=100; st_kind=S_IFREG; st_perm=0o101; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+   164: unlink f2.txt
+        Tau
+        RV_none
+
+
+        ##############################################
+        # O_TRUNC
+        ##############################################
+
+        # O_TRUNC works as expected
+   171: unlink f1.txt
+        Tau
+        RV_none
+
+   172: open f1.txt [O_WRONLY;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+   173: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+   174: close (FD 3)
+        Tau
+        RV_none
+
+
+   176: open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+   177: read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+   178: close (FD 3)
+        Tau
+        RV_none
+
+
+   180: open f1.txt [O_RDWR;O_TRUNC]
+        Tau
+        RV_num(3)
+
+   181: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   182: close (FD 3)
+        Tau
+        RV_none
+
+
+        # behaviour of O_TRUNC without write flag is undefined
+        # on linux architecture, the O_TRUNC just truncates 
+        # even in read-only mode
+   187: open f1.txt [O_RDWR;O_TRUNC]
+        Tau
+        RV_num(3)
+
+   188: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+   189: close (FD 3)
+        Tau
+        RV_none
+
+
+   191: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   192: read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+   193: close (FD 3)
+        Tau
+        RV_none
+
+
+   195: open f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_num(3)
+
+   196: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   197: close (FD 3)
+        Tau
+        RV_none
+
+
+        # but we can't truncate file we don't have write permission to
+   200: open f1.txt [O_RDWR;O_TRUNC]
+        Tau
+        RV_num(3)
+
+   201: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+Warning:    201: write (FD 3) "0123456789" 10
+                 Tau
+                 RV_num(10)
+   more than one possible result value
+
+   202: close (FD 3)
+        Tau
+        RV_none
+
+
+   204: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   205: read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+   206: close (FD 3)
+        Tau
+        RV_none
+
+
+   208: chmod f1.txt 0o444
+        Tau
+        RV_none
+
+   209: open f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_num(3)
+
+   210: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   211: close (FD 3)
+        Tau
+        RV_none
+
+
+   213: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   214: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   215: close (FD 3)
+        Tau
+        RV_none
+
+
+   217: chmod f1.txt 0o644
+        Tau
+        RV_none
+
+   218: open f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_num(3)
+
+   219: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   220: close (FD 3)
+        Tau
+        RV_none
+
+
+   222: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   223: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   224: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ##############################################
+        # O_DIRECTORY
+        ##############################################
+
+        # using O_DIRECTORY with dirs is fine
+        # but we can't do anything afterwards :-)
+   233: open d1 [O_RDONLY;O_DIRECTORY]
+        Tau
+        RV_num(3)
+
+   234: read (FD 3) 100
+        Tau
+        EISDIR
+
+   235: close (FD 3)
+        Tau
+        RV_none
+
+
+        # using O_DIRECTORY with files fails
+   238: open f1.txt [O_RDONLY;O_DIRECTORY]
+        Tau
+        RV_num(3)
+
+   239: read (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   240: close (FD 3)
+        Tau
+        RV_none
+
+
+        # using O_DIRECTORY on non-existing files
+   243: open no-such-file.txt [O_RDONLY;O_DIRECTORY]
+        Tau
+        ENOENT
+
+   244: read (FD 3) 100
+        Tau
+        EBADF
+
+   245: close (FD 3)
+        Tau
+        EBADF
+
+
+        # using O_DIRECTORY on non-existing dir
+   248: open /no-such-dir/ [O_RDONLY;O_DIRECTORY]
+        Tau
+        ENOENT
+
+   249: read (FD 3) 100
+        Tau
+        EBADF
+
+   250: close (FD 3)
+        Tau
+        EBADF
+
+
+        # we can't create directories
+   253: open /no-such-dir/ [O_RDONLY;O_CREAT;O_DIRECTORY]
+        Tau
+        EISDIR
+
+   254: read (FD 3) 100
+        Tau
+        EBADF
+
+   255: close (FD 3)
+        Tau
+        EBADF
+
+
+   257: open /no-such-dir/ [O_RDONLY;O_CREAT]
+        Tau
+        EISDIR
+
+   258: read (FD 3) 100
+        Tau
+        EBADF
+
+   259: close (FD 3)
+        Tau
+        EBADF
+
+
+
+        ##############################################
+        # O_APPEND
+        ##############################################
+
+        # write fresh content
+   267: open f1.txt [O_RDWR;O_TRUNC]
+        Tau
+        RV_num(3)
+
+   268: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+   269: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+   270: close (FD 3)
+        Tau
+        RV_none
+
+
+        # override at beginning
+   273: open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+   274: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+Warning:    274: write (FD 3) "ABCDE" 5
+                 Tau
+                 RV_num(5)
+   more than one possible result value
+
+   275: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789")
+
+   276: close (FD 3)
+        Tau
+        RV_none
+
+
+        # override at end
+   279: open f1.txt [O_RDWR;O_APPEND]
+        Tau
+        RV_num(3)
+
+   280: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+Warning:    280: write (FD 3) "ABCDE" 5
+                 Tau
+                 RV_num(5)
+   more than one possible result value
+
+   281: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDE")
+
+   282: close (FD 3)
+        Tau
+        RV_none
+
+
+        # O_APPEND sets file-offset before every(!) write
+   285: open f1.txt [O_RDWR;O_APPEND]
+        Tau
+        RV_num(3)
+
+   286: write (FD 3) "XXX" 3
+        Tau
+        RV_num(3)
+
+Warning:    286: write (FD 3) "XXX" 3
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+   287: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+   288: write (FD 3) "YYY" 3
+        Tau
+        RV_num(3)
+
+Warning:    288: write (FD 3) "YYY" 3
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+   289: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+   290: write (FD 3) "ZZZ" 3
+        Tau
+        RV_num(3)
+
+Warning:    290: write (FD 3) "ZZZ" 3
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+   291: read (FD 3) 100
+        Tau
+        RV_bytes("")
+
+   292: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+   293: read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZ")
+
+Warning:    293: read (FD 3) 100
+                 Tau
+                 RV_bytes("ABCDE56789ABCDEXXXYYYZZZ")
+   more than one possible result value
+
+   294: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZ")
+
+   295: close (FD 3)
+        Tau
+        RV_none
+
+
+        # O_APPEND also affects pwrite
+   298: open f1.txt [O_RDWR;O_APPEND]
+        Tau
+        RV_num(3)
+
+   299: pwrite (FD 3) "AAA" 3 0
+        Tau
+        RV_num(3)
+
+Warning:    299: pwrite (FD 3) "AAA" 3 0
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+   300: pwrite (FD 3) "BBB" 3 -1
+        Tau
+        EINVAL
+
+   301: pwrite (FD 3) "CCC" 3 5
+        Tau
+        RV_num(3)
+
+Warning:    301: pwrite (FD 3) "CCC" 3 5
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+   302: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCC")
+
+   303: close (FD 3)
+        Tau
+        RV_none
+
+
+        # pwrite does not modify fd-offset, whereas write does
+   306: open f1.txt [O_RDWR;O_APPEND]
+        Tau
+        RV_num(3)
+
+   307: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+   308: pwrite (FD 3) "DDD" 3 0
+        Tau
+        RV_num(3)
+
+Warning:    308: pwrite (FD 3) "DDD" 3 0
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+   309: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+   310: write (FD 3) "EEE" 3
+        Tau
+        RV_num(3)
+
+Warning:    310: write (FD 3) "EEE" 3
+                 Tau
+                 RV_num(3)
+   more than one possible result value
+
+   311: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(36)
+
+   312: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+
+   313: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        # O_APPEND does only influence write and pwrite
+   317: open f1.txt [O_RDWR;O_APPEND]
+        Tau
+        RV_num(3)
+
+   318: read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+
+Warning:    318: read (FD 3) 100
+                 Tau
+                 RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+   more than one possible result value
+
+   319: close (FD 3)
+        Tau
+        RV_none
+
+
+   321: open f1.txt [O_RDWR;O_APPEND]
+        Tau
+        RV_num(3)
+
+   322: pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+
+Warning:    322: pread (FD 3) 100 0
+                 Tau
+                 RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+   more than one possible result value
+
+   323: close (FD 3)
+        Tau
+        RV_none
+
+
+   325: open f1.txt [O_RDWR;O_APPEND]
+        Tau
+        RV_num(3)
+
+   326: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+   327: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ##############################################
+        # testing file permissions
+        ##############################################
+
+        # read-only needs read permission
+   335: chmod f1.txt 0o400
+        Tau
+        RV_none
+
+   336: open_close f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+   338: chmod f1.txt 0o000
+        Tau
+        RV_none
+
+   339: open_close f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+
+        # write-only needs write permission
+   343: chmod f1.txt 0o200
+        Tau
+        RV_none
+
+   344: open_close f1.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+   346: chmod f1.txt 0o000
+        Tau
+        RV_none
+
+   347: open_close f1.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+   349: chmod f1.txt 0o400
+        Tau
+        RV_none
+
+   350: open_close f1.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+        # read-write needs read and write permission
+   353: chmod f1.txt 0o600
+        Tau
+        RV_none
+
+   354: open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+   356: chmod f1.txt 0o400
+        Tau
+        RV_none
+
+   357: open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+   359: chmod f1.txt 0o200
+        Tau
+        RV_none
+
+   360: open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+   362: chmod f1.txt 0o000
+        Tau
+        RV_none
+
+   363: open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+
+        # truncate requires write permission
+   367: chmod f1.txt 0o600
+        Tau
+        RV_none
+
+   368: open_close f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+
+   370: chmod f1.txt 0o400
+        Tau
+        RV_none
+
+   371: open_close f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+
+
+        # append makes only sense with write, but 
+        # does not require it
+   376: chmod f1.txt 0o400
+        Tau
+        RV_none
+
+   377: open f1.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_num(3)
+
+   378: write (FD 3) "0123456789" 10
+        Tau
+        EBADF
+
+   379: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ##############################################
+        # testing dir permissions
+        ##############################################
+
+        # creating a file needs search and write permission
+        # to the parent directory
+   388: chmod d1 0o000
+        Tau
+        RV_none
+
+   389: open_close d1/f2.txt [O_WRONLY;O_CREAT] 0o644
+        Tau
+        RV_none
+
+
+   391: chmod d1 0o200
+        Tau
+        RV_none
+
+   392: open_close d1/f2.txt [O_WRONLY;O_CREAT] 0o644
+        Tau
+        RV_none
+
+
+   394: chmod d1 0o100
+        Tau
+        RV_none
+
+   395: open_close d1/f2.txt [O_WRONLY;O_CREAT] 0o644
+        Tau
+        RV_none
+
+
+   397: chmod d1 0o300
+        Tau
+        RV_none
+
+   398: open_close d1/f2.txt [O_WRONLY;O_CREAT] 0o644
+        Tau
+        RV_none
+
+
+
+        # to read a file, we needs search permission for the
+        # parent directory (as well as to the file itself)
+
+   404: chmod d1 0o000
+        Tau
+        RV_none
+
+   405: open_close d1/f2.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+   407: chmod d1 0o100
+        Tau
+        RV_none
+
+   408: open_close d1/f2.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+
+        # search permission to the parent is enough to modify a file
+   412: chmod d1 0o000
+        Tau
+        RV_none
+
+   413: open_close d1/f2.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+   415: chmod d1 0o100
+        Tau
+        RV_none
+
+   416: open_close d1/f2.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+        # clean-up for dump etc.
+   419: chmod d1 0o700
+        Tau
+        RV_none
+
+
+trace accepted

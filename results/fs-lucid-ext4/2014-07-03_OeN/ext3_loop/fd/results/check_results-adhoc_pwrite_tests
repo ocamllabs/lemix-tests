@@ -1,0 +1,446 @@
+        # tesing pwrite and write
+
+
+        ##############################################
+        # initialization
+        ##############################################
+
+        # empty and non-empty directories to write to
+     9: mkdir /empty_dir 0o777
+        RV_none
+    10: mkdir /non_empty_dir 0o777
+        RV_none
+
+    12: chdir /non_empty_dir
+        RV_none
+
+
+        ##############################################
+        # simple writes
+        ##############################################
+
+        # start on empty file and write something
+    20: open f1.txt [O_RDWR;O_CREAT] 0o666
+        RV_num(3)
+    21: write (FD 3) "0123456789" 10
+
+Warning:     21: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(4)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(4)
+    22: close (FD 3)
+        RV_none
+
+    24: open f1.txt [O_RDONLY]
+        RV_num(3)
+    25: read! (FD 3) 100
+        RV_bytes("0123")
+    26: close (FD 3)
+        RV_none
+
+        # write even more stuff at the end
+    29: open f1.txt [O_RDWR;O_APPEND] 0o666
+        RV_num(3)
+    30: write (FD 3) "0123456789" 10
+
+Warning:     30: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(1)
+    31: close (FD 3)
+        RV_none
+
+    33: open f1.txt [O_RDONLY]
+        RV_num(3)
+    34: read! (FD 3) 100
+        RV_bytes("01230")
+    35: close (FD 3)
+        RV_none
+
+        # overwrite at begining
+    38: open f1.txt [O_RDWR] 0o666
+        RV_num(3)
+    39: write (FD 3) "XXX" 3
+
+Warning:     39: write (FD 3) "XXX" 3
+   more than one possible result value
+   randomly continuing execution with RV_num(3)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3)]
+        RV_num(3)
+    40: close (FD 3)
+        RV_none
+
+    42: open f1.txt [O_RDONLY]
+        RV_num(3)
+    43: read! (FD 3) 100
+        RV_bytes("XXX30")
+    44: close (FD 3)
+        RV_none
+
+        # truncate file
+    47: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+    48: write (FD 3) "0123456789" 10
+
+Warning:     48: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(0)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(0)
+    49: close (FD 3)
+        RV_none
+
+    51: open f1.txt [O_RDONLY]
+        RV_num(3)
+    52: read! (FD 3) 100
+        RV_bytes("")
+    53: close (FD 3)
+        RV_none
+
+        # shorter size
+    56: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+    57: write (FD 3) "0123456789" 5
+
+Warning:     57: write (FD 3) "0123456789" 5
+   more than one possible result value
+   randomly continuing execution with RV_num(0)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5)]
+        RV_num(0)
+    58: close (FD 3)
+        RV_none
+
+    60: open f1.txt [O_RDONLY]
+        RV_num(3)
+    61: read! (FD 3) 100
+        RV_bytes("")
+    62: close (FD 3)
+        RV_none
+
+
+        ##############################################
+        # pwrite
+        ##############################################
+
+        # write with pwrite at arbitrary positions
+    70: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+    71: write (FD 3) "0123456789" 10
+
+Warning:     71: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(1)
+    72: pwrite (FD 3) "X" 1 4
+
+Warning:     72: pwrite (FD 3) "X" 1 4
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1)]
+        RV_num(1)
+    73: pwrite (FD 3) "X" 1 6
+
+Warning:     73: pwrite (FD 3) "X" 1 6
+   more than one possible result value
+   randomly continuing execution with RV_num(0)
+        possible results: [RV_num(0);RV_num(1)]
+        RV_num(0)
+    74: pwrite (FD 3) "X" 1 8
+
+Warning:     74: pwrite (FD 3) "X" 1 8
+   more than one possible result value
+   randomly continuing execution with RV_num(0)
+        possible results: [RV_num(0);RV_num(1)]
+        RV_num(0)
+    75: write (FD 3) "0123456789" 10
+
+Warning:     75: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(2)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(2)
+    76: close (FD 3)
+        RV_none
+
+    78: open f1.txt [O_RDONLY]
+        RV_num(3)
+    79: read! (FD 3) 100
+        RV_bytes("00123456")
+    80: close (FD 3)
+        RV_none
+
+
+        # pwrite with negative index
+    84: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+    85: pwrite (FD 3) "XXX" 3 -100
+        EINVAL
+    86: close (FD 3)
+        RV_none
+
+    88: open f1.txt [O_RDONLY]
+        RV_num(3)
+    89: read! (FD 3) 100
+        RV_bytes("")
+    90: close (FD 3)
+        RV_none
+
+
+        # pwrite after end of file
+    94: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+    95: pwrite (FD 3) "XXX" 3 10
+
+Warning:     95: pwrite (FD 3) "XXX" 3 10
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3)]
+        RV_num(1)
+    96: close (FD 3)
+        RV_none
+
+    98: open f1.txt [O_RDONLY]
+        RV_num(3)
+    99: read! (FD 3) 100
+        RV_bytes("\000\000\000\000\000\000\000\000\000\000X")
+   100: close (FD 3)
+        RV_none
+
+
+        # pwrite then write
+   104: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+   105: pwrite (FD 3) "XXX" 3 10
+
+Warning:    105: pwrite (FD 3) "XXX" 3 10
+   more than one possible result value
+   randomly continuing execution with RV_num(0)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3)]
+        RV_num(0)
+   106: write (FD 3) "01234" 5
+
+Warning:    106: write (FD 3) "01234" 5
+   more than one possible result value
+   randomly continuing execution with RV_num(3)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5)]
+        RV_num(3)
+   107: close (FD 3)
+        RV_none
+
+   109: open f1.txt [O_RDONLY]
+        RV_num(3)
+   110: read! (FD 3) 100
+        RV_bytes("01234\000\000\000\000\000")
+   111: close (FD 3)
+        RV_none
+
+
+
+        ##############################################
+        # lseek 
+        ##############################################
+
+   119: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+   120: write (FD 3) "0123456789" 10
+
+Warning:    120: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(10)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(10)
+   121: lseek (FD 3) -3 SEEK_CUR
+        RV_num(7)
+   122: write (FD 3) "ABC" 3
+
+Warning:    122: write (FD 3) "ABC" 3
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3)]
+        RV_num(1)
+   123: pwrite (FD 3) "X" 1 4
+
+Warning:    123: pwrite (FD 3) "X" 1 4
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1)]
+        RV_num(1)
+   124: lseek (FD 3) 2 SEEK_SET
+        RV_num(2)
+   125: write (FD 3) "Y" 1
+
+Warning:    125: write (FD 3) "Y" 1
+   more than one possible result value
+   randomly continuing execution with RV_num(0)
+        possible results: [RV_num(0);RV_num(1)]
+        RV_num(0)
+   126: lseek (FD 3) 0 SEEK_SET
+        RV_num(0)
+   127: read! (FD 3) 100
+        RV_bytes("01Y3X56ABC")
+   128: close (FD 3)
+        RV_none
+
+        #write after end adds 0s
+   131: open f1.txt [O_RDWR;O_TRUNC] 0o666
+        RV_num(3)
+   132: write (FD 3) "0123456789" 10
+
+Warning:    132: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(4)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(4)
+   133: lseek (FD 3) 5 SEEK_CUR
+        RV_num(9)
+   134: write (FD 3) "ABCDE" 5
+
+Warning:    134: write (FD 3) "ABCDE" 5
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5)]
+        RV_num(1)
+   135: lseek (FD 3) 0 SEEK_SET
+        RV_num(0)
+   136: read! (FD 3) 100
+        RV_bytes("0123\000\000\000\000\000A")
+   137: close (FD 3)
+        RV_none
+
+        ##############################################
+        # writes with different file-descriptors
+        ##############################################
+
+        # read/write is fine
+   144: open f1.txt [O_RDWR;O_TRUNC]
+        RV_num(3)
+   145: write (FD 3) "0123456789" 10
+
+Warning:    145: write (FD 3) "0123456789" 10
+   more than one possible result value
+   randomly continuing execution with RV_num(5)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5);RV_num(6);RV_num(7);RV_num(8);RV_num(9);RV_num(10)]
+        RV_num(5)
+   146: lseek (FD 3) 0 SEEK_SET
+        RV_num(0)
+   147: read! (FD 3) 100
+        RV_bytes("01234")
+   148: close (FD 3)
+        RV_none
+
+        # write_only is fine / truncate works
+   151: open f1.txt [O_WRONLY;O_TRUNC]
+        RV_num(3)
+   152: write (FD 3) "ABCDE" 5
+
+Warning:    152: write (FD 3) "ABCDE" 5
+   more than one possible result value
+   randomly continuing execution with RV_num(4)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5)]
+        RV_num(4)
+   153: close (FD 3)
+        RV_none
+   154: open f1.txt [O_RDONLY]
+        RV_num(3)
+   155: read! (FD 3) 100
+        RV_bytes("ABCD")
+   156: close (FD 3)
+        RV_none
+
+        # write_only without truncate keeps old content, but overwrites it 
+   159: open f1.txt [O_WRONLY]
+        RV_num(3)
+   160: write (FD 3) "012" 3
+
+Warning:    160: write (FD 3) "012" 3
+   more than one possible result value
+   randomly continuing execution with RV_num(3)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3)]
+        RV_num(3)
+   161: lseek (FD 3) 0 SEEK_SET
+        RV_num(0)
+   162: read (FD 3) 100
+        EBADF
+   163: close (FD 3)
+        RV_none
+
+   165: open f1.txt [O_RDONLY]
+        RV_num(3)
+   166: read! (FD 3) 100
+        RV_bytes("012D")
+   167: close (FD 3)
+        RV_none
+
+        # append is adding at end
+   170: open f1.txt [O_RDWR;O_APPEND]
+        RV_num(3)
+   171: write (FD 3) "ABCDE" 5
+
+Warning:    171: write (FD 3) "ABCDE" 5
+   more than one possible result value
+   randomly continuing execution with RV_num(1)
+        possible results: [RV_num(0);RV_num(1);RV_num(2);RV_num(3);RV_num(4);RV_num(5)]
+        RV_num(1)
+   172: lseek (FD 3) 0 SEEK_SET
+        RV_num(0)
+   173: read! (FD 3) 100
+        RV_bytes("012DA")
+   174: close (FD 3)
+        RV_none
+
+        # writing a read-only file fails
+   177: open f1.txt [O_RDONLY]
+        RV_num(3)
+   178: write (FD 3) "ABCDE" 5
+        EBADF
+   179: lseek (FD 3) 0 SEEK_SET
+        RV_num(0)
+   180: read (FD 3) 100
+
+Warning:    180: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("012")
+        possible results: [RV_bytes("");RV_bytes("0");RV_bytes("01");RV_bytes("012");RV_bytes("012D");RV_bytes("012DA")]
+        RV_bytes("012")
+   181: close (FD 3)
+        RV_none
+
+        # closed FD cannot be written to
+   184: write (FD 3) "ABCDE" 5
+        EBADF
+
+        # non existing FD can't be used
+   187: write (FD 300) "ABCDE" 5
+        EBADF
+
+
+        ##############################################
+        # writing to directories
+        # this is already prohibited 
+        # by the open command
+        ##############################################
+
+   196: open /non_empty_dir [O_RDWR]
+        EISDIR
+   197: write (FD 3) "ABC" 3
+        EBADF
+   198: close (FD 3)
+        EBADF
+
+   200: open /non_empty_dir [O_WRONLY]
+        EISDIR
+   201: write (FD 3) "ABC" 3
+        EBADF
+   202: close (FD 3)
+        EBADF
+
+   204: open /non_empty_dir [O_RDONLY]
+        RV_num(3)
+   205: write (FD 3) "ABC" 3
+        EBADF
+   206: close (FD 3)
+        RV_none
+
