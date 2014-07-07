@@ -1,0 +1,5566 @@
+#####################################
+# Test 1
+#####################################
+mkdir /test_dir_0001 0o777
+Tau
+RV_none
+
+chdir /test_dir_0001
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat empty_dir1
+Tau
+{ st_dev=16777220; st_ino=72; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0001
+   /test_dir_0001|D|71
+   /test_dir_0001/empty_dir1|D|72
+   /test_dir_0001/empty_dir2|D|73
+   /test_dir_0001/nonempty_dir1|D|75
+   /test_dir_0001/nonempty_dir2|D|86
+   /test_dir_0001/nonempty_dir1/d2|D|78
+   /test_dir_0001/nonempty_dir1/f1.txt|F|76|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0001/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0001/nonempty_dir1/d2/d3|D|85
+   /test_dir_0001/nonempty_dir1/d2/f3.txt|F|80|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0001/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0001/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0001/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0001/nonempty_dir2/d2|D|93
+   /test_dir_0001/nonempty_dir2/f1.txt|F|87|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0001/nonempty_dir2/f2.txt|F|88|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0001/nonempty_dir2/d2/d3|D|95
+   /test_dir_0001/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 2
+#####################################
+mkdir /test_dir_0002 0o777
+Tau
+RV_none
+
+chdir /test_dir_0002
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat empty_dir1/
+Tau
+{ st_dev=16777220; st_ino=117; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0002
+   /test_dir_0002|D|115
+   /test_dir_0002/empty_dir1|D|117
+   /test_dir_0002/empty_dir2|D|118
+   /test_dir_0002/nonempty_dir1|D|119
+   /test_dir_0002/nonempty_dir2|D|128
+   /test_dir_0002/nonempty_dir1/d2|D|122
+   /test_dir_0002/nonempty_dir1/f1.txt|F|120|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0002/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0002/nonempty_dir1/d2/d3|D|127
+   /test_dir_0002/nonempty_dir1/d2/f3.txt|F|124|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0002/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0002/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0002/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0002/nonempty_dir2/d2|D|135
+   /test_dir_0002/nonempty_dir2/f1.txt|F|130|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0002/nonempty_dir2/f2.txt|F|132|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0002/nonempty_dir2/d2/d3|D|138
+   /test_dir_0002/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 3
+#####################################
+mkdir /test_dir_0003 0o777
+Tau
+RV_none
+
+chdir /test_dir_0003
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat empty_dir2
+Tau
+{ st_dev=16777220; st_ino=151; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0003
+   /test_dir_0003|D|147
+   /test_dir_0003/empty_dir1|D|150
+   /test_dir_0003/empty_dir2|D|151
+   /test_dir_0003/nonempty_dir1|D|154
+   /test_dir_0003/nonempty_dir2|D|167
+   /test_dir_0003/nonempty_dir1/d2|D|161
+   /test_dir_0003/nonempty_dir1/f1.txt|F|157|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0003/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0003/nonempty_dir1/d2/d3|D|165
+   /test_dir_0003/nonempty_dir1/d2/f3.txt|F|163|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0003/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0003/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0003/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0003/nonempty_dir2/d2|D|177
+   /test_dir_0003/nonempty_dir2/f1.txt|F|168|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0003/nonempty_dir2/f2.txt|F|170|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0003/nonempty_dir2/d2/d3|D|179
+   /test_dir_0003/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 4
+#####################################
+mkdir /test_dir_0004 0o777
+Tau
+RV_none
+
+chdir /test_dir_0004
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat empty_dir2/
+Tau
+{ st_dev=16777220; st_ino=225; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0004
+   /test_dir_0004|D|223
+   /test_dir_0004/empty_dir1|D|224
+   /test_dir_0004/empty_dir2|D|225
+   /test_dir_0004/nonempty_dir1|D|226
+   /test_dir_0004/nonempty_dir2|D|231
+   /test_dir_0004/nonempty_dir1/d2|D|228
+   /test_dir_0004/nonempty_dir1/f1.txt|F|227|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0004/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0004/nonempty_dir1/d2/d3|D|230
+   /test_dir_0004/nonempty_dir1/d2/f3.txt|F|229|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0004/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0004/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0004/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0004/nonempty_dir2/d2|D|237
+   /test_dir_0004/nonempty_dir2/f1.txt|F|232|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0004/nonempty_dir2/f2.txt|F|234|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0004/nonempty_dir2/d2/d3|D|238
+   /test_dir_0004/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 5
+#####################################
+mkdir /test_dir_0005 0o777
+Tau
+RV_none
+
+chdir /test_dir_0005
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1
+Tau
+{ st_dev=16777220; st_ino=269; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+
+dump-result /test_dir_0005
+   /test_dir_0005|D|265
+   /test_dir_0005/empty_dir1|D|267
+   /test_dir_0005/empty_dir2|D|268
+   /test_dir_0005/nonempty_dir1|D|269
+   /test_dir_0005/nonempty_dir2|D|274
+   /test_dir_0005/nonempty_dir1/d2|D|271
+   /test_dir_0005/nonempty_dir1/f1.txt|F|270|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0005/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0005/nonempty_dir1/d2/d3|D|273
+   /test_dir_0005/nonempty_dir1/d2/f3.txt|F|272|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0005/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0005/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0005/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0005/nonempty_dir2/d2|D|277
+   /test_dir_0005/nonempty_dir2/f1.txt|F|275|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0005/nonempty_dir2/f2.txt|F|276|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0005/nonempty_dir2/d2/d3|D|278
+   /test_dir_0005/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 6
+#####################################
+mkdir /test_dir_0006 0o777
+Tau
+RV_none
+
+chdir /test_dir_0006
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/
+Tau
+{ st_dev=16777220; st_ino=311; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+
+dump-result /test_dir_0006
+   /test_dir_0006|D|305
+   /test_dir_0006/empty_dir1|D|307
+   /test_dir_0006/empty_dir2|D|309
+   /test_dir_0006/nonempty_dir1|D|311
+   /test_dir_0006/nonempty_dir2|D|321
+   /test_dir_0006/nonempty_dir1/d2|D|314
+   /test_dir_0006/nonempty_dir1/f1.txt|F|312|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0006/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0006/nonempty_dir1/d2/d3|D|319
+   /test_dir_0006/nonempty_dir1/d2/f3.txt|F|316|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0006/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0006/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0006/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0006/nonempty_dir2/d2|D|327
+   /test_dir_0006/nonempty_dir2/f1.txt|F|324|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0006/nonempty_dir2/f2.txt|F|326|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0006/nonempty_dir2/d2/d3|D|328
+   /test_dir_0006/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 7
+#####################################
+mkdir /test_dir_0007 0o777
+Tau
+RV_none
+
+chdir /test_dir_0007
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2
+Tau
+{ st_dev=16777220; st_ino=352; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=238; }
+
+dump-result /test_dir_0007
+   /test_dir_0007|D|337
+   /test_dir_0007/empty_dir1|D|347
+   /test_dir_0007/empty_dir2|D|349
+   /test_dir_0007/nonempty_dir1|D|350
+   /test_dir_0007/nonempty_dir2|D|360
+   /test_dir_0007/nonempty_dir1/d2|D|352
+   /test_dir_0007/nonempty_dir1/f1.txt|F|351|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0007/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0007/nonempty_dir1/d2/d3|D|358
+   /test_dir_0007/nonempty_dir1/d2/f3.txt|F|353|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0007/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0007/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0007/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0007/nonempty_dir2/d2|D|370
+   /test_dir_0007/nonempty_dir2/f1.txt|F|362|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0007/nonempty_dir2/f2.txt|F|366|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0007/nonempty_dir2/d2/d3|D|371
+   /test_dir_0007/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 8
+#####################################
+mkdir /test_dir_0008 0o777
+Tau
+RV_none
+
+chdir /test_dir_0008
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/
+Tau
+{ st_dev=16777220; st_ino=410; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=238; }
+
+dump-result /test_dir_0008
+   /test_dir_0008|D|393
+   /test_dir_0008/empty_dir1|D|395
+   /test_dir_0008/empty_dir2|D|396
+   /test_dir_0008/nonempty_dir1|D|398
+   /test_dir_0008/nonempty_dir2|D|415
+   /test_dir_0008/nonempty_dir1/d2|D|410
+   /test_dir_0008/nonempty_dir1/f1.txt|F|408|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0008/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0008/nonempty_dir1/d2/d3|D|413
+   /test_dir_0008/nonempty_dir1/d2/f3.txt|F|411|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0008/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0008/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0008/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0008/nonempty_dir2/d2|D|422
+   /test_dir_0008/nonempty_dir2/f1.txt|F|417|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0008/nonempty_dir2/f2.txt|F|419|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0008/nonempty_dir2/d2/d3|D|424
+   /test_dir_0008/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 9
+#####################################
+mkdir /test_dir_0009 0o777
+Tau
+RV_none
+
+chdir /test_dir_0009
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/broken_sl/nonexist_6
+Tau
+ENOENT
+
+dump-result /test_dir_0009
+   /test_dir_0009|D|437
+   /test_dir_0009/empty_dir1|D|439
+   /test_dir_0009/empty_dir2|D|441
+   /test_dir_0009/nonempty_dir1|D|445
+   /test_dir_0009/nonempty_dir2|D|455
+   /test_dir_0009/nonempty_dir1/d2|D|449
+   /test_dir_0009/nonempty_dir1/f1.txt|F|447|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0009/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0009/nonempty_dir1/d2/d3|D|453
+   /test_dir_0009/nonempty_dir1/d2/f3.txt|F|451|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0009/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0009/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0009/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0009/nonempty_dir2/d2|D|465
+   /test_dir_0009/nonempty_dir2/f1.txt|F|458|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0009/nonempty_dir2/f2.txt|F|460|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0009/nonempty_dir2/d2/d3|D|469
+   /test_dir_0009/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 10
+#####################################
+mkdir /test_dir_0010 0o777
+Tau
+RV_none
+
+chdir /test_dir_0010
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/broken_sl/nonexist_6/
+Tau
+ENOENT
+
+dump-result /test_dir_0010
+   /test_dir_0010|D|487
+   /test_dir_0010/empty_dir1|D|491
+   /test_dir_0010/empty_dir2|D|492
+   /test_dir_0010/nonempty_dir1|D|493
+   /test_dir_0010/nonempty_dir2|D|506
+   /test_dir_0010/nonempty_dir1/d2|D|496
+   /test_dir_0010/nonempty_dir1/f1.txt|F|494|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0010/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0010/nonempty_dir1/d2/d3|D|505
+   /test_dir_0010/nonempty_dir1/d2/f3.txt|F|499|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0010/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0010/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0010/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0010/nonempty_dir2/d2|D|514
+   /test_dir_0010/nonempty_dir2/f1.txt|F|507|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0010/nonempty_dir2/f2.txt|F|509|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0010/nonempty_dir2/d2/d3|D|517
+   /test_dir_0010/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 11
+#####################################
+mkdir /test_dir_0011 0o777
+Tau
+RV_none
+
+chdir /test_dir_0011
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/d3
+Tau
+{ st_dev=16777220; st_ino=552; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0011
+   /test_dir_0011|D|538
+   /test_dir_0011/empty_dir1|D|539
+   /test_dir_0011/empty_dir2|D|540
+   /test_dir_0011/nonempty_dir1|D|542
+   /test_dir_0011/nonempty_dir2|D|553
+   /test_dir_0011/nonempty_dir1/d2|D|546
+   /test_dir_0011/nonempty_dir1/f1.txt|F|543|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0011/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0011/nonempty_dir1/d2/d3|D|552
+   /test_dir_0011/nonempty_dir1/d2/f3.txt|F|548|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0011/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0011/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0011/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0011/nonempty_dir2/d2|D|559
+   /test_dir_0011/nonempty_dir2/f1.txt|F|554|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0011/nonempty_dir2/f2.txt|F|556|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0011/nonempty_dir2/d2/d3|D|562
+   /test_dir_0011/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 12
+#####################################
+mkdir /test_dir_0012 0o777
+Tau
+RV_none
+
+chdir /test_dir_0012
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/d3/
+Tau
+{ st_dev=16777220; st_ino=599; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0012
+   /test_dir_0012|D|588
+   /test_dir_0012/empty_dir1|D|590
+   /test_dir_0012/empty_dir2|D|592
+   /test_dir_0012/nonempty_dir1|D|594
+   /test_dir_0012/nonempty_dir2|D|600
+   /test_dir_0012/nonempty_dir1/d2|D|597
+   /test_dir_0012/nonempty_dir1/f1.txt|F|596|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0012/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0012/nonempty_dir1/d2/d3|D|599
+   /test_dir_0012/nonempty_dir1/d2/f3.txt|F|598|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0012/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0012/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0012/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0012/nonempty_dir2/d2|D|603
+   /test_dir_0012/nonempty_dir2/f1.txt|F|601|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0012/nonempty_dir2/f2.txt|F|602|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0012/nonempty_dir2/d2/d3|D|604
+   /test_dir_0012/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 13
+#####################################
+mkdir /test_dir_0013 0o777
+Tau
+RV_none
+
+chdir /test_dir_0013
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/f3.txt
+Tau
+{ st_dev=16777220; st_ino=646; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=83; }
+
+dump-result /test_dir_0013
+   /test_dir_0013|D|638
+   /test_dir_0013/empty_dir1|D|640
+   /test_dir_0013/empty_dir2|D|641
+   /test_dir_0013/nonempty_dir1|D|642
+   /test_dir_0013/nonempty_dir2|D|650
+   /test_dir_0013/nonempty_dir1/d2|D|645
+   /test_dir_0013/nonempty_dir1/f1.txt|F|644|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0013/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0013/nonempty_dir1/d2/d3|D|648
+   /test_dir_0013/nonempty_dir1/d2/f3.txt|F|646|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0013/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0013/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0013/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0013/nonempty_dir2/d2|D|658
+   /test_dir_0013/nonempty_dir2/f1.txt|F|652|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0013/nonempty_dir2/f2.txt|F|654|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0013/nonempty_dir2/d2/d3|D|659
+   /test_dir_0013/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 14
+#####################################
+mkdir /test_dir_0014 0o777
+Tau
+RV_none
+
+chdir /test_dir_0014
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/f3.txt/
+Tau
+ENOTDIR
+
+dump-result /test_dir_0014
+   /test_dir_0014|D|682
+   /test_dir_0014/empty_dir1|D|683
+   /test_dir_0014/empty_dir2|D|684
+   /test_dir_0014/nonempty_dir1|D|685
+   /test_dir_0014/nonempty_dir2|D|698
+   /test_dir_0014/nonempty_dir1/d2|D|693
+   /test_dir_0014/nonempty_dir1/f1.txt|F|687|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0014/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0014/nonempty_dir1/d2/d3|D|696
+   /test_dir_0014/nonempty_dir1/d2/f3.txt|F|695|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0014/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0014/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0014/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0014/nonempty_dir2/d2|D|708
+   /test_dir_0014/nonempty_dir2/f1.txt|F|700|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0014/nonempty_dir2/f2.txt|F|703|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0014/nonempty_dir2/d2/d3|D|711
+   /test_dir_0014/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 15
+#####################################
+mkdir /test_dir_0015 0o777
+Tau
+RV_none
+
+chdir /test_dir_0015
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/sl_dotdot_d2
+Tau
+{ st_dev=16777220; st_ino=751; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=238; }
+
+dump-result /test_dir_0015
+   /test_dir_0015|D|737
+   /test_dir_0015/empty_dir1|D|739
+   /test_dir_0015/empty_dir2|D|741
+   /test_dir_0015/nonempty_dir1|D|743
+   /test_dir_0015/nonempty_dir2|D|764
+   /test_dir_0015/nonempty_dir1/d2|D|751
+   /test_dir_0015/nonempty_dir1/f1.txt|F|748|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0015/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0015/nonempty_dir1/d2/d3|D|762
+   /test_dir_0015/nonempty_dir1/d2/f3.txt|F|759|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0015/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0015/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0015/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0015/nonempty_dir2/d2|D|777
+   /test_dir_0015/nonempty_dir2/f1.txt|F|769|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0015/nonempty_dir2/f2.txt|F|771|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0015/nonempty_dir2/d2/d3|D|778
+   /test_dir_0015/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 16
+#####################################
+mkdir /test_dir_0016 0o777
+Tau
+RV_none
+
+chdir /test_dir_0016
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/sl_dotdot_d2/
+Tau
+{ st_dev=16777220; st_ino=804; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=238; }
+
+dump-result /test_dir_0016
+   /test_dir_0016|D|794
+   /test_dir_0016/empty_dir1|D|797
+   /test_dir_0016/empty_dir2|D|799
+   /test_dir_0016/nonempty_dir1|D|800
+   /test_dir_0016/nonempty_dir2|D|814
+   /test_dir_0016/nonempty_dir1/d2|D|804
+   /test_dir_0016/nonempty_dir1/f1.txt|F|801|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0016/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0016/nonempty_dir1/d2/d3|D|812
+   /test_dir_0016/nonempty_dir1/d2/f3.txt|F|806|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0016/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0016/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0016/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0016/nonempty_dir2/d2|D|825
+   /test_dir_0016/nonempty_dir2/f1.txt|F|817|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0016/nonempty_dir2/f2.txt|F|820|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0016/nonempty_dir2/d2/d3|D|827
+   /test_dir_0016/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 17
+#####################################
+mkdir /test_dir_0017 0o777
+Tau
+RV_none
+
+chdir /test_dir_0017
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+{ st_dev=16777220; st_ino=874; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+dump-result /test_dir_0017
+   /test_dir_0017|D|868
+   /test_dir_0017/empty_dir1|D|870
+   /test_dir_0017/empty_dir2|D|871
+   /test_dir_0017/nonempty_dir1|D|872
+   /test_dir_0017/nonempty_dir2|D|881
+   /test_dir_0017/nonempty_dir1/d2|D|875
+   /test_dir_0017/nonempty_dir1/f1.txt|F|874|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0017/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0017/nonempty_dir1/d2/d3|D|880
+   /test_dir_0017/nonempty_dir1/d2/f3.txt|F|876|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0017/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0017/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0017/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0017/nonempty_dir2/d2|D|887
+   /test_dir_0017/nonempty_dir2/f1.txt|F|882|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0017/nonempty_dir2/f2.txt|F|884|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0017/nonempty_dir2/d2/d3|D|889
+   /test_dir_0017/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 18
+#####################################
+mkdir /test_dir_0018 0o777
+Tau
+RV_none
+
+chdir /test_dir_0018
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/sl_dotdot_f1.txt/
+Tau
+{ st_dev=16777220; st_ino=932; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+dump-result /test_dir_0018
+   /test_dir_0018|D|926
+   /test_dir_0018/empty_dir1|D|927
+   /test_dir_0018/empty_dir2|D|929
+   /test_dir_0018/nonempty_dir1|D|931
+   /test_dir_0018/nonempty_dir2|D|941
+   /test_dir_0018/nonempty_dir1/d2|D|934
+   /test_dir_0018/nonempty_dir1/f1.txt|F|932|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0018/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0018/nonempty_dir1/d2/d3|D|939
+   /test_dir_0018/nonempty_dir1/d2/f3.txt|F|936|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0018/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0018/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0018/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0018/nonempty_dir2/d2|D|946
+   /test_dir_0018/nonempty_dir2/f1.txt|F|943|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0018/nonempty_dir2/f2.txt|F|945|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0018/nonempty_dir2/d2/d3|D|947
+   /test_dir_0018/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 19
+#####################################
+mkdir /test_dir_0019 0o777
+Tau
+RV_none
+
+chdir /test_dir_0019
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/sl_no_such_target
+Tau
+ENOENT
+
+dump-result /test_dir_0019
+   /test_dir_0019|D|977
+   /test_dir_0019/empty_dir1|D|978
+   /test_dir_0019/empty_dir2|D|980
+   /test_dir_0019/nonempty_dir1|D|982
+   /test_dir_0019/nonempty_dir2|D|996
+   /test_dir_0019/nonempty_dir1/d2|D|993
+   /test_dir_0019/nonempty_dir1/f1.txt|F|992|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0019/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0019/nonempty_dir1/d2/d3|D|995
+   /test_dir_0019/nonempty_dir1/d2/f3.txt|F|994|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0019/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0019/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0019/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0019/nonempty_dir2/d2|D|999
+   /test_dir_0019/nonempty_dir2/f1.txt|F|997|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0019/nonempty_dir2/f2.txt|F|998|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0019/nonempty_dir2/d2/d3|D|1018
+   /test_dir_0019/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 20
+#####################################
+mkdir /test_dir_0020 0o777
+Tau
+RV_none
+
+chdir /test_dir_0020
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/d2/sl_no_such_target/
+Tau
+ENOENT
+
+dump-result /test_dir_0020
+   /test_dir_0020|D|1132
+   /test_dir_0020/empty_dir1|D|1133
+   /test_dir_0020/empty_dir2|D|1135
+   /test_dir_0020/nonempty_dir1|D|1136
+   /test_dir_0020/nonempty_dir2|D|1147
+   /test_dir_0020/nonempty_dir1/d2|D|1140
+   /test_dir_0020/nonempty_dir1/f1.txt|F|1138|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0020/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0020/nonempty_dir1/d2/d3|D|1145
+   /test_dir_0020/nonempty_dir1/d2/f3.txt|F|1142|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0020/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0020/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0020/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0020/nonempty_dir2/d2|D|1153
+   /test_dir_0020/nonempty_dir2/f1.txt|F|1148|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0020/nonempty_dir2/f2.txt|F|1149|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0020/nonempty_dir2/d2/d3|D|1155
+   /test_dir_0020/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 21
+#####################################
+mkdir /test_dir_0021 0o777
+Tau
+RV_none
+
+chdir /test_dir_0021
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/f1.txt
+Tau
+{ st_dev=16777220; st_ino=1196; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+dump-result /test_dir_0021
+   /test_dir_0021|D|1187
+   /test_dir_0021/empty_dir1|D|1189
+   /test_dir_0021/empty_dir2|D|1191
+   /test_dir_0021/nonempty_dir1|D|1194
+   /test_dir_0021/nonempty_dir2|D|1205
+   /test_dir_0021/nonempty_dir1/d2|D|1198
+   /test_dir_0021/nonempty_dir1/f1.txt|F|1196|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0021/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0021/nonempty_dir1/d2/d3|D|1204
+   /test_dir_0021/nonempty_dir1/d2/f3.txt|F|1199|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0021/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0021/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0021/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0021/nonempty_dir2/d2|D|1213
+   /test_dir_0021/nonempty_dir2/f1.txt|F|1207|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0021/nonempty_dir2/f2.txt|F|1210|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0021/nonempty_dir2/d2/d3|D|1214
+   /test_dir_0021/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 22
+#####################################
+mkdir /test_dir_0022 0o777
+Tau
+RV_none
+
+chdir /test_dir_0022
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/f1.txt/
+Tau
+ENOTDIR
+
+dump-result /test_dir_0022
+   /test_dir_0022|D|1267
+   /test_dir_0022/empty_dir1|D|1268
+   /test_dir_0022/empty_dir2|D|1269
+   /test_dir_0022/nonempty_dir1|D|1270
+   /test_dir_0022/nonempty_dir2|D|1275
+   /test_dir_0022/nonempty_dir1/d2|D|1272
+   /test_dir_0022/nonempty_dir1/f1.txt|F|1271|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0022/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0022/nonempty_dir1/d2/d3|D|1274
+   /test_dir_0022/nonempty_dir1/d2/f3.txt|F|1273|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0022/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0022/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0022/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0022/nonempty_dir2/d2|D|1279
+   /test_dir_0022/nonempty_dir2/f1.txt|F|1276|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0022/nonempty_dir2/f2.txt|F|1277|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0022/nonempty_dir2/d2/d3|D|1281
+   /test_dir_0022/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 23
+#####################################
+mkdir /test_dir_0023 0o777
+Tau
+RV_none
+
+chdir /test_dir_0023
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/f1.txt/nonexist_5
+Tau
+ENOTDIR
+
+dump-result /test_dir_0023
+   /test_dir_0023|D|1313
+   /test_dir_0023/empty_dir1|D|1314
+   /test_dir_0023/empty_dir2|D|1315
+   /test_dir_0023/nonempty_dir1|D|1316
+   /test_dir_0023/nonempty_dir2|D|1321
+   /test_dir_0023/nonempty_dir1/d2|D|1318
+   /test_dir_0023/nonempty_dir1/f1.txt|F|1317|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0023/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0023/nonempty_dir1/d2/d3|D|1320
+   /test_dir_0023/nonempty_dir1/d2/f3.txt|F|1319|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0023/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0023/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0023/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0023/nonempty_dir2/d2|D|1324
+   /test_dir_0023/nonempty_dir2/f1.txt|F|1322|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0023/nonempty_dir2/f2.txt|F|1323|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0023/nonempty_dir2/d2/d3|D|1325
+   /test_dir_0023/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 24
+#####################################
+mkdir /test_dir_0024 0o777
+Tau
+RV_none
+
+chdir /test_dir_0024
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/f1.txt/nonexist_5/
+Tau
+ENOTDIR
+
+dump-result /test_dir_0024
+   /test_dir_0024|D|1367
+   /test_dir_0024/empty_dir1|D|1368
+   /test_dir_0024/empty_dir2|D|1369
+   /test_dir_0024/nonempty_dir1|D|1371
+   /test_dir_0024/nonempty_dir2|D|1378
+   /test_dir_0024/nonempty_dir1/d2|D|1374
+   /test_dir_0024/nonempty_dir1/f1.txt|F|1372|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0024/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0024/nonempty_dir1/d2/d3|D|1377
+   /test_dir_0024/nonempty_dir1/d2/f3.txt|F|1375|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0024/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0024/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0024/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0024/nonempty_dir2/d2|D|1385
+   /test_dir_0024/nonempty_dir2/f1.txt|F|1379|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0024/nonempty_dir2/f2.txt|F|1381|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0024/nonempty_dir2/d2/d3|D|1388
+   /test_dir_0024/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 25
+#####################################
+mkdir /test_dir_0025 0o777
+Tau
+RV_none
+
+chdir /test_dir_0025
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/nonexist_4
+Tau
+ENOENT
+
+dump-result /test_dir_0025
+   /test_dir_0025|D|1417
+   /test_dir_0025/empty_dir1|D|1422
+   /test_dir_0025/empty_dir2|D|1423
+   /test_dir_0025/nonempty_dir1|D|1424
+   /test_dir_0025/nonempty_dir2|D|1430
+   /test_dir_0025/nonempty_dir1/d2|D|1426
+   /test_dir_0025/nonempty_dir1/f1.txt|F|1425|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0025/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0025/nonempty_dir1/d2/d3|D|1428
+   /test_dir_0025/nonempty_dir1/d2/f3.txt|F|1427|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0025/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0025/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0025/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0025/nonempty_dir2/d2|D|1438
+   /test_dir_0025/nonempty_dir2/f1.txt|F|1431|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0025/nonempty_dir2/f2.txt|F|1434|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0025/nonempty_dir2/d2/d3|D|1440
+   /test_dir_0025/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 26
+#####################################
+mkdir /test_dir_0026 0o777
+Tau
+RV_none
+
+chdir /test_dir_0026
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/nonexist_4/
+Tau
+ENOENT
+
+dump-result /test_dir_0026
+   /test_dir_0026|D|1476
+   /test_dir_0026/empty_dir1|D|1477
+   /test_dir_0026/empty_dir2|D|1478
+   /test_dir_0026/nonempty_dir1|D|1479
+   /test_dir_0026/nonempty_dir2|D|1498
+   /test_dir_0026/nonempty_dir1/d2|D|1485
+   /test_dir_0026/nonempty_dir1/f1.txt|F|1480|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0026/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0026/nonempty_dir1/d2/d3|D|1495
+   /test_dir_0026/nonempty_dir1/d2/f3.txt|F|1490|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0026/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0026/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0026/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0026/nonempty_dir2/d2|D|1520
+   /test_dir_0026/nonempty_dir2/f1.txt|F|1506|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0026/nonempty_dir2/f2.txt|F|1508|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0026/nonempty_dir2/d2/d3|D|1521
+   /test_dir_0026/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 27
+#####################################
+mkdir /test_dir_0027 0o777
+Tau
+RV_none
+
+chdir /test_dir_0027
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/sl_f1.txt
+Tau
+{ st_dev=16777220; st_ino=1544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+dump-result /test_dir_0027
+   /test_dir_0027|D|1531
+   /test_dir_0027/empty_dir1|D|1537
+   /test_dir_0027/empty_dir2|D|1540
+   /test_dir_0027/nonempty_dir1|D|1542
+   /test_dir_0027/nonempty_dir2|D|1556
+   /test_dir_0027/nonempty_dir1/d2|D|1545
+   /test_dir_0027/nonempty_dir1/f1.txt|F|1544|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0027/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0027/nonempty_dir1/d2/d3|D|1554
+   /test_dir_0027/nonempty_dir1/d2/f3.txt|F|1546|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0027/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0027/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0027/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0027/nonempty_dir2/d2|D|1563
+   /test_dir_0027/nonempty_dir2/f1.txt|F|1558|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0027/nonempty_dir2/f2.txt|F|1560|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0027/nonempty_dir2/d2/d3|D|1565
+   /test_dir_0027/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 28
+#####################################
+mkdir /test_dir_0028 0o777
+Tau
+RV_none
+
+chdir /test_dir_0028
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir1/sl_f1.txt/
+Tau
+{ st_dev=16777220; st_ino=1609; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+dump-result /test_dir_0028
+   /test_dir_0028|D|1598
+   /test_dir_0028/empty_dir1|D|1602
+   /test_dir_0028/empty_dir2|D|1604
+   /test_dir_0028/nonempty_dir1|D|1607
+   /test_dir_0028/nonempty_dir2|D|1614
+   /test_dir_0028/nonempty_dir1/d2|D|1611
+   /test_dir_0028/nonempty_dir1/f1.txt|F|1609|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0028/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0028/nonempty_dir1/d2/d3|D|1613
+   /test_dir_0028/nonempty_dir1/d2/f3.txt|F|1612|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0028/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0028/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0028/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0028/nonempty_dir2/d2|D|1622
+   /test_dir_0028/nonempty_dir2/f1.txt|F|1616|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0028/nonempty_dir2/f2.txt|F|1619|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0028/nonempty_dir2/d2/d3|D|1624
+   /test_dir_0028/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 29
+#####################################
+mkdir /test_dir_0029 0o777
+Tau
+RV_none
+
+chdir /test_dir_0029
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2
+Tau
+{ st_dev=16777220; st_ino=1647; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+
+dump-result /test_dir_0029
+   /test_dir_0029|D|1639
+   /test_dir_0029/empty_dir1|D|1640
+   /test_dir_0029/empty_dir2|D|1641
+   /test_dir_0029/nonempty_dir1|D|1642
+   /test_dir_0029/nonempty_dir2|D|1647
+   /test_dir_0029/nonempty_dir1/d2|D|1644
+   /test_dir_0029/nonempty_dir1/f1.txt|F|1643|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0029/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0029/nonempty_dir1/d2/d3|D|1646
+   /test_dir_0029/nonempty_dir1/d2/f3.txt|F|1645|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0029/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0029/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0029/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0029/nonempty_dir2/d2|D|1654
+   /test_dir_0029/nonempty_dir2/f1.txt|F|1648|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0029/nonempty_dir2/f2.txt|F|1649|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0029/nonempty_dir2/d2/d3|D|1657
+   /test_dir_0029/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 30
+#####################################
+mkdir /test_dir_0030 0o777
+Tau
+RV_none
+
+chdir /test_dir_0030
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/
+Tau
+{ st_dev=16777220; st_ino=1701; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+
+dump-result /test_dir_0030
+   /test_dir_0030|D|1693
+   /test_dir_0030/empty_dir1|D|1694
+   /test_dir_0030/empty_dir2|D|1695
+   /test_dir_0030/nonempty_dir1|D|1696
+   /test_dir_0030/nonempty_dir2|D|1701
+   /test_dir_0030/nonempty_dir1/d2|D|1698
+   /test_dir_0030/nonempty_dir1/f1.txt|F|1697|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0030/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0030/nonempty_dir1/d2/d3|D|1700
+   /test_dir_0030/nonempty_dir1/d2/f3.txt|F|1699|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0030/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0030/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0030/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0030/nonempty_dir2/d2|D|1704
+   /test_dir_0030/nonempty_dir2/f1.txt|F|1702|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0030/nonempty_dir2/f2.txt|F|1703|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0030/nonempty_dir2/d2/d3|D|1705
+   /test_dir_0030/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 31
+#####################################
+mkdir /test_dir_0031 0o777
+Tau
+RV_none
+
+chdir /test_dir_0031
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/d2
+Tau
+{ st_dev=16777220; st_ino=1794; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+dump-result /test_dir_0031
+   /test_dir_0031|D|1742
+   /test_dir_0031/empty_dir1|D|1746
+   /test_dir_0031/empty_dir2|D|1748
+   /test_dir_0031/nonempty_dir1|D|1749
+   /test_dir_0031/nonempty_dir2|D|1791
+   /test_dir_0031/nonempty_dir1/d2|D|1752
+   /test_dir_0031/nonempty_dir1/f1.txt|F|1751|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0031/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0031/nonempty_dir1/d2/d3|D|1779
+   /test_dir_0031/nonempty_dir1/d2/f3.txt|F|1753|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0031/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0031/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0031/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0031/nonempty_dir2/d2|D|1794
+   /test_dir_0031/nonempty_dir2/f1.txt|F|1792|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0031/nonempty_dir2/f2.txt|F|1793|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0031/nonempty_dir2/d2/d3|D|1795
+   /test_dir_0031/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 32
+#####################################
+mkdir /test_dir_0032 0o777
+Tau
+RV_none
+
+chdir /test_dir_0032
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/d2/
+Tau
+{ st_dev=16777220; st_ino=1848; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+dump-result /test_dir_0032
+   /test_dir_0032|D|1835
+   /test_dir_0032/empty_dir1|D|1838
+   /test_dir_0032/empty_dir2|D|1839
+   /test_dir_0032/nonempty_dir1|D|1840
+   /test_dir_0032/nonempty_dir2|D|1845
+   /test_dir_0032/nonempty_dir1/d2|D|1842
+   /test_dir_0032/nonempty_dir1/f1.txt|F|1841|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0032/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0032/nonempty_dir1/d2/d3|D|1844
+   /test_dir_0032/nonempty_dir1/d2/f3.txt|F|1843|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0032/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0032/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0032/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0032/nonempty_dir2/d2|D|1848
+   /test_dir_0032/nonempty_dir2/f1.txt|F|1846|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0032/nonempty_dir2/f2.txt|F|1847|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0032/nonempty_dir2/d2/d3|D|1849
+   /test_dir_0032/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 33
+#####################################
+mkdir /test_dir_0033 0o777
+Tau
+RV_none
+
+chdir /test_dir_0033
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/d2/d3
+Tau
+{ st_dev=16777220; st_ino=1906; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0033
+   /test_dir_0033|D|1891
+   /test_dir_0033/empty_dir1|D|1892
+   /test_dir_0033/empty_dir2|D|1893
+   /test_dir_0033/nonempty_dir1|D|1894
+   /test_dir_0033/nonempty_dir2|D|1900
+   /test_dir_0033/nonempty_dir1/d2|D|1896
+   /test_dir_0033/nonempty_dir1/f1.txt|F|1895|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0033/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0033/nonempty_dir1/d2/d3|D|1898
+   /test_dir_0033/nonempty_dir1/d2/f3.txt|F|1897|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0033/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0033/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0033/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0033/nonempty_dir2/d2|D|1905
+   /test_dir_0033/nonempty_dir2/f1.txt|F|1902|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0033/nonempty_dir2/f2.txt|F|1904|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0033/nonempty_dir2/d2/d3|D|1906
+   /test_dir_0033/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 34
+#####################################
+mkdir /test_dir_0034 0o777
+Tau
+RV_none
+
+chdir /test_dir_0034
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/d2/d3/
+Tau
+{ st_dev=16777220; st_ino=1957; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+dump-result /test_dir_0034
+   /test_dir_0034|D|1932
+   /test_dir_0034/empty_dir1|D|1935
+   /test_dir_0034/empty_dir2|D|1938
+   /test_dir_0034/nonempty_dir1|D|1941
+   /test_dir_0034/nonempty_dir2|D|1953
+   /test_dir_0034/nonempty_dir1/d2|D|1945
+   /test_dir_0034/nonempty_dir1/f1.txt|F|1943|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0034/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0034/nonempty_dir1/d2/d3|D|1952
+   /test_dir_0034/nonempty_dir1/d2/f3.txt|F|1950|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0034/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0034/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0034/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0034/nonempty_dir2/d2|D|1956
+   /test_dir_0034/nonempty_dir2/f1.txt|F|1954|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0034/nonempty_dir2/f2.txt|F|1955|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0034/nonempty_dir2/d2/d3|D|1957
+   /test_dir_0034/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 35
+#####################################
+mkdir /test_dir_0035 0o777
+Tau
+RV_none
+
+chdir /test_dir_0035
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/d2/sl_f3.txt
+Tau
+{ st_dev=16777220; st_ino=2002; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=83; }
+
+dump-result /test_dir_0035
+   /test_dir_0035|D|1992
+   /test_dir_0035/empty_dir1|D|1994
+   /test_dir_0035/empty_dir2|D|1996
+   /test_dir_0035/nonempty_dir1|D|1998
+   /test_dir_0035/nonempty_dir2|D|2005
+   /test_dir_0035/nonempty_dir1/d2|D|2001
+   /test_dir_0035/nonempty_dir1/f1.txt|F|2000|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0035/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0035/nonempty_dir1/d2/d3|D|2004
+   /test_dir_0035/nonempty_dir1/d2/f3.txt|F|2002|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0035/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0035/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0035/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0035/nonempty_dir2/d2|D|2010
+   /test_dir_0035/nonempty_dir2/f1.txt|F|2006|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0035/nonempty_dir2/f2.txt|F|2008|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0035/nonempty_dir2/d2/d3|D|2011
+   /test_dir_0035/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 36
+#####################################
+mkdir /test_dir_0036 0o777
+Tau
+RV_none
+
+chdir /test_dir_0036
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/d2/sl_f3.txt/
+Tau
+{ st_dev=16777220; st_ino=2055; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=83; }
+
+dump-result /test_dir_0036
+   /test_dir_0036|D|2031
+   /test_dir_0036/empty_dir1|D|2044
+   /test_dir_0036/empty_dir2|D|2050
+   /test_dir_0036/nonempty_dir1|D|2052
+   /test_dir_0036/nonempty_dir2|D|2059
+   /test_dir_0036/nonempty_dir1/d2|D|2054
+   /test_dir_0036/nonempty_dir1/f1.txt|F|2053|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0036/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0036/nonempty_dir1/d2/d3|D|2058
+   /test_dir_0036/nonempty_dir1/d2/f3.txt|F|2055|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0036/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0036/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0036/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0036/nonempty_dir2/d2|D|2063
+   /test_dir_0036/nonempty_dir2/f1.txt|F|2061|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0036/nonempty_dir2/f2.txt|F|2062|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0036/nonempty_dir2/d2/d3|D|2064
+   /test_dir_0036/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 37
+#####################################
+mkdir /test_dir_0037 0o777
+Tau
+RV_none
+
+chdir /test_dir_0037
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/f1.txt
+Tau
+{ st_dev=16777220; st_ino=2133; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+dump-result /test_dir_0037
+   /test_dir_0037|D|2108
+   /test_dir_0037/empty_dir1|D|2110
+   /test_dir_0037/empty_dir2|D|2112
+   /test_dir_0037/nonempty_dir1|D|2114
+   /test_dir_0037/nonempty_dir2|D|2128
+   /test_dir_0037/nonempty_dir1/d2|D|2119
+   /test_dir_0037/nonempty_dir1/f1.txt|F|2117|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0037/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0037/nonempty_dir1/d2/d3|D|2125
+   /test_dir_0037/nonempty_dir1/d2/f3.txt|F|2123|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0037/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0037/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0037/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0037/nonempty_dir2/d2|D|2143
+   /test_dir_0037/nonempty_dir2/f1.txt|F|2133|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0037/nonempty_dir2/f2.txt|F|2140|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0037/nonempty_dir2/d2/d3|D|2144
+   /test_dir_0037/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 38
+#####################################
+mkdir /test_dir_0038 0o777
+Tau
+RV_none
+
+chdir /test_dir_0038
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/f1.txt/
+Tau
+ENOTDIR
+
+dump-result /test_dir_0038
+   /test_dir_0038|D|2171
+   /test_dir_0038/empty_dir1|D|2173
+   /test_dir_0038/empty_dir2|D|2177
+   /test_dir_0038/nonempty_dir1|D|2179
+   /test_dir_0038/nonempty_dir2|D|2190
+   /test_dir_0038/nonempty_dir1/d2|D|2182
+   /test_dir_0038/nonempty_dir1/f1.txt|F|2181|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0038/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0038/nonempty_dir1/d2/d3|D|2188
+   /test_dir_0038/nonempty_dir1/d2/f3.txt|F|2184|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0038/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0038/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0038/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0038/nonempty_dir2/d2|D|2196
+   /test_dir_0038/nonempty_dir2/f1.txt|F|2193|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0038/nonempty_dir2/f2.txt|F|2195|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0038/nonempty_dir2/d2/d3|D|2197
+   /test_dir_0038/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 39
+#####################################
+mkdir /test_dir_0039 0o777
+Tau
+RV_none
+
+chdir /test_dir_0039
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/f2.txt
+Tau
+{ st_dev=16777220; st_ino=2265; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=167; }
+
+dump-result /test_dir_0039
+   /test_dir_0039|D|2229
+   /test_dir_0039/empty_dir1|D|2232
+   /test_dir_0039/empty_dir2|D|2234
+   /test_dir_0039/nonempty_dir1|D|2244
+   /test_dir_0039/nonempty_dir2|D|2254
+   /test_dir_0039/nonempty_dir1/d2|D|2248
+   /test_dir_0039/nonempty_dir1/f1.txt|F|2246|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0039/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0039/nonempty_dir1/d2/d3|D|2252
+   /test_dir_0039/nonempty_dir1/d2/f3.txt|F|2250|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0039/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0039/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0039/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0039/nonempty_dir2/d2|D|2269
+   /test_dir_0039/nonempty_dir2/f1.txt|F|2257|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0039/nonempty_dir2/f2.txt|F|2265|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0039/nonempty_dir2/d2/d3|D|2270
+   /test_dir_0039/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 40
+#####################################
+mkdir /test_dir_0040 0o777
+Tau
+RV_none
+
+chdir /test_dir_0040
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonempty_dir2/f2.txt/
+Tau
+ENOTDIR
+
+dump-result /test_dir_0040
+   /test_dir_0040|D|2313
+   /test_dir_0040/empty_dir1|D|2314
+   /test_dir_0040/empty_dir2|D|2316
+   /test_dir_0040/nonempty_dir1|D|2318
+   /test_dir_0040/nonempty_dir2|D|2330
+   /test_dir_0040/nonempty_dir1/d2|D|2322
+   /test_dir_0040/nonempty_dir1/f1.txt|F|2320|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0040/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0040/nonempty_dir1/d2/d3|D|2328
+   /test_dir_0040/nonempty_dir1/d2/f3.txt|F|2324|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0040/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0040/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0040/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0040/nonempty_dir2/d2|D|2337
+   /test_dir_0040/nonempty_dir2/f1.txt|F|2332|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0040/nonempty_dir2/f2.txt|F|2334|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0040/nonempty_dir2/d2/d3|D|2339
+   /test_dir_0040/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 41
+#####################################
+mkdir /test_dir_0041 0o777
+Tau
+RV_none
+
+chdir /test_dir_0041
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonexist_1
+Tau
+ENOENT
+
+dump-result /test_dir_0041
+   /test_dir_0041|D|2369
+   /test_dir_0041/empty_dir1|D|2371
+   /test_dir_0041/empty_dir2|D|2373
+   /test_dir_0041/nonempty_dir1|D|2375
+   /test_dir_0041/nonempty_dir2|D|2392
+   /test_dir_0041/nonempty_dir1/d2|D|2377
+   /test_dir_0041/nonempty_dir1/f1.txt|F|2376|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0041/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0041/nonempty_dir1/d2/d3|D|2389
+   /test_dir_0041/nonempty_dir1/d2/f3.txt|F|2379|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0041/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0041/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0041/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0041/nonempty_dir2/d2|D|2400
+   /test_dir_0041/nonempty_dir2/f1.txt|F|2395|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0041/nonempty_dir2/f2.txt|F|2396|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0041/nonempty_dir2/d2/d3|D|2402
+   /test_dir_0041/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 42
+#####################################
+mkdir /test_dir_0042 0o777
+Tau
+RV_none
+
+chdir /test_dir_0042
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonexist_1/
+Tau
+ENOENT
+
+dump-result /test_dir_0042
+   /test_dir_0042|D|2431
+   /test_dir_0042/empty_dir1|D|2433
+   /test_dir_0042/empty_dir2|D|2435
+   /test_dir_0042/nonempty_dir1|D|2437
+   /test_dir_0042/nonempty_dir2|D|2443
+   /test_dir_0042/nonempty_dir1/d2|D|2439
+   /test_dir_0042/nonempty_dir1/f1.txt|F|2438|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0042/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0042/nonempty_dir1/d2/d3|D|2442
+   /test_dir_0042/nonempty_dir1/d2/f3.txt|F|2440|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0042/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0042/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0042/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0042/nonempty_dir2/d2|D|2447
+   /test_dir_0042/nonempty_dir2/f1.txt|F|2445|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0042/nonempty_dir2/f2.txt|F|2446|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0042/nonempty_dir2/d2/d3|D|2449
+   /test_dir_0042/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 43
+#####################################
+mkdir /test_dir_0043 0o777
+Tau
+RV_none
+
+chdir /test_dir_0043
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonexist_2
+Tau
+ENOENT
+
+dump-result /test_dir_0043
+   /test_dir_0043|D|2471
+   /test_dir_0043/empty_dir1|D|2472
+   /test_dir_0043/empty_dir2|D|2473
+   /test_dir_0043/nonempty_dir1|D|2474
+   /test_dir_0043/nonempty_dir2|D|2479
+   /test_dir_0043/nonempty_dir1/d2|D|2476
+   /test_dir_0043/nonempty_dir1/f1.txt|F|2475|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0043/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0043/nonempty_dir1/d2/d3|D|2478
+   /test_dir_0043/nonempty_dir1/d2/f3.txt|F|2477|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0043/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0043/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0043/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0043/nonempty_dir2/d2|D|2482
+   /test_dir_0043/nonempty_dir2/f1.txt|F|2480|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0043/nonempty_dir2/f2.txt|F|2481|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0043/nonempty_dir2/d2/d3|D|2483
+   /test_dir_0043/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 44
+#####################################
+mkdir /test_dir_0044 0o777
+Tau
+RV_none
+
+chdir /test_dir_0044
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonexist_2/
+Tau
+ENOENT
+
+dump-result /test_dir_0044
+   /test_dir_0044|D|2494
+   /test_dir_0044/empty_dir1|D|2495
+   /test_dir_0044/empty_dir2|D|2496
+   /test_dir_0044/nonempty_dir1|D|2497
+   /test_dir_0044/nonempty_dir2|D|2504
+   /test_dir_0044/nonempty_dir1/d2|D|2501
+   /test_dir_0044/nonempty_dir1/f1.txt|F|2499|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0044/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0044/nonempty_dir1/d2/d3|D|2503
+   /test_dir_0044/nonempty_dir1/d2/f3.txt|F|2502|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0044/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0044/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0044/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0044/nonempty_dir2/d2|D|2507
+   /test_dir_0044/nonempty_dir2/f1.txt|F|2505|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0044/nonempty_dir2/f2.txt|F|2506|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0044/nonempty_dir2/d2/d3|D|2508
+   /test_dir_0044/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 45
+#####################################
+mkdir /test_dir_0045 0o777
+Tau
+RV_none
+
+chdir /test_dir_0045
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonexist_dir/nonexist_3
+Tau
+ENOENT
+
+dump-result /test_dir_0045
+   /test_dir_0045|D|2525
+   /test_dir_0045/empty_dir1|D|2526
+   /test_dir_0045/empty_dir2|D|2527
+   /test_dir_0045/nonempty_dir1|D|2528
+   /test_dir_0045/nonempty_dir2|D|2533
+   /test_dir_0045/nonempty_dir1/d2|D|2530
+   /test_dir_0045/nonempty_dir1/f1.txt|F|2529|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0045/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0045/nonempty_dir1/d2/d3|D|2532
+   /test_dir_0045/nonempty_dir1/d2/f3.txt|F|2531|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0045/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0045/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0045/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0045/nonempty_dir2/d2|D|2536
+   /test_dir_0045/nonempty_dir2/f1.txt|F|2534|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0045/nonempty_dir2/f2.txt|F|2535|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0045/nonempty_dir2/d2/d3|D|2537
+   /test_dir_0045/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
+#####################################
+# Test 46
+#####################################
+mkdir /test_dir_0046 0o777
+Tau
+RV_none
+
+chdir /test_dir_0046
+Tau
+RV_none
+
+mkdir empty_dir1 0o777
+Tau
+RV_none
+
+mkdir empty_dir2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir1 0o777
+Tau
+RV_none
+
+open_close nonempty_dir1/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2 0o777
+Tau
+RV_none
+
+open nonempty_dir1/d2/f3.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+Tau
+RV_num(83)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir1/d2/d3 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2 0o777
+Tau
+RV_none
+
+open_close nonempty_dir2/f1.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_none
+
+open nonempty_dir2/f2.txt [O_WRONLY;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+Tau
+RV_num(167)
+
+close (FD 3)
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2 0o777
+Tau
+RV_none
+
+mkdir nonempty_dir2/d2/d3 0o777
+Tau
+RV_none
+
+symlink f1.txt nonempty_dir1/sl_f1.txt
+Tau
+RV_none
+
+symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+Tau
+RV_none
+
+symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+Tau
+RV_none
+
+symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+Tau
+RV_none
+
+symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+Tau
+RV_none
+
+stat nonexist_dir/nonexist_3/
+Tau
+ENOENT
+
+dump-result /test_dir_0046
+   /test_dir_0046|D|2555
+   /test_dir_0046/empty_dir1|D|2557
+   /test_dir_0046/empty_dir2|D|2559
+   /test_dir_0046/nonempty_dir1|D|2560
+   /test_dir_0046/nonempty_dir2|D|2569
+   /test_dir_0046/nonempty_dir1/d2|D|2564
+   /test_dir_0046/nonempty_dir1/f1.txt|F|2562|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0046/nonempty_dir1/sl_f1.txt|L|f1.txt
+   /test_dir_0046/nonempty_dir1/d2/d3|D|2568
+   /test_dir_0046/nonempty_dir1/d2/f3.txt|F|2566|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+   /test_dir_0046/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+   /test_dir_0046/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+   /test_dir_0046/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+   /test_dir_0046/nonempty_dir2/d2|D|2572
+   /test_dir_0046/nonempty_dir2/f1.txt|F|2570|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+   /test_dir_0046/nonempty_dir2/f2.txt|F|2571|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+   /test_dir_0046/nonempty_dir2/d2/d3|D|2573
+   /test_dir_0046/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+end dump-result
+
+
