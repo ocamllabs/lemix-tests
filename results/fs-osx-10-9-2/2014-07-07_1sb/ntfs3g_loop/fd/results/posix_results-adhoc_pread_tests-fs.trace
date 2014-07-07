@@ -1,0 +1,569 @@
+# adhoc_pread_tests2: adhoc tests to check behaviour of read in various situations
+
+
+##############################################
+# initialization
+##############################################
+
+# empty and non-empty directories to read from
+mkdir /empty_dir 0o777
+Tau
+RV_none
+
+mkdir /non_empty_dir 0o777
+Tau
+RV_none
+
+
+# create files with different contents in the non-empty directory
+chdir /non_empty_dir
+Tau
+RV_none
+
+
+# f1.txt is empty
+open_close f1.txt [O_RDWR;O_CREAT] 0o666
+Tau
+RV_none
+
+
+# f2.txt contains some short text
+open f2.txt [O_RDWR;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "Lorem ipsum dolor sit a" 23
+Tau
+RV_num(23)
+
+close (FD 3)
+Tau
+RV_none
+
+
+# f3.txt contains all kinds of strange characters
+open f3.txt [O_RDWR;O_CREAT] 0o666
+Tau
+RV_num(3)
+
+write! (FD 3) "\"-#@/\000\001\001ó\b" 10
+Tau
+RV_num(10)
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+##############################################
+# read on an empty file
+##############################################
+
+# read nothing 
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 0 0
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read 1 char beyond end
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 1 0
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read 1 char after seeking beyond end
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 1 100
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read with negative offset 
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 1 -100
+Tau
+EINVAL
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+
+##############################################
+# read on a non-empty file
+##############################################
+
+# f2.txt is 23 bytes long
+
+# pread 0 chars
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 0 0
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read 0 chars
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 0
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread 2 chars
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 2 0
+Tau
+RV_bytes("Lo")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read 2 chars
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 2
+Tau
+RV_bytes("Lo")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread 2 chars with offset 5
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 2 5
+Tau
+RV_bytes(" i")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read 2 chars and then 3, preads don't influence each other
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 2 0
+Tau
+RV_bytes("Lo")
+
+pread (FD 3) 3 0
+Tau
+RV_bytes("Lor")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read 2 chars and then 3, reads influence each other
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 2
+Tau
+RV_bytes("Lo")
+
+read (FD 3) 3
+Tau
+RV_bytes("rem")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread over end of file
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 100 0
+Tau
+RV_bytes("Lorem ipsum dolor sit a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read over end of file
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 100
+Tau
+RV_bytes("Lorem ipsum dolor sit a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread just after end
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 1 23
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread far beyond end
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 1 100
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread over end
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 5 20
+Tau
+RV_bytes("t a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread with negative offset
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 1 -100
+Tau
+EINVAL
+
+close (FD 3)
+Tau
+RV_none
+
+
+# multiple preads don't influence each other or reads
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 2
+Tau
+RV_bytes("Lo")
+
+pread (FD 3) 5 10
+Tau
+RV_bytes("m dol")
+
+read (FD 3) 3
+Tau
+RV_bytes("rem")
+
+pread (FD 3) 5 2
+Tau
+RV_bytes("rem i")
+
+read (FD 3) 2
+Tau
+RV_bytes(" i")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# read is influenced by seek
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+lseek (FD 3) 6 SEEK_SET
+Tau
+RV_num(6)
+
+read (FD 3) 5
+Tau
+RV_bytes("ipsum")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# pread is not influenced by seek
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+lseek (FD 3) 7 SEEK_SET
+Tau
+RV_num(7)
+
+pread (FD 3) 5 6
+Tau
+RV_bytes("ipsum")
+
+close (FD 3)
+Tau
+RV_none
+
+
+##############################################
+# test reading of special chars
+##############################################
+
+open f3.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 100
+Tau
+RV_bytes("\"-#@/\000\001\001ó\b")
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+##############################################
+# reading from file-descriptors open for 
+# different modes
+##############################################
+
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 100
+Tau
+RV_bytes("Lorem ipsum dolor sit a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f2.txt [O_WRONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 100
+Tau
+EBADF
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f2.txt [O_RDWR]
+Tau
+RV_num(3)
+
+read (FD 3) 100
+Tau
+RV_bytes("Lorem ipsum dolor sit a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# open a descriptor, remove permission on file
+# and then read. Since descriptor is open
+# that should be fine, but opening again is not
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+chmod f2.txt 0o000
+Tau
+RV_none
+
+read (FD 3) 100
+Tau
+RV_bytes("Lorem ipsum dolor sit a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 100
+Tau
+RV_bytes("Lorem ipsum dolor sit a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+chmod f2.txt 0o666
+Tau
+RV_none
+
+open f2.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read (FD 3) 100
+Tau
+RV_bytes("Lorem ipsum dolor sit a")
+
+close (FD 3)
+Tau
+RV_none
+
+
+##############################################
+# read on directories
+##############################################
+
+open /empty_dir [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 0 0
+Tau
+EISDIR
+
+pread (FD 3) 1 0
+Tau
+EISDIR
+
+pread (FD 3) 1 1
+Tau
+EISDIR
+
+read (FD 3) 0
+Tau
+EISDIR
+
+read (FD 3) 1
+Tau
+EISDIR
+
+read (FD 3) 1
+Tau
+EISDIR
+
+close (FD 3)
+Tau
+RV_none
+
+
+open /non_empty_dir [O_RDONLY]
+Tau
+RV_num(3)
+
+pread (FD 3) 0 0
+Tau
+EISDIR
+
+pread (FD 3) 1 0
+Tau
+EISDIR
+
+pread (FD 3) 1 1
+Tau
+EISDIR
+
+read (FD 3) 0
+Tau
+EISDIR
+
+read (FD 3) 1
+Tau
+EISDIR
+
+read (FD 3) 1
+Tau
+EISDIR
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+##############################################
+# finished :-)
+##############################################
+

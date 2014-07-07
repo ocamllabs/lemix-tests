@@ -1,0 +1,450 @@
+        # adhoc_pread_tests2: adhoc tests to check behaviour of read in various situations
+
+
+        ##############################################
+        # initialization
+        ##############################################
+
+        # empty and non-empty directories to read from
+     9: mkdir /empty_dir 0o777
+        RV_none
+    10: mkdir /non_empty_dir 0o777
+        RV_none
+
+        # create files with different contents in the non-empty directory
+    13: chdir /non_empty_dir
+        RV_none
+
+        # f1.txt is empty
+    16: open_close f1.txt [O_RDWR;O_CREAT] 0o666
+        RV_none
+
+        # f2.txt contains some short text
+    19: open f2.txt [O_RDWR;O_CREAT] 0o666
+        RV_num(3)
+    20: write! (FD 3) "Lorem ipsum dolor sit a" 23
+        RV_num(23)
+    21: close (FD 3)
+        RV_none
+
+        # f3.txt contains all kinds of strange characters
+    24: open f3.txt [O_RDWR;O_CREAT] 0o666
+        RV_num(3)
+    25: write! (FD 3) "\"-#@/\000\001\001ó\b" 10
+        RV_num(10)
+    26: close (FD 3)
+        RV_none
+
+
+        ##############################################
+        # read on an empty file
+        ##############################################
+
+        # read nothing 
+    34: open f1.txt [O_RDONLY]
+        RV_num(3)
+    35: pread (FD 3) 0 0
+        RV_bytes("")
+    36: close (FD 3)
+        RV_none
+
+        # read 1 char beyond end
+    39: open f1.txt [O_RDONLY]
+        RV_num(3)
+    40: pread (FD 3) 1 0
+        RV_bytes("")
+    41: close (FD 3)
+        RV_none
+
+        # read 1 char after seeking beyond end
+    44: open f1.txt [O_RDONLY]
+        RV_num(3)
+    45: pread (FD 3) 1 100
+        RV_bytes("")
+    46: close (FD 3)
+        RV_none
+
+        # read with negative offset 
+    49: open f1.txt [O_RDONLY]
+        RV_num(3)
+    50: pread (FD 3) 1 -100
+        EINVAL
+    51: close (FD 3)
+        RV_none
+
+
+
+        ##############################################
+        # read on a non-empty file
+        ##############################################
+
+        # f2.txt is 23 bytes long
+
+        # pread 0 chars
+    62: open f2.txt [O_RDONLY]
+        RV_num(3)
+    63: pread (FD 3) 0 0
+        RV_bytes("")
+    64: close (FD 3)
+        RV_none
+
+        # read 0 chars
+    67: open f2.txt [O_RDONLY]
+        RV_num(3)
+    68: read (FD 3) 0
+        RV_bytes("")
+    69: close (FD 3)
+        RV_none
+
+        # pread 2 chars
+    72: open f2.txt [O_RDONLY]
+        RV_num(3)
+    73: pread (FD 3) 2 0
+
+Warning:     73: pread (FD 3) 2 0
+   more than one possible result value
+   randomly continuing execution with RV_bytes("")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo")]
+        RV_bytes("")
+    74: close (FD 3)
+        RV_none
+
+        # read 2 chars
+    77: open f2.txt [O_RDONLY]
+        RV_num(3)
+    78: read (FD 3) 2
+
+Warning:     78: read (FD 3) 2
+   more than one possible result value
+   randomly continuing execution with RV_bytes("")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo")]
+        RV_bytes("")
+    79: close (FD 3)
+        RV_none
+
+        # pread 2 chars with offset 5
+    82: open f2.txt [O_RDONLY]
+        RV_num(3)
+    83: pread (FD 3) 2 5
+
+Warning:     83: pread (FD 3) 2 5
+   more than one possible result value
+   randomly continuing execution with RV_bytes("")
+        possible results: [RV_bytes("");RV_bytes(" ");RV_bytes(" i")]
+        RV_bytes("")
+    84: close (FD 3)
+        RV_none
+
+        # read 2 chars and then 3, preads don't influence each other
+    87: open f2.txt [O_RDONLY]
+        RV_num(3)
+    88: pread (FD 3) 2 0
+
+Warning:     88: pread (FD 3) 2 0
+   more than one possible result value
+   randomly continuing execution with RV_bytes("")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo")]
+        RV_bytes("")
+    89: pread (FD 3) 3 0
+
+Warning:     89: pread (FD 3) 3 0
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lor")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor")]
+        RV_bytes("Lor")
+    90: close (FD 3)
+        RV_none
+
+        # read 2 chars and then 3, reads influence each other
+    93: open f2.txt [O_RDONLY]
+        RV_num(3)
+    94: read (FD 3) 2
+
+Warning:     94: read (FD 3) 2
+   more than one possible result value
+   randomly continuing execution with RV_bytes("")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo")]
+        RV_bytes("")
+    95: read (FD 3) 3
+
+Warning:     95: read (FD 3) 3
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lor")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor")]
+        RV_bytes("Lor")
+    96: close (FD 3)
+        RV_none
+
+        # pread over end of file
+    99: open f2.txt [O_RDONLY]
+        RV_num(3)
+   100: pread (FD 3) 100 0
+
+Warning:    100: pread (FD 3) 100 0
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lorem ipsum ")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor");RV_bytes("Lore");RV_bytes("Lorem");RV_bytes("Lorem ");RV_bytes("Lorem i");RV_bytes("Lorem ip");RV_bytes("Lorem ips");RV_bytes("Lorem ipsu");RV_bytes("Lorem ipsum");RV_bytes("Lorem ipsum ");RV_bytes("Lorem ipsum d");RV_bytes("Lorem ipsum do");RV_bytes("Lorem ipsum dol");RV_bytes("Lorem ipsum dolo");RV_bytes("Lorem ipsum dolor");RV_bytes("Lorem ipsum dolor ");RV_bytes("Lorem ipsum dolor s");RV_bytes("Lorem ipsum dolor si");RV_bytes("Lorem ipsum dolor sit");RV_bytes("Lorem ipsum dolor sit ");RV_bytes("Lorem ipsum dolor sit a")]
+        RV_bytes("Lorem ipsum ")
+   101: close (FD 3)
+        RV_none
+
+        # read over end of file
+   104: open f2.txt [O_RDONLY]
+        RV_num(3)
+   105: read (FD 3) 100
+
+Warning:    105: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lorem ipsum dolor si")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor");RV_bytes("Lore");RV_bytes("Lorem");RV_bytes("Lorem ");RV_bytes("Lorem i");RV_bytes("Lorem ip");RV_bytes("Lorem ips");RV_bytes("Lorem ipsu");RV_bytes("Lorem ipsum");RV_bytes("Lorem ipsum ");RV_bytes("Lorem ipsum d");RV_bytes("Lorem ipsum do");RV_bytes("Lorem ipsum dol");RV_bytes("Lorem ipsum dolo");RV_bytes("Lorem ipsum dolor");RV_bytes("Lorem ipsum dolor ");RV_bytes("Lorem ipsum dolor s");RV_bytes("Lorem ipsum dolor si");RV_bytes("Lorem ipsum dolor sit");RV_bytes("Lorem ipsum dolor sit ");RV_bytes("Lorem ipsum dolor sit a")]
+        RV_bytes("Lorem ipsum dolor si")
+   106: close (FD 3)
+        RV_none
+
+        # pread just after end
+   109: open f2.txt [O_RDONLY]
+        RV_num(3)
+   110: pread (FD 3) 1 23
+        RV_bytes("")
+   111: close (FD 3)
+        RV_none
+
+        # pread far beyond end
+   114: open f2.txt [O_RDONLY]
+        RV_num(3)
+   115: pread (FD 3) 1 100
+        RV_bytes("")
+   116: close (FD 3)
+        RV_none
+
+        # pread over end
+   119: open f2.txt [O_RDONLY]
+        RV_num(3)
+   120: pread (FD 3) 5 20
+
+Warning:    120: pread (FD 3) 5 20
+   more than one possible result value
+   randomly continuing execution with RV_bytes("t ")
+        possible results: [RV_bytes("");RV_bytes("t");RV_bytes("t ");RV_bytes("t a")]
+        RV_bytes("t ")
+   121: close (FD 3)
+        RV_none
+
+        # pread with negative offset
+   124: open f2.txt [O_RDONLY]
+        RV_num(3)
+   125: pread (FD 3) 1 -100
+        EINVAL
+   126: close (FD 3)
+        RV_none
+
+        # multiple preads don't influence each other or reads
+   129: open f2.txt [O_RDONLY]
+        RV_num(3)
+   130: read (FD 3) 2
+
+Warning:    130: read (FD 3) 2
+   more than one possible result value
+   randomly continuing execution with RV_bytes("")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo")]
+        RV_bytes("")
+   131: pread (FD 3) 5 10
+
+Warning:    131: pread (FD 3) 5 10
+   more than one possible result value
+   randomly continuing execution with RV_bytes("m do")
+        possible results: [RV_bytes("");RV_bytes("m");RV_bytes("m ");RV_bytes("m d");RV_bytes("m do");RV_bytes("m dol")]
+        RV_bytes("m do")
+   132: read (FD 3) 3
+
+Warning:    132: read (FD 3) 3
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lo")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor")]
+        RV_bytes("Lo")
+   133: pread (FD 3) 5 2
+
+Warning:    133: pread (FD 3) 5 2
+   more than one possible result value
+   randomly continuing execution with RV_bytes("r")
+        possible results: [RV_bytes("");RV_bytes("r");RV_bytes("re");RV_bytes("rem");RV_bytes("rem ");RV_bytes("rem i")]
+        RV_bytes("r")
+   134: read (FD 3) 2
+
+Warning:    134: read (FD 3) 2
+   more than one possible result value
+   randomly continuing execution with RV_bytes("re")
+        possible results: [RV_bytes("");RV_bytes("r");RV_bytes("re")]
+        RV_bytes("re")
+   135: close (FD 3)
+        RV_none
+
+        # read is influenced by seek
+   138: open f2.txt [O_RDONLY]
+        RV_num(3)
+   139: lseek (FD 3) 6 SEEK_SET
+        RV_num(6)
+   140: read (FD 3) 5
+
+Warning:    140: read (FD 3) 5
+   more than one possible result value
+   randomly continuing execution with RV_bytes("ipsu")
+        possible results: [RV_bytes("");RV_bytes("i");RV_bytes("ip");RV_bytes("ips");RV_bytes("ipsu");RV_bytes("ipsum")]
+        RV_bytes("ipsu")
+   141: close (FD 3)
+        RV_none
+
+        # pread is not influenced by seek
+   144: open f2.txt [O_RDONLY]
+        RV_num(3)
+   145: lseek (FD 3) 7 SEEK_SET
+        RV_num(7)
+   146: pread (FD 3) 5 6
+
+Warning:    146: pread (FD 3) 5 6
+   more than one possible result value
+   randomly continuing execution with RV_bytes("ip")
+        possible results: [RV_bytes("");RV_bytes("i");RV_bytes("ip");RV_bytes("ips");RV_bytes("ipsu");RV_bytes("ipsum")]
+        RV_bytes("ip")
+   147: close (FD 3)
+        RV_none
+
+        ##############################################
+        # test reading of special chars
+        ##############################################
+
+   153: open f3.txt [O_RDONLY]
+        RV_num(3)
+   154: read (FD 3) 100
+
+Warning:    154: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("\"-#")
+        possible results: [RV_bytes("");RV_bytes("\"");RV_bytes("\"-");RV_bytes("\"-#");RV_bytes("\"-#@");RV_bytes("\"-#@/");RV_bytes("\"-#@/\000");RV_bytes("\"-#@/\000\001");RV_bytes("\"-#@/\000\001\001");RV_bytes("\"-#@/\000\001\001ó");RV_bytes("\"-#@/\000\001\001ó\b")]
+        RV_bytes("\"-#")
+   155: close (FD 3)
+        RV_none
+
+
+        ##############################################
+        # reading from file-descriptors open for 
+        # different modes
+        ##############################################
+
+   163: open f2.txt [O_RDONLY]
+        RV_num(3)
+   164: read (FD 3) 100
+
+Warning:    164: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lorem")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor");RV_bytes("Lore");RV_bytes("Lorem");RV_bytes("Lorem ");RV_bytes("Lorem i");RV_bytes("Lorem ip");RV_bytes("Lorem ips");RV_bytes("Lorem ipsu");RV_bytes("Lorem ipsum");RV_bytes("Lorem ipsum ");RV_bytes("Lorem ipsum d");RV_bytes("Lorem ipsum do");RV_bytes("Lorem ipsum dol");RV_bytes("Lorem ipsum dolo");RV_bytes("Lorem ipsum dolor");RV_bytes("Lorem ipsum dolor ");RV_bytes("Lorem ipsum dolor s");RV_bytes("Lorem ipsum dolor si");RV_bytes("Lorem ipsum dolor sit");RV_bytes("Lorem ipsum dolor sit ");RV_bytes("Lorem ipsum dolor sit a")]
+        RV_bytes("Lorem")
+   165: close (FD 3)
+        RV_none
+
+   167: open f2.txt [O_WRONLY]
+        RV_num(3)
+   168: read (FD 3) 100
+        EBADF
+   169: close (FD 3)
+        RV_none
+
+   171: open f2.txt [O_RDWR]
+        RV_num(3)
+   172: read (FD 3) 100
+
+Warning:    172: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lorem ipsum ")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor");RV_bytes("Lore");RV_bytes("Lorem");RV_bytes("Lorem ");RV_bytes("Lorem i");RV_bytes("Lorem ip");RV_bytes("Lorem ips");RV_bytes("Lorem ipsu");RV_bytes("Lorem ipsum");RV_bytes("Lorem ipsum ");RV_bytes("Lorem ipsum d");RV_bytes("Lorem ipsum do");RV_bytes("Lorem ipsum dol");RV_bytes("Lorem ipsum dolo");RV_bytes("Lorem ipsum dolor");RV_bytes("Lorem ipsum dolor ");RV_bytes("Lorem ipsum dolor s");RV_bytes("Lorem ipsum dolor si");RV_bytes("Lorem ipsum dolor sit");RV_bytes("Lorem ipsum dolor sit ");RV_bytes("Lorem ipsum dolor sit a")]
+        RV_bytes("Lorem ipsum ")
+   173: close (FD 3)
+        RV_none
+
+        # open a descriptor, remove permission on file
+        # and then read. Since descriptor is open
+        # that should be fine, but opening again is not
+   178: open f2.txt [O_RDONLY]
+        RV_num(3)
+   179: chmod f2.txt 0o000
+        RV_none
+   180: read (FD 3) 100
+
+Warning:    180: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lorem")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor");RV_bytes("Lore");RV_bytes("Lorem");RV_bytes("Lorem ");RV_bytes("Lorem i");RV_bytes("Lorem ip");RV_bytes("Lorem ips");RV_bytes("Lorem ipsu");RV_bytes("Lorem ipsum");RV_bytes("Lorem ipsum ");RV_bytes("Lorem ipsum d");RV_bytes("Lorem ipsum do");RV_bytes("Lorem ipsum dol");RV_bytes("Lorem ipsum dolo");RV_bytes("Lorem ipsum dolor");RV_bytes("Lorem ipsum dolor ");RV_bytes("Lorem ipsum dolor s");RV_bytes("Lorem ipsum dolor si");RV_bytes("Lorem ipsum dolor sit");RV_bytes("Lorem ipsum dolor sit ");RV_bytes("Lorem ipsum dolor sit a")]
+        RV_bytes("Lorem")
+   181: close (FD 3)
+        RV_none
+
+   183: open f2.txt [O_RDONLY]
+        RV_num(3)
+   184: read (FD 3) 100
+
+Warning:    184: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lorem ipsum dolor s")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor");RV_bytes("Lore");RV_bytes("Lorem");RV_bytes("Lorem ");RV_bytes("Lorem i");RV_bytes("Lorem ip");RV_bytes("Lorem ips");RV_bytes("Lorem ipsu");RV_bytes("Lorem ipsum");RV_bytes("Lorem ipsum ");RV_bytes("Lorem ipsum d");RV_bytes("Lorem ipsum do");RV_bytes("Lorem ipsum dol");RV_bytes("Lorem ipsum dolo");RV_bytes("Lorem ipsum dolor");RV_bytes("Lorem ipsum dolor ");RV_bytes("Lorem ipsum dolor s");RV_bytes("Lorem ipsum dolor si");RV_bytes("Lorem ipsum dolor sit");RV_bytes("Lorem ipsum dolor sit ");RV_bytes("Lorem ipsum dolor sit a")]
+        RV_bytes("Lorem ipsum dolor s")
+   185: close (FD 3)
+        RV_none
+
+   187: chmod f2.txt 0o666
+        RV_none
+   188: open f2.txt [O_RDONLY]
+        RV_num(3)
+   189: read (FD 3) 100
+
+Warning:    189: read (FD 3) 100
+   more than one possible result value
+   randomly continuing execution with RV_bytes("Lorem ipsum dolor")
+        possible results: [RV_bytes("");RV_bytes("L");RV_bytes("Lo");RV_bytes("Lor");RV_bytes("Lore");RV_bytes("Lorem");RV_bytes("Lorem ");RV_bytes("Lorem i");RV_bytes("Lorem ip");RV_bytes("Lorem ips");RV_bytes("Lorem ipsu");RV_bytes("Lorem ipsum");RV_bytes("Lorem ipsum ");RV_bytes("Lorem ipsum d");RV_bytes("Lorem ipsum do");RV_bytes("Lorem ipsum dol");RV_bytes("Lorem ipsum dolo");RV_bytes("Lorem ipsum dolor");RV_bytes("Lorem ipsum dolor ");RV_bytes("Lorem ipsum dolor s");RV_bytes("Lorem ipsum dolor si");RV_bytes("Lorem ipsum dolor sit");RV_bytes("Lorem ipsum dolor sit ");RV_bytes("Lorem ipsum dolor sit a")]
+        RV_bytes("Lorem ipsum dolor")
+   190: close (FD 3)
+        RV_none
+
+        ##############################################
+        # read on directories
+        ##############################################
+
+   196: open /empty_dir [O_RDONLY]
+        RV_num(3)
+   197: pread (FD 3) 0 0
+        EISDIR
+   198: pread (FD 3) 1 0
+        EISDIR
+   199: pread (FD 3) 1 1
+        EISDIR
+   200: read (FD 3) 0
+        EISDIR
+   201: read (FD 3) 1
+        EISDIR
+   202: read (FD 3) 1
+        EISDIR
+   203: close (FD 3)
+        RV_none
+
+   205: open /non_empty_dir [O_RDONLY]
+        RV_num(3)
+   206: pread (FD 3) 0 0
+        EISDIR
+   207: pread (FD 3) 1 0
+        EISDIR
+   208: pread (FD 3) 1 1
+        EISDIR
+   209: read (FD 3) 0
+        EISDIR
+   210: read (FD 3) 1
+        EISDIR
+   211: read (FD 3) 1
+        EISDIR
+   212: close (FD 3)
+        RV_none
+
+
+        ##############################################
+        # finished :-)
+        ##############################################
+

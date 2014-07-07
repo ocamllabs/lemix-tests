@@ -1,0 +1,562 @@
+< uname -s
+< date +'%F'
+< mktemp -d 2014-07-07_XXX
+< fusermount --version
+2< /Library/Filesystems/osxfusefs.fs/Support/mount_osxfusefs
+< sshfs --version
+2< ntfs-3g --version
+2< mkfs.btrfs --version
+mkfs.btrfs not found; skipping btrfs
+2< mke2fs -V
+mke2fs not found; skipping ext2, ext3, ext4
+tmpfs not available on Darwin/OS X; skipping tmpfs
+< uname -a
+< otool -L /Users/dsheets/Code/fs/test-suite/../fs_test/posix.native | grep libSystem
+? git "diff-index" "--quiet" "HEAD"
+< git rev-parse HEAD
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt"
+OS: Darwin cell.local 13.1.0 Darwin Kernel Version 13.1.0: Thu Jan 16 19:40:37 PST 2014; root:xnu-2422.90.20~2/RELEASE_X86_64 x86_64
+libc: 	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1197.1.1)
+FS spec: a666a700b1c0067236479c1ad9f570af703c58a8
+fusexmp_hfsplus_loop version: OSXFUSE mount version 2.6.4 fuse OSXFUSE mount version 2.6.4 over system
+Starting fd against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/file_descriptors/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/*~"
+Found 7 traces for fd
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop"
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+< hdiutil attach -nomount ram://1048576
++ diskutil "erasevolume" "hfsx" "hfsplus_loop" "/dev/disk1"
+Started erase on disk1
+Unmounting disk
+Erasing
+Initialized /dev/rdisk1 as a 512 MB case-sensitive HFS Plus volume
+Mounting disk
+Finished erase on disk1 hfsplus_loop
++ diskutil "unmountdisk" "/dev/disk1"
+Unmount of all volumes on disk1 was successful
++ hdiutil "attach" "-mountpoint" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/dev/disk1"
+/dev/disk1          	                               	/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop
++ ./loopback "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop" "-omodules=threadid" "-oallow_other,native_xattr"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pwrite_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pread_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_multiple_tests-check-os.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_lseek_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_file_descriptor_change_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_close_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting link against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/link/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/link/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/link"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/link/*~"
+Found 1 traces for link
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "link-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting mkdir against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/mkdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/mkdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/mkdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/mkdir/*~"
+Found 1 traces for mkdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "mkdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting rename against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rename/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rename/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rename"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rename/*~"
+Found 1 traces for rename
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rename-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting rmdir against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rmdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rmdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rmdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rmdir/*~"
+Found 1 traces for rmdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rmdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting stat against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/stat/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/stat/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/stat"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/stat/*~"
+Found 1 traces for stat
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "stat-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting trunc against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/trunc/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/truncate/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/trunc"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/trunc/*~"
+Found 1 traces for trunc
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "truncate-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting unlink against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/unlink/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/unlink/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/unlink"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/unlink/*~"
+Found 1 traces for unlink
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "unlink-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+fusexmp_hfsplus_loop:fd:adhoc_close_tests-int.trace SUCCESS
+fusexmp_hfsplus_loop:fd:adhoc_file_descriptor_change_tests-int.trace SUCCESS
+fusexmp_hfsplus_loop:fd:adhoc_lseek_tests-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:fd:adhoc_lseek_tests-int.trace STDOUT: 614 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/results/run_adhoc_lseek_tests-int.trace.stdout
+fusexmp_hfsplus_loop:fd:adhoc_lseek_tests-int.trace STDERR: 374 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/results/run_adhoc_lseek_tests-int.trace.stderr
+fusexmp_hfsplus_loop:fd:adhoc_pread_tests-int.trace SUCCESS
+fusexmp_hfsplus_loop:fd:adhoc_pwrite_tests-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:fd:adhoc_pwrite_tests-int.trace STDOUT: 195 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stdout
+fusexmp_hfsplus_loop:fd:adhoc_pwrite_tests-int.trace STDERR: 0 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stderr
+fusexmp_hfsplus_loop:fd:adhoc_open_multiple_tests-check-os.trace SUCCESS
+fusexmp_hfsplus_loop:mkdir:mkdir-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:mkdir:mkdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/mkdir/results/run_mkdir-int.trace.stdout
+fusexmp_hfsplus_loop:mkdir:mkdir-int.trace STDERR: 2714 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/mkdir/results/run_mkdir-int.trace.stderr
+fusexmp_hfsplus_loop:fd:adhoc_open_tests-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:fd:adhoc_open_tests-int.trace STDOUT: 607 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/results/run_adhoc_open_tests-int.trace.stdout
+fusexmp_hfsplus_loop:fd:adhoc_open_tests-int.trace STDERR: 6591 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/fd/results/run_adhoc_open_tests-int.trace.stderr
+fusexmp_hfsplus_loop:stat:stat-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:stat:stat-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/stat/results/run_stat-int.trace.stdout
+fusexmp_hfsplus_loop:stat:stat-int.trace STDERR: 17001 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/stat/results/run_stat-int.trace.stderr
+fusexmp_hfsplus_loop:rmdir:rmdir-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:rmdir:rmdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rmdir/results/run_rmdir-int.trace.stdout
+fusexmp_hfsplus_loop:rmdir:rmdir-int.trace STDERR: 391 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rmdir/results/run_rmdir-int.trace.stderr
+fusexmp_hfsplus_loop:unlink:unlink-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:unlink:unlink-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/unlink/results/run_unlink-int.trace.stdout
+fusexmp_hfsplus_loop:unlink:unlink-int.trace STDERR: 10763 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/unlink/results/run_unlink-int.trace.stderr
+fusexmp_hfsplus_loop:trunc:truncate-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:trunc:truncate-int.trace STDOUT: 551 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/trunc/results/run_truncate-int.trace.stdout
+fusexmp_hfsplus_loop:trunc:truncate-int.trace STDERR: 34249 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/trunc/results/run_truncate-int.trace.stderr
+fusexmp_hfsplus_loop:rename:rename-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:rename:rename-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rename/results/run_rename-int.trace.stdout
+fusexmp_hfsplus_loop:rename:rename-int.trace STDERR: 299278 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/rename/results/run_rename-int.trace.stderr
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+fusexmp_hfsplus_loop:link:link-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:link:link-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/link/results/run_link-int.trace.stdout
+fusexmp_hfsplus_loop:link:link-int.trace STDERR: 110666 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/link/results/run_link-int.trace.stderr
+Starting open against fusexmp_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/open/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/open/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/open"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/open/*~"
+Found 1 traces for open
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop"
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+< hdiutil attach -nomount ram://1048576
++ diskutil "erasevolume" "hfsx" "hfsplus_loop" "/dev/disk1"
+Started erase on disk1
+Unmounting disk
+Erasing
+Initialized /dev/rdisk1 as a 512 MB case-sensitive HFS Plus volume
+Mounting disk
+Finished erase on disk1 hfsplus_loop
++ diskutil "unmountdisk" "/dev/disk1"
+Unmount of all volumes on disk1 was successful
++ hdiutil "attach" "-mountpoint" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/dev/disk1"
+/dev/disk1          	                               	/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop
++ ./loopback "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop" "-omodules=threadid" "-oallow_other,native_xattr"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "open-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop//Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/fusexmp_hfsplus_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+fusexmp_hfsplus_loop:open:open-int.trace FAILURE: exit 1
+fusexmp_hfsplus_loop:open:open-int.trace STDOUT: 526 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/open/results/run_open-int.trace.stdout
+fusexmp_hfsplus_loop:open:open-int.trace STDERR: 977056 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/fusexmp_hfsplus_loop/open/results/run_open-int.trace.stderr
+sshfs_hfsplus_loop version: SSHFS version 2.5 (OSXFUSE SSHFS 2.5.0) fuse OSXFUSE mount version 2.6.4 over system
+Starting fd against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/file_descriptors/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/*~"
+Found 7 traces for fd
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+< hdiutil attach -nomount ram://1048576
++ diskutil "erasevolume" "hfsx" "hfsplus_loop" "/dev/disk1"
+Started erase on disk1
+Unmounting disk
+Erasing
+Initialized /dev/rdisk1 as a 512 MB case-sensitive HFS Plus volume
+Mounting disk
+Finished erase on disk1 hfsplus_loop
++ diskutil "unmountdisk" "/dev/disk1"
+Unmount of all volumes on disk1 was successful
++ hdiutil "attach" "-mountpoint" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/dev/disk1"
+/dev/disk1          	                               	/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop
++ sshfs "root@localhost:/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pwrite_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pread_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_multiple_tests-check-os.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_lseek_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_file_descriptor_change_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_close_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+Starting link against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/link/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/link/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/link"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/link/*~"
+Found 1 traces for link
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "link-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+Starting mkdir against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/mkdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/mkdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/mkdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/mkdir/*~"
+Found 1 traces for mkdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "mkdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+Starting rename against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rename/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rename/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rename"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rename/*~"
+Found 1 traces for rename
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rename-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+Starting rmdir against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rmdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rmdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rmdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rmdir/*~"
+Found 1 traces for rmdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rmdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+Starting stat against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/stat/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/stat/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/stat"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/stat/*~"
+Found 1 traces for stat
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "stat-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+Starting trunc against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/trunc/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/truncate/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/trunc"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/trunc/*~"
+Found 1 traces for trunc
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "truncate-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+Starting unlink against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/unlink/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/unlink/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/unlink"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/unlink/*~"
+Found 1 traces for unlink
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "unlink-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+sshfs_hfsplus_loop:fd:adhoc_close_tests-int.trace SUCCESS
+sshfs_hfsplus_loop:fd:adhoc_file_descriptor_change_tests-int.trace SUCCESS
+sshfs_hfsplus_loop:fd:adhoc_lseek_tests-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:fd:adhoc_lseek_tests-int.trace STDOUT: 614 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/results/run_adhoc_lseek_tests-int.trace.stdout
+sshfs_hfsplus_loop:fd:adhoc_lseek_tests-int.trace STDERR: 374 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/results/run_adhoc_lseek_tests-int.trace.stderr
+sshfs_hfsplus_loop:fd:adhoc_pread_tests-int.trace SUCCESS
+sshfs_hfsplus_loop:fd:adhoc_pwrite_tests-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:fd:adhoc_pwrite_tests-int.trace STDOUT: 195 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stdout
+sshfs_hfsplus_loop:fd:adhoc_pwrite_tests-int.trace STDERR: 0 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stderr
+sshfs_hfsplus_loop:fd:adhoc_open_multiple_tests-check-os.trace SUCCESS
+sshfs_hfsplus_loop:fd:adhoc_open_tests-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:fd:adhoc_open_tests-int.trace STDOUT: 607 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/results/run_adhoc_open_tests-int.trace.stdout
+sshfs_hfsplus_loop:fd:adhoc_open_tests-int.trace STDERR: 6591 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/fd/results/run_adhoc_open_tests-int.trace.stderr
+sshfs_hfsplus_loop:mkdir:mkdir-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:mkdir:mkdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/mkdir/results/run_mkdir-int.trace.stdout
+sshfs_hfsplus_loop:mkdir:mkdir-int.trace STDERR: 2728 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/mkdir/results/run_mkdir-int.trace.stderr
+sshfs_hfsplus_loop:rmdir:rmdir-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:rmdir:rmdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rmdir/results/run_rmdir-int.trace.stdout
+sshfs_hfsplus_loop:rmdir:rmdir-int.trace STDERR: 391 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rmdir/results/run_rmdir-int.trace.stderr
+sshfs_hfsplus_loop:stat:stat-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:stat:stat-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/stat/results/run_stat-int.trace.stdout
+sshfs_hfsplus_loop:stat:stat-int.trace STDERR: 16999 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/stat/results/run_stat-int.trace.stderr
+sshfs_hfsplus_loop:unlink:unlink-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:unlink:unlink-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/unlink/results/run_unlink-int.trace.stdout
+sshfs_hfsplus_loop:unlink:unlink-int.trace STDERR: 10763 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/unlink/results/run_unlink-int.trace.stderr
+sshfs_hfsplus_loop:trunc:truncate-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:trunc:truncate-int.trace STDOUT: 551 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/trunc/results/run_truncate-int.trace.stdout
+sshfs_hfsplus_loop:trunc:truncate-int.trace STDERR: 34249 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/trunc/results/run_truncate-int.trace.stderr
+sshfs_hfsplus_loop:link:link-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:link:link-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/link/results/run_link-int.trace.stdout
+sshfs_hfsplus_loop:link:link-int.trace STDERR: 110666 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/link/results/run_link-int.trace.stderr
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+sshfs_hfsplus_loop:rename:rename-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:rename:rename-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rename/results/run_rename-int.trace.stdout
+sshfs_hfsplus_loop:rename:rename-int.trace STDERR: 322560 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/rename/results/run_rename-int.trace.stderr
+Starting open against sshfs_hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/open/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/open/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/open"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/open/*~"
+Found 1 traces for open
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+< hdiutil attach -nomount ram://1048576
++ diskutil "erasevolume" "hfsx" "hfsplus_loop" "/dev/disk1"
+Started erase on disk1
+Unmounting disk
+Erasing
+Initialized /dev/rdisk1 as a 512 MB case-sensitive HFS Plus volume
+Mounting disk
+Finished erase on disk1 hfsplus_loop
++ diskutil "unmountdisk" "/dev/disk1"
+Unmount of all volumes on disk1 was successful
++ hdiutil "attach" "-mountpoint" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/dev/disk1"
+/dev/disk1          	                               	/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop
++ sshfs "root@localhost:/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "open-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/sshfs_hfsplus_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+sshfs_hfsplus_loop:open:open-int.trace FAILURE: exit 1
+sshfs_hfsplus_loop:open:open-int.trace STDOUT: 526 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/open/results/run_open-int.trace.stdout
+sshfs_hfsplus_loop:open:open-int.trace STDERR: 977056 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/sshfs_hfsplus_loop/open/results/run_open-int.trace.stderr
+ntfs3g_loop version: ntfs-3g 2014.2.15 external FUSE 27 fuse OSXFUSE mount version 2.6.4
+Starting fd against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/file_descriptors/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/*~"
+Found 7 traces for fd
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+< hdiutil attach -nomount ram://1048576
++ /usr/local/sbin/mkntfs "/dev/disk1"
+The partition start sector was not specified for /dev/disk1 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/disk1 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/disk1 and it could not be obtained automatically.  It has been set to 0.
+Cluster size has been automatically set to 4096 bytes.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+Initializing device with zeroes:   0%  0%  1%  2%  3%  4%  5%  6%  7%  8%  9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99%100% - Done.
+Creating NTFS volume structures.
+mkntfs completed successfully. Have a nice day.
++ ntfs-3g "/dev/disk1" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pwrite_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pread_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_multiple_tests-check-os.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_lseek_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_file_descriptor_change_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_close_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+Starting link against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/link/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/link/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/link"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/link/*~"
+Found 1 traces for link
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "link-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+Starting mkdir against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/mkdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/mkdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/mkdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/mkdir/*~"
+Found 1 traces for mkdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "mkdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+Starting rename against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rename/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rename/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rename"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rename/*~"
+Found 1 traces for rename
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rename-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+Starting rmdir against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rmdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rmdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rmdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rmdir/*~"
+Found 1 traces for rmdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rmdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+Starting stat against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/stat/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/stat/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/stat"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/stat/*~"
+Found 1 traces for stat
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "stat-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+Starting trunc against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/trunc/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/truncate/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/trunc"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/trunc/*~"
+Found 1 traces for trunc
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "truncate-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+Starting unlink against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/unlink/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/unlink/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/unlink"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/unlink/*~"
+Found 1 traces for unlink
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "unlink-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+ntfs3g_loop:fd:adhoc_close_tests-int.trace SUCCESS
+ntfs3g_loop:fd:adhoc_file_descriptor_change_tests-int.trace SUCCESS
+ntfs3g_loop:fd:adhoc_lseek_tests-int.trace FAILURE: exit 1
+ntfs3g_loop:fd:adhoc_lseek_tests-int.trace STDOUT: 614 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/results/run_adhoc_lseek_tests-int.trace.stdout
+ntfs3g_loop:fd:adhoc_lseek_tests-int.trace STDERR: 376 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/results/run_adhoc_lseek_tests-int.trace.stderr
+ntfs3g_loop:fd:adhoc_open_multiple_tests-check-os.trace SUCCESS
+ntfs3g_loop:fd:adhoc_pread_tests-int.trace SUCCESS
+ntfs3g_loop:fd:adhoc_pwrite_tests-int.trace FAILURE: exit 1
+ntfs3g_loop:fd:adhoc_pwrite_tests-int.trace STDOUT: 195 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stdout
+ntfs3g_loop:fd:adhoc_pwrite_tests-int.trace STDERR: 0 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stderr
+ntfs3g_loop:fd:adhoc_open_tests-int.trace FAILURE: exit 1
+ntfs3g_loop:fd:adhoc_open_tests-int.trace STDOUT: 607 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/results/run_adhoc_open_tests-int.trace.stdout
+ntfs3g_loop:fd:adhoc_open_tests-int.trace STDERR: 6589 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/fd/results/run_adhoc_open_tests-int.trace.stderr
+ntfs3g_loop:mkdir:mkdir-int.trace FAILURE: exit 1
+ntfs3g_loop:mkdir:mkdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/mkdir/results/run_mkdir-int.trace.stdout
+ntfs3g_loop:mkdir:mkdir-int.trace STDERR: 2714 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/mkdir/results/run_mkdir-int.trace.stderr
+ntfs3g_loop:rmdir:rmdir-int.trace FAILURE: exit 1
+ntfs3g_loop:rmdir:rmdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rmdir/results/run_rmdir-int.trace.stdout
+ntfs3g_loop:rmdir:rmdir-int.trace STDERR: 391 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rmdir/results/run_rmdir-int.trace.stderr
+ntfs3g_loop:stat:stat-int.trace FAILURE: exit 1
+ntfs3g_loop:stat:stat-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/stat/results/run_stat-int.trace.stdout
+ntfs3g_loop:stat:stat-int.trace STDERR: 16877 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/stat/results/run_stat-int.trace.stderr
+ntfs3g_loop:unlink:unlink-int.trace FAILURE: exit 1
+ntfs3g_loop:unlink:unlink-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/unlink/results/run_unlink-int.trace.stdout
+ntfs3g_loop:unlink:unlink-int.trace STDERR: 10758 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/unlink/results/run_unlink-int.trace.stderr
+ntfs3g_loop:trunc:truncate-int.trace FAILURE: exit 1
+ntfs3g_loop:trunc:truncate-int.trace STDOUT: 551 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/trunc/results/run_truncate-int.trace.stdout
+ntfs3g_loop:trunc:truncate-int.trace STDERR: 34234 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/trunc/results/run_truncate-int.trace.stderr
+ntfs3g_loop:link:link-int.trace FAILURE: exit 1
+ntfs3g_loop:link:link-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/link/results/run_link-int.trace.stdout
+ntfs3g_loop:link:link-int.trace STDERR: 110666 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/link/results/run_link-int.trace.stderr
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+ntfs3g_loop:rename:rename-int.trace FAILURE: exit 1
+ntfs3g_loop:rename:rename-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rename/results/run_rename-int.trace.stdout
+ntfs3g_loop:rename:rename-int.trace STDERR: 299265 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/rename/results/run_rename-int.trace.stderr
+Starting open against ntfs3g_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/open/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/open/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/open"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/open/*~"
+Found 1 traces for open
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+< hdiutil attach -nomount ram://1048576
++ /usr/local/sbin/mkntfs "/dev/disk1"
+The partition start sector was not specified for /dev/disk1 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/disk1 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/disk1 and it could not be obtained automatically.  It has been set to 0.
+Cluster size has been automatically set to 4096 bytes.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+Initializing device with zeroes:   0%  0%  1%  2%  3%  4%  5%  6%  7%  8%  9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99%100% - Done.
+Creating NTFS volume structures.
+mkntfs completed successfully. Have a nice day.
++ ntfs-3g "/dev/disk1" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "open-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/ntfs3g_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+ntfs3g_loop:open:open-int.trace FAILURE: exit 1
+ntfs3g_loop:open:open-int.trace STDOUT: 526 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/open/results/run_open-int.trace.stdout
+ntfs3g_loop:open:open-int.trace STDERR: 977056 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/ntfs3g_loop/open/results/run_open-int.trace.stderr
+hfsplus_loop version: system
+Starting fd against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/file_descriptors/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/*~"
+Found 7 traces for fd
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+< hdiutil attach -nomount ram://1048576
++ diskutil "erasevolume" "hfsx" "hfsplus_loop" "/dev/disk1"
+Started erase on disk1
+Unmounting disk
+Erasing
+Initialized /dev/rdisk1 as a 512 MB case-sensitive HFS Plus volume
+Mounting disk
+Finished erase on disk1 hfsplus_loop
++ diskutil "unmountdisk" "/dev/disk1"
+Unmount of all volumes on disk1 was successful
++ hdiutil "attach" "-mountpoint" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/dev/disk1"
+/dev/disk1          	                               	/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pwrite_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_pread_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_open_multiple_tests-check-os.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_lseek_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_file_descriptor_change_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "adhoc_close_tests-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting link against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/link/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/link/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/link"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/link/*~"
+Found 1 traces for link
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "link-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting mkdir against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/mkdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/mkdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/mkdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/mkdir/*~"
+Found 1 traces for mkdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "mkdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting rename against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rename/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rename/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rename"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rename/*~"
+Found 1 traces for rename
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rename-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting rmdir against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rmdir/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/rmdir/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rmdir"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rmdir/*~"
+Found 1 traces for rmdir
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "rmdir-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting stat against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/stat/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/stat/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/stat"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/stat/*~"
+Found 1 traces for stat
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "stat-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting trunc against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/trunc/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/truncate/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/trunc"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/trunc/*~"
+Found 1 traces for trunc
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "truncate-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+Starting unlink against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/unlink/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/unlink/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/unlink"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/unlink/*~"
+Found 1 traces for unlink
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "unlink-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+hfsplus_loop:fd:adhoc_pwrite_tests-int.trace FAILURE: exit 1
+hfsplus_loop:fd:adhoc_pwrite_tests-int.trace STDOUT: 195 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stdout
+hfsplus_loop:fd:adhoc_pwrite_tests-int.trace STDERR: 0 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/results/run_adhoc_pwrite_tests-int.trace.stderr
+hfsplus_loop:fd:adhoc_lseek_tests-int.trace FAILURE: exit 1
+hfsplus_loop:fd:adhoc_lseek_tests-int.trace STDOUT: 614 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/results/run_adhoc_lseek_tests-int.trace.stdout
+hfsplus_loop:fd:adhoc_lseek_tests-int.trace STDERR: 376 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/results/run_adhoc_lseek_tests-int.trace.stderr
+hfsplus_loop:fd:adhoc_pread_tests-int.trace SUCCESS
+hfsplus_loop:fd:adhoc_file_descriptor_change_tests-int.trace SUCCESS
+hfsplus_loop:fd:adhoc_close_tests-int.trace SUCCESS
+hfsplus_loop:fd:adhoc_open_multiple_tests-check-os.trace SUCCESS
+hfsplus_loop:fd:adhoc_open_tests-int.trace FAILURE: exit 1
+hfsplus_loop:fd:adhoc_open_tests-int.trace STDOUT: 607 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/results/run_adhoc_open_tests-int.trace.stdout
+hfsplus_loop:fd:adhoc_open_tests-int.trace STDERR: 6591 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/fd/results/run_adhoc_open_tests-int.trace.stderr
+hfsplus_loop:rmdir:rmdir-int.trace FAILURE: exit 1
+hfsplus_loop:rmdir:rmdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rmdir/results/run_rmdir-int.trace.stdout
+hfsplus_loop:rmdir:rmdir-int.trace STDERR: 391 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rmdir/results/run_rmdir-int.trace.stderr
+hfsplus_loop:stat:stat-int.trace FAILURE: exit 1
+hfsplus_loop:stat:stat-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/stat/results/run_stat-int.trace.stdout
+hfsplus_loop:stat:stat-int.trace STDERR: 16943 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/stat/results/run_stat-int.trace.stderr
+hfsplus_loop:mkdir:mkdir-int.trace FAILURE: exit 1
+hfsplus_loop:mkdir:mkdir-int.trace STDOUT: 530 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/mkdir/results/run_mkdir-int.trace.stdout
+hfsplus_loop:mkdir:mkdir-int.trace STDERR: 2728 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/mkdir/results/run_mkdir-int.trace.stderr
+hfsplus_loop:unlink:unlink-int.trace FAILURE: exit 1
+hfsplus_loop:unlink:unlink-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/unlink/results/run_unlink-int.trace.stdout
+hfsplus_loop:unlink:unlink-int.trace STDERR: 10763 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/unlink/results/run_unlink-int.trace.stderr
+hfsplus_loop:trunc:truncate-int.trace FAILURE: exit 1
+hfsplus_loop:trunc:truncate-int.trace STDOUT: 551 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/trunc/results/run_truncate-int.trace.stdout
+hfsplus_loop:trunc:truncate-int.trace STDERR: 34249 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/trunc/results/run_truncate-int.trace.stderr
+hfsplus_loop:link:link-int.trace FAILURE: exit 1
+hfsplus_loop:link:link-int.trace STDOUT: 523 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/link/results/run_link-int.trace.stdout
+hfsplus_loop:link:link-int.trace STDERR: 101864 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/link/results/run_link-int.trace.stderr
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+hfsplus_loop:rename:rename-int.trace FAILURE: exit 1
+hfsplus_loop:rename:rename-int.trace STDOUT: 537 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rename/results/run_rename-int.trace.stdout
+hfsplus_loop:rename:rename-int.trace STDERR: 299265 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/rename/results/run_rename-int.trace.stderr
+Starting open against hfsplus_loop
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/open/results"
++ sh "-c" "cp /Users/dsheets/Code/fs/test-suite/open/* /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/open"
++ sh "-c" "rm -f /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/open/*~"
+Found 1 traces for open
++ mkdir "-p" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
+< hdiutil attach -nomount ram://1048576
++ diskutil "erasevolume" "hfsx" "hfsplus_loop" "/dev/disk1"
+Started erase on disk1
+Unmounting disk
+Erasing
+Initialized /dev/rdisk1 as a 512 MB case-sensitive HFS Plus volume
+Mounting disk
+Finished erase on disk1 hfsplus_loop
++ diskutil "unmountdisk" "/dev/disk1"
+Unmount of all volumes on disk1 was successful
++ hdiutil "attach" "-mountpoint" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop" "/dev/disk1"
+/dev/disk1          	                               	/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop
+@ /Users/dsheets/Code/fs/test-suite/run_trace.sh "-q" "open-int.trace" "-tmp" "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ umount "/Users/dsheets/Code/fs/test-suite/mnt/hfsplus_loop"
++ hdiutil "detach" "/dev/disk1"
+"disk1" unmounted.
+"disk1" ejected.
+hfsplus_loop:open:open-int.trace FAILURE: exit 1
+hfsplus_loop:open:open-int.trace STDOUT: 526 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/open/results/run_open-int.trace.stdout
+hfsplus_loop:open:open-int.trace STDERR: 977056 bytes in /Users/dsheets/Code/fs/test-suite/2014-07-07_1sb/hfsplus_loop/open/results/run_open-int.trace.stderr
+
+done!
