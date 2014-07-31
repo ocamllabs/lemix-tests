@@ -1,0 +1,1569 @@
+        ##################################################
+        # Testing open with various flags and permissions
+        #
+        # This tests user and other permissions and 
+        # therefore needs root access
+        ##################################################
+
+        ###################################
+        # Initialising processes and users
+        ###################################
+
+        # Pid 1 runs as root, we need 3 more processes that run 
+        # as non-superusers. The idea is to have 
+        #
+        # - Pid 2 : creates and owns the files
+        # - Pid 3 : tries to access the files while 
+        #           being in the right group but not the owner
+        # - Pid 4 : tries to access the files while 
+        #           not being a group member and not the owner
+
+    21: create Pid 2 (User_id 1) (Group_id 1)
+    22: add_user_to_group (User_id 1) (Group_id 1)
+        Tau
+        RV_none
+
+
+        # Pid 3 runs as different user in the group of User 1
+    25: create Pid 3 (User_id 2) (Group_id 2)
+    26: add_user_to_group (User_id 2) (Group_id 1)
+        Tau
+        RV_none
+
+    27: add_user_to_group (User_id 2) (Group_id 2)
+        Tau
+        RV_none
+
+
+        # Pid 4 runs as a different user not in the group of User 1
+    30: create Pid 4 (User_id 3) (Group_id 3)
+    31: add_user_to_group (User_id 3) (Group_id 3)
+        Tau
+        RV_none
+
+
+        # make sure the permissions below get not modified by umask
+    34: Pid 2 -> umask 0o000
+        Tau
+        Pid 2 <- RV_file_perm(0o022)
+
+
+
+        ###################################
+        # Owner tests
+        ###################################
+
+    41: Pid 2 -> mkdir /dir_u/ 0o755
+        Tau
+        Pid 2 <- RV_none
+
+
+    43: Pid 2 -> open /dir_u/f-nonexist.txt [O_RDONLY]
+        Tau
+        Pid 2 <- ENOENT
+
+
+        # rwx
+    46: Pid 2 -> open_close /dir_u/f_rwx.txt [O_EXCL;O_RDONLY] 0o700
+        Tau
+
+Error:     46: Pid 2 -> open_close /dir_u/f_rwx.txt [O_EXCL;O_RDONLY] 0o700
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:     46: Pid 2 -> open_close /dir_u/f_rwx.txt [O_EXCL;O_RDONLY] 0o700
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    48: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     48: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    49: Pid 2 -> open_close /dir_u/f_rwx.txt [O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     49: Pid 2 -> open_close /dir_u/f_rwx.txt [O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    50: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     50: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    51: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     51: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    52: Pid 2 -> open_close /dir_u/f_rwx.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     52: Pid 2 -> open_close /dir_u/f_rwx.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    53: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     53: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    54: Pid 2 -> open_close /dir_u/f_rwx.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     54: Pid 2 -> open_close /dir_u/f_rwx.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # r--
+    57: Pid 2 -> open_close /dir_u/f_r.txt [O_EXCL;O_RDONLY] 0o400
+        Tau
+
+Error:     57: Pid 2 -> open_close /dir_u/f_r.txt [O_EXCL;O_RDONLY] 0o400
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:     57: Pid 2 -> open_close /dir_u/f_r.txt [O_EXCL;O_RDONLY] 0o400
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    58: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     58: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    59: Pid 2 -> open_close /dir_u/f_r.txt [O_EXEC]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     59: Pid 2 -> open_close /dir_u/f_r.txt [O_EXEC]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    60: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     60: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    61: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     61: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    62: Pid 2 -> open_close /dir_u/f_r.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     62: Pid 2 -> open_close /dir_u/f_r.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    63: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     63: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    64: Pid 2 -> open_close /dir_u/f_r.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     64: Pid 2 -> open_close /dir_u/f_r.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # -w-
+    67: Pid 2 -> open_close /dir_u/f_w.txt [O_EXCL;O_RDONLY] 0o200
+        Tau
+
+Error:     67: Pid 2 -> open_close /dir_u/f_w.txt [O_EXCL;O_RDONLY] 0o200
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:     67: Pid 2 -> open_close /dir_u/f_w.txt [O_EXCL;O_RDONLY] 0o200
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    68: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     68: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    69: Pid 2 -> open_close /dir_u/f_w.txt [O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     69: Pid 2 -> open_close /dir_u/f_w.txt [O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    70: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     70: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    71: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     71: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    72: Pid 2 -> open_close /dir_u/f_w.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     72: Pid 2 -> open_close /dir_u/f_w.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    73: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     73: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    74: Pid 2 -> open_close /dir_u/f_w.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     74: Pid 2 -> open_close /dir_u/f_w.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # --x
+    77: Pid 2 -> open_close /dir_u/f_x.txt [O_EXCL;O_RDONLY] 0o100
+        Tau
+
+Error:     77: Pid 2 -> open_close /dir_u/f_x.txt [O_EXCL;O_RDONLY] 0o100
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:     77: Pid 2 -> open_close /dir_u/f_x.txt [O_EXCL;O_RDONLY] 0o100
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    78: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     78: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    79: Pid 2 -> open_close /dir_u/f_x.txt [O_EXEC]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     79: Pid 2 -> open_close /dir_u/f_x.txt [O_EXEC]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    80: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     80: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    81: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     81: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    82: Pid 2 -> open_close /dir_u/f_x.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     82: Pid 2 -> open_close /dir_u/f_x.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    83: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     83: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    84: Pid 2 -> open_close /dir_u/f_x.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 2 <- EACCES
+
+Error:     84: Pid 2 -> open_close /dir_u/f_x.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # rw-
+    87: Pid 2 -> open_close /dir_u/f_rw.txt [O_EXCL;O_RDONLY] 0o600
+        Tau
+
+Error:     87: Pid 2 -> open_close /dir_u/f_rw.txt [O_EXCL;O_RDONLY] 0o600
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:     87: Pid 2 -> open_close /dir_u/f_rw.txt [O_EXCL;O_RDONLY] 0o600
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    88: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     88: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    89: Pid 2 -> open_close /dir_u/f_rw.txt [O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     89: Pid 2 -> open_close /dir_u/f_rw.txt [O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    90: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     90: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    91: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     91: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    92: Pid 2 -> open_close /dir_u/f_rw.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     92: Pid 2 -> open_close /dir_u/f_rw.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    93: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     93: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    94: Pid 2 -> open_close /dir_u/f_rw.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 2 <- RV_none
+
+Error:     94: Pid 2 -> open_close /dir_u/f_rw.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+
+        ###################################
+        # Group tests
+        ###################################
+
+   101: Pid 2 -> mkdir /dir_g/ 0o755
+        Tau
+        Pid 2 <- RV_none
+
+
+   103: Pid 3 -> open /dir_g/f-nonexist.txt [O_RDONLY]
+        Tau
+        Pid 3 <- ENOENT
+
+
+        # rwx
+   106: Pid 2 -> open_close /dir_g/f_rwx.txt [O_EXCL;O_RDONLY] 0o070
+        Tau
+
+Error:    106: Pid 2 -> open_close /dir_g/f_rwx.txt [O_EXCL;O_RDONLY] 0o070
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    106: Pid 2 -> open_close /dir_g/f_rwx.txt [O_EXCL;O_RDONLY] 0o070
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   108: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    108: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   109: Pid 3 -> open_close /dir_g/f_rwx.txt [O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    109: Pid 3 -> open_close /dir_g/f_rwx.txt [O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   110: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    110: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   111: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    111: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   112: Pid 3 -> open_close /dir_g/f_rwx.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    112: Pid 3 -> open_close /dir_g/f_rwx.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   113: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    113: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   114: Pid 3 -> open_close /dir_g/f_rwx.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    114: Pid 3 -> open_close /dir_g/f_rwx.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # r--
+   117: Pid 2 -> open_close /dir_g/f_r.txt [O_EXCL;O_RDONLY] 0o040
+        Tau
+
+Error:    117: Pid 2 -> open_close /dir_g/f_r.txt [O_EXCL;O_RDONLY] 0o040
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    117: Pid 2 -> open_close /dir_g/f_r.txt [O_EXCL;O_RDONLY] 0o040
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   118: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    118: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   119: Pid 3 -> open_close /dir_g/f_r.txt [O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    119: Pid 3 -> open_close /dir_g/f_r.txt [O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   120: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    120: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   121: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    121: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   122: Pid 3 -> open_close /dir_g/f_r.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    122: Pid 3 -> open_close /dir_g/f_r.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   123: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    123: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   124: Pid 3 -> open_close /dir_g/f_r.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    124: Pid 3 -> open_close /dir_g/f_r.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # -w-
+   127: Pid 2 -> open_close /dir_g/f_w.txt [O_EXCL;O_RDONLY] 0o020
+        Tau
+
+Error:    127: Pid 2 -> open_close /dir_g/f_w.txt [O_EXCL;O_RDONLY] 0o020
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    127: Pid 2 -> open_close /dir_g/f_w.txt [O_EXCL;O_RDONLY] 0o020
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   128: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    128: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   129: Pid 3 -> open_close /dir_g/f_w.txt [O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    129: Pid 3 -> open_close /dir_g/f_w.txt [O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   130: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    130: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   131: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    131: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   132: Pid 3 -> open_close /dir_g/f_w.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    132: Pid 3 -> open_close /dir_g/f_w.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   133: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    133: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   134: Pid 3 -> open_close /dir_g/f_w.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    134: Pid 3 -> open_close /dir_g/f_w.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # --x
+   137: Pid 2 -> open_close /dir_g/f_x.txt [O_EXCL;O_RDONLY] 0o010
+        Tau
+
+Error:    137: Pid 2 -> open_close /dir_g/f_x.txt [O_EXCL;O_RDONLY] 0o010
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    137: Pid 2 -> open_close /dir_g/f_x.txt [O_EXCL;O_RDONLY] 0o010
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   138: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    138: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   139: Pid 3 -> open_close /dir_g/f_x.txt [O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    139: Pid 3 -> open_close /dir_g/f_x.txt [O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   140: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    140: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   141: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    141: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   142: Pid 3 -> open_close /dir_g/f_x.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    142: Pid 3 -> open_close /dir_g/f_x.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   143: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    143: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   144: Pid 3 -> open_close /dir_g/f_x.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    144: Pid 3 -> open_close /dir_g/f_x.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # rw-
+   147: Pid 2 -> open_close /dir_g/f_rw.txt [O_EXCL;O_RDONLY] 0o060
+        Tau
+
+Error:    147: Pid 2 -> open_close /dir_g/f_rw.txt [O_EXCL;O_RDONLY] 0o060
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    147: Pid 2 -> open_close /dir_g/f_rw.txt [O_EXCL;O_RDONLY] 0o060
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   148: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    148: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   149: Pid 3 -> open_close /dir_g/f_rw.txt [O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    149: Pid 3 -> open_close /dir_g/f_rw.txt [O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   150: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    150: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   151: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    151: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   152: Pid 3 -> open_close /dir_g/f_rw.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    152: Pid 3 -> open_close /dir_g/f_rw.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   153: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    153: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   154: Pid 3 -> open_close /dir_g/f_rw.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 3 <- EACCES
+
+Error:    154: Pid 3 -> open_close /dir_g/f_rw.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+
+
+        ###################################
+        # Other tests
+        ###################################
+
+   162: Pid 2 -> mkdir /dir_o/ 0o755
+        Tau
+        Pid 2 <- RV_none
+
+   163: Pid 4 -> open /dir_o/f-nonexist.txt [O_RDONLY]
+        Tau
+        Pid 4 <- ENOENT
+
+
+        # rwx
+   166: Pid 2 -> open_close /dir_o/f_rwx.txt [O_EXCL;O_RDONLY] 0o007
+        Tau
+
+Error:    166: Pid 2 -> open_close /dir_o/f_rwx.txt [O_EXCL;O_RDONLY] 0o007
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    166: Pid 2 -> open_close /dir_o/f_rwx.txt [O_EXCL;O_RDONLY] 0o007
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   168: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    168: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   169: Pid 4 -> open_close /dir_o/f_rwx.txt [O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    169: Pid 4 -> open_close /dir_o/f_rwx.txt [O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   170: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    170: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   171: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    171: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   172: Pid 4 -> open_close /dir_o/f_rwx.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    172: Pid 4 -> open_close /dir_o/f_rwx.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   173: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    173: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   174: Pid 4 -> open_close /dir_o/f_rwx.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    174: Pid 4 -> open_close /dir_o/f_rwx.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # r--
+   177: Pid 2 -> open_close /dir_o/f_r.txt [O_EXCL;O_RDONLY] 0o004
+        Tau
+
+Error:    177: Pid 2 -> open_close /dir_o/f_r.txt [O_EXCL;O_RDONLY] 0o004
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    177: Pid 2 -> open_close /dir_o/f_r.txt [O_EXCL;O_RDONLY] 0o004
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   178: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    178: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   179: Pid 4 -> open_close /dir_o/f_r.txt [O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    179: Pid 4 -> open_close /dir_o/f_r.txt [O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   180: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    180: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   181: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    181: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   182: Pid 4 -> open_close /dir_o/f_r.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    182: Pid 4 -> open_close /dir_o/f_r.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   183: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    183: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   184: Pid 4 -> open_close /dir_o/f_r.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    184: Pid 4 -> open_close /dir_o/f_r.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # -w-
+   187: Pid 2 -> open_close /dir_o/f_w.txt [O_EXCL;O_RDONLY] 0o002
+        Tau
+
+Error:    187: Pid 2 -> open_close /dir_o/f_w.txt [O_EXCL;O_RDONLY] 0o002
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    187: Pid 2 -> open_close /dir_o/f_w.txt [O_EXCL;O_RDONLY] 0o002
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   188: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    188: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   189: Pid 4 -> open_close /dir_o/f_w.txt [O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    189: Pid 4 -> open_close /dir_o/f_w.txt [O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   190: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    190: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   191: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    191: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   192: Pid 4 -> open_close /dir_o/f_w.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    192: Pid 4 -> open_close /dir_o/f_w.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   193: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    193: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   194: Pid 4 -> open_close /dir_o/f_w.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    194: Pid 4 -> open_close /dir_o/f_w.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # --x
+   197: Pid 2 -> open_close /dir_o/f_x.txt [O_EXCL;O_RDONLY] 0o001
+        Tau
+
+Error:    197: Pid 2 -> open_close /dir_o/f_x.txt [O_EXCL;O_RDONLY] 0o001
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    197: Pid 2 -> open_close /dir_o/f_x.txt [O_EXCL;O_RDONLY] 0o001
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   198: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    198: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   199: Pid 4 -> open_close /dir_o/f_x.txt [O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    199: Pid 4 -> open_close /dir_o/f_x.txt [O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   200: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    200: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   201: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    201: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   202: Pid 4 -> open_close /dir_o/f_x.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    202: Pid 4 -> open_close /dir_o/f_x.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   203: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    203: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   204: Pid 4 -> open_close /dir_o/f_x.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    204: Pid 4 -> open_close /dir_o/f_x.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # rw-
+   207: Pid 2 -> open_close /dir_o/f_rw.txt [O_EXCL;O_RDONLY] 0o006
+        Tau
+
+Error:    207: Pid 2 -> open_close /dir_o/f_rw.txt [O_EXCL;O_RDONLY] 0o006
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        Pid 2 <- RV_none
+
+Error:    207: Pid 2 -> open_close /dir_o/f_rw.txt [O_EXCL;O_RDONLY] 0o006
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   208: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    208: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   209: Pid 4 -> open_close /dir_o/f_rw.txt [O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    209: Pid 4 -> open_close /dir_o/f_rw.txt [O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   210: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    210: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   211: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    211: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_APPEND]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   212: Pid 4 -> open_close /dir_o/f_rw.txt [O_APPEND;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    212: Pid 4 -> open_close /dir_o/f_rw.txt [O_APPEND;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   213: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_NONBLOCK]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    213: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_NONBLOCK]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   214: Pid 4 -> open_close /dir_o/f_rw.txt [O_NONBLOCK;O_EXEC]
+        Tau
+        Pid 4 <- EACCES
+
+Error:    214: Pid 4 -> open_close /dir_o/f_rw.txt [O_NONBLOCK;O_EXEC]
+               Tau
+               Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+
+   217: dump-result
+           /|D|4529
+           /dir_o|D|76926
+           /dir_o/f_rw.txt|F|77016|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /dir_o/f_w.txt|F|76981|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        end dump-result
+
+        /|D|0
+        /dir_g|D|2
+        /dir_o|D|3
+        /dir_u|D|1
+
+
+Error:    217: dump-result
+           /|D|4529
+           /dir_o|D|76926
+           /dir_o/f_rw.txt|F|77016|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /dir_o/f_w.txt|F|76981|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        end dump-result
+   
+   comparison of dump-results failed:
+      unexpected entry: /dir_o/f_rw.txt
+      unexpected entry: /dir_o/f_w.txt
+      missing entry: /dir_g
+      missing entry: /dir_u
+
+
+
+
+trace not accepted

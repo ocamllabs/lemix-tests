@@ -1,0 +1,589 @@
+        ###########################################
+        # Testing umask
+        ###########################################
+
+        # for testing umask 
+        # files and dirs are created with different
+        # permission given as arguments.
+
+        # in directory d_xxx 
+        # a f_yyy.txt or 
+        # a directory dir_yyy
+        # are created with umask 0oxxx and
+        # permission argument 0oyyy
+        # after creating stat is used to get
+        # the actual permission of the newly
+        # created file or directory
+
+
+        ###########################################
+        # Initialisation
+        ###########################################
+
+    23: umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+    24: mkdir /d_022 0o777
+        Tau
+        RV_none
+
+    25: mkdir /d_000 0o777
+        Tau
+        RV_none
+
+    26: mkdir /d_444 0o777
+        Tau
+        RV_none
+
+
+
+        ###########################################
+        # umask 0o022
+        ###########################################
+
+    33: umask 0o022
+        Tau
+        RV_file_perm(0o000)
+
+    34: chdir /d_022
+        Tau
+        RV_none
+
+
+    36: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+        Tau
+
+Error:     36: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     36: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    37: close (FD 3)
+        Tau
+        RV_none
+
+Error:     37: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    38: stat f_777.txt
+        Tau
+        { st_dev=16777220; st_ino=4543; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     38: stat f_777.txt
+               Tau
+               { st_dev=16777220; st_ino=4543; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4543; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    40: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+        Tau
+
+Error:     40: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     40: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    41: close (FD 3)
+        Tau
+        RV_none
+
+Error:     41: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    42: stat f_444.txt
+        Tau
+        { st_dev=16777220; st_ino=4547; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     42: stat f_444.txt
+               Tau
+               { st_dev=16777220; st_ino=4547; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4547; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    44: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+        Tau
+
+Error:     44: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     44: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    45: close (FD 3)
+        Tau
+        RV_none
+
+Error:     45: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    46: stat f_322.txt
+        Tau
+        { st_dev=16777220; st_ino=4550; st_kind=S_IFREG; st_perm=0o300; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     46: stat f_322.txt
+               Tau
+               { st_dev=16777220; st_ino=4550; st_kind=S_IFREG; st_perm=0o300; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4550; st_kind=S_IFREG; st_perm=0o300; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    48: mkdir dir_777 0o777
+        Tau
+        RV_none
+
+    49: stat dir_777
+        Tau
+        { st_dev=16777220; st_ino=4553; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:     49: stat dir_777
+               Tau
+               { st_dev=16777220; st_ino=4553; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4553; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=4; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=4; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+    51: mkdir dir_444 0o444
+        Tau
+        RV_none
+
+    52: stat dir_444
+        Tau
+        { st_dev=16777220; st_ino=4555; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:     52: stat dir_444
+               Tau
+               { st_dev=16777220; st_ino=4555; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4555; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=5; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=5; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+    54: mkdir dir_322 0o322
+        Tau
+        RV_none
+
+    55: stat dir_322
+        Tau
+        { st_dev=16777220; st_ino=4557; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:     55: stat dir_322
+               Tau
+               { st_dev=16777220; st_ino=4557; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4557; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=6; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=6; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+
+
+        ###########################################
+        # umask 0o000
+        ###########################################
+
+    63: umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+    64: chdir /d_000
+        Tau
+        RV_none
+
+
+    66: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+        Tau
+
+Error:     66: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     66: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    67: close (FD 3)
+        Tau
+        RV_none
+
+Error:     67: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    68: stat f_777.txt
+        Tau
+        { st_dev=16777220; st_ino=4560; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     68: stat f_777.txt
+               Tau
+               { st_dev=16777220; st_ino=4560; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4560; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    70: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+        Tau
+
+Error:     70: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     70: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    71: close (FD 3)
+        Tau
+        RV_none
+
+Error:     71: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    72: stat f_444.txt
+        Tau
+        { st_dev=16777220; st_ino=4563; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     72: stat f_444.txt
+               Tau
+               { st_dev=16777220; st_ino=4563; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4563; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    74: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+        Tau
+
+Error:     74: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     74: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    75: close (FD 3)
+        Tau
+        RV_none
+
+Error:     75: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    76: stat f_322.txt
+        Tau
+        { st_dev=16777220; st_ino=4565; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     76: stat f_322.txt
+               Tau
+               { st_dev=16777220; st_ino=4565; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4565; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    78: mkdir dir_777 0o777
+        Tau
+        RV_none
+
+    79: stat dir_777
+        Tau
+        { st_dev=16777220; st_ino=4573; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:     79: stat dir_777
+               Tau
+               { st_dev=16777220; st_ino=4573; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4573; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=7; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=7; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+    81: mkdir dir_444 0o444
+        Tau
+        RV_none
+
+    82: stat dir_444
+        Tau
+        { st_dev=16777220; st_ino=4584; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:     82: stat dir_444
+               Tau
+               { st_dev=16777220; st_ino=4584; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4584; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=8; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=8; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+    84: mkdir dir_322 0o322
+        Tau
+        RV_none
+
+    85: stat dir_322
+        Tau
+        { st_dev=16777220; st_ino=4585; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:     85: stat dir_322
+               Tau
+               { st_dev=16777220; st_ino=4585; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4585; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=9; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=9; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+
+
+
+        ###########################################
+        # umask 0o444
+        ###########################################
+
+    94: umask 0o444
+        Tau
+        RV_file_perm(0o000)
+
+    95: chdir /d_444
+        Tau
+        RV_none
+
+
+    97: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+        Tau
+
+Error:     97: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     97: open f_777.txt [O_EXCL;O_RDONLY] 0o777
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    98: close (FD 3)
+        Tau
+        RV_none
+
+Error:     98: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    99: stat f_777.txt
+        Tau
+        { st_dev=16777220; st_ino=4586; st_kind=S_IFREG; st_perm=0o333; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     99: stat f_777.txt
+               Tau
+               { st_dev=16777220; st_ino=4586; st_kind=S_IFREG; st_perm=0o333; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4586; st_kind=S_IFREG; st_perm=0o333; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   101: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+        Tau
+
+Error:    101: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:    101: open f_444.txt [O_EXCL;O_RDONLY] 0o444
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   102: close (FD 3)
+        Tau
+        RV_none
+
+Error:    102: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   103: stat f_444.txt
+        Tau
+        { st_dev=16777220; st_ino=4587; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    103: stat f_444.txt
+               Tau
+               { st_dev=16777220; st_ino=4587; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4587; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   105: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+        Tau
+
+Error:    105: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:    105: open f_322.txt [O_EXCL;O_RDONLY] 0o322
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   106: close (FD 3)
+        Tau
+        RV_none
+
+Error:    106: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   107: stat f_322.txt
+        Tau
+        { st_dev=16777220; st_ino=4588; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    107: stat f_322.txt
+               Tau
+               { st_dev=16777220; st_ino=4588; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4588; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   109: mkdir dir_777 0o777
+        Tau
+        RV_none
+
+   110: stat dir_777
+        Tau
+        { st_dev=16777220; st_ino=4597; st_kind=S_IFDIR; st_perm=0o333; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:    110: stat dir_777
+               Tau
+               { st_dev=16777220; st_ino=4597; st_kind=S_IFDIR; st_perm=0o333; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4597; st_kind=S_IFDIR; st_perm=0o333; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=10; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=10; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+   112: mkdir dir_444 0o444
+        Tau
+        RV_none
+
+   113: stat dir_444
+        Tau
+        { st_dev=16777220; st_ino=4599; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:    113: stat dir_444
+               Tau
+               { st_dev=16777220; st_ino=4599; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4599; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=11; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=11; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+   115: mkdir dir_322 0o322
+        Tau
+        RV_none
+
+   116: stat dir_322
+        Tau
+        { st_dev=16777220; st_ino=4600; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+
+Error:    116: stat dir_322
+               Tau
+               { st_dev=16777220; st_ino=4600; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   unexpected results: { st_dev=16777220; st_ino=4600; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=68; }
+   allowed are only: { st_dev=2049; st_ino=12; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=12; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+trace not accepted

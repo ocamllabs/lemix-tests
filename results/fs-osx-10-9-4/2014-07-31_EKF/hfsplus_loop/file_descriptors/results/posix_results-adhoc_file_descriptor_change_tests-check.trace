@@ -1,0 +1,127 @@
+        # Tests for a file underlying a file-descriptor
+        # being modified while the descriptor is open
+
+        # create a file with some content
+        open f1.txt [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(4)
+
+        # check we are at the beginning
+        read! (FD 4) 100
+        Tau
+        RV_bytes("0123456789")
+
+
+        # check lseek to FD 4 does not affect FD 3
+        lseek (FD 4) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        write! (FD 3) "AB" 2
+        Tau
+        RV_num(2)
+
+
+        # but content is present in both
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+        pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        close (FD 4)
+        Tau
+        RV_none
+
+
+
+
+        # open f1, then delete it
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        unlink f1.txt
+        Tau
+        RV_none
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+
+        open_close f1.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        # open f1, then rename it
+        open f1.txt [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        rename f1.txt f2.txt
+        Tau
+        RV_none
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+
+        open_close f1.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(4)
+
+        pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 4)
+        Tau
+        RV_none
+
+        close (FD 3)
+        Tau
+        RV_none
+
+

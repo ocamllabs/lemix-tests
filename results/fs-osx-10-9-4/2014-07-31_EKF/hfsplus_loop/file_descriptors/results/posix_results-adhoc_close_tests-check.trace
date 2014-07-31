@@ -1,0 +1,123 @@
+        # Tests for close
+
+        # close on an fd that was never used
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        # and again
+        close (FD 4)
+        Tau
+        EBADF
+
+
+        # open a normal file, and close
+        open f1.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        # open a normal file, and close twice
+        open f2.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        # open and close a recently closed fd
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1 [O_RDWR]
+        Tau
+        ENOENT
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+
+        # multiple overlapping opens
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        open f2.txt [O_RDWR]
+        Tau
+        RV_num(4)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        close (FD 4)
+        Tau
+        RV_none
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        # opening a directory
+        mkdir d1 0o755
+        Tau
+        RV_none
+
+        open d1 [O_RDWR]
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        EBADF
+
+        open d1 [O_RDWR]
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        # closing stdin
+        close (FD 0)
+        Tau
+        RV_none
+
+
+        # FIXME we can't close stdout because we are using it to return results of tests!
+        # close (FD 1)
+
+        # FIXME we probably shouldn't close stderr either
+        # close (FD 2)
+

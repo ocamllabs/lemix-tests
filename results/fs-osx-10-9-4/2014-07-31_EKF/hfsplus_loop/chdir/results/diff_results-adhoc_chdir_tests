@@ -1,0 +1,500 @@
+        # adhoc_chdir_tests
+
+        # initialization
+        # create directory structure
+        #
+        # - d1
+        #   + d11
+        #   + d12
+        # - d2
+        #   + d21
+        #   + d22
+        #
+        # in each directory create a file with the same name 
+        # as the directory
+
+    16: open_close /root.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     16: open_close /root.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     16: open_close /root.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    18: mkdir /d1 0o777
+        Tau
+        RV_none
+
+    19: mkdir /d1/d11 0o777
+        Tau
+        RV_none
+
+    20: mkdir /d1/d12 0o777
+        Tau
+        RV_none
+
+    21: open_close /d1/f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     21: open_close /d1/f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     21: open_close /d1/f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    22: open_close /d1/d11/f11.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     22: open_close /d1/d11/f11.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     22: open_close /d1/d11/f11.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    23: open_close /d1/d12/f12.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     23: open_close /d1/d12/f12.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     23: open_close /d1/d12/f12.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    25: mkdir /d2 0o777
+        Tau
+        RV_none
+
+    26: mkdir /d2/d21 0o777
+        Tau
+        RV_none
+
+    27: mkdir /d2/d22 0o777
+        Tau
+        RV_none
+
+    28: open_close /d2/f2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     28: open_close /d2/f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     28: open_close /d2/f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    29: open_close /d2/d21/f21.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     29: open_close /d2/d21/f21.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     29: open_close /d2/d21/f21.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    30: open_close /d2/d22/f22.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     30: open_close /d2/d22/f22.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     30: open_close /d2/d22/f22.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+
+        ###############################################
+        # Tests
+        ###############################################
+
+        # we test whether we are in the correct directory
+        # by opening a file. The file-names should correspond
+        # to the directory names 
+
+        # check we are at the beginning in root directory
+    42: open_close root.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     42: open_close root.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    43: open_close no_such_file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+    44: open_close f1.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        # change to d1
+    47: chdir d1
+        Tau
+        RV_none
+
+    48: open_close f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     48: open_close f1.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    49: open_close root.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        # change to d11
+    52: chdir d11
+        Tau
+        RV_none
+
+    53: open_close f11.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     53: open_close f11.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    54: open_close ../f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     54: open_close ../f1.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    55: open_close ../../root.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     55: open_close ../../root.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    56: open_close no_such_file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        # change back to d1
+    59: chdir ..
+        Tau
+        RV_none
+
+    60: open_close d11/f11.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     60: open_close d11/f11.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    61: open_close d12/f12.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     61: open_close d12/f12.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    62: open_close f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     62: open_close f1.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    63: open_close ../root.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     63: open_close ../root.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    64: open_close no_such_file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        # stay in d1
+    67: chdir .
+        Tau
+        RV_none
+
+    68: open_close d11/f11.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     68: open_close d11/f11.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    69: open_close d12/f12.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     69: open_close d12/f12.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    70: open_close f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     70: open_close f1.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    71: open_close ../root.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     71: open_close ../root.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    72: open_close no_such_file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        # switch to d2
+    75: chdir ../d2
+        Tau
+        RV_none
+
+    76: open_close d21/f21.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     76: open_close d21/f21.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    77: open_close f2.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     77: open_close f2.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    78: open_close ../root.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     78: open_close ../root.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    79: open_close no_such_file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        # switch to non-existing subdirectory, should fail and stay in d2
+    82: chdir no_such_dir
+        Tau
+        ENOENT
+
+    83: open_close d21/f21.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     83: open_close d21/f21.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    84: open_close f2.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     84: open_close f2.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    85: open_close ../root.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     85: open_close ../root.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    86: open_close no_such_file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        # switch to file
+    89: chdir f2.txt
+        Tau
+        ENOTDIR
+
+Error:     89: chdir f2.txt
+               Tau
+               ENOTDIR
+   unexpected results: ENOTDIR
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    90: open_close d21/f21.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     90: open_close d21/f21.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    91: open_close f2.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     91: open_close f2.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    92: open_close ../root.txt [O_RDONLY]
+        Tau
+        RV_none
+
+Error:     92: open_close ../root.txt [O_RDONLY]
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    93: open_close no_such_file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+trace not accepted

@@ -1,0 +1,754 @@
+        # Tests for lseek
+
+
+        ##############################################
+        # reads combined with lseek
+        ##############################################
+
+        # initialise a file with some text
+     9: open f1.txt [O_EXCL;O_APPEND;O_EXEC] 0o666
+        Tau
+
+Error:      9: open f1.txt [O_EXCL;O_APPEND;O_EXEC] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:      9: open f1.txt [O_EXCL;O_APPEND;O_EXEC] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    10: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+Error:     10: write! (FD 3) "0123456789" 10
+               Tau
+               RV_num(10)
+   unexpected results: RV_num(10)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    11: close (FD 3)
+        Tau
+        RV_none
+
+Error:     11: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+    13: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     13: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # read 2 bytes and then 2 again
+    16: read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+Error:     16: read (FD 3) 2
+               Tau
+               RV_bytes("01")
+   unexpected results: RV_bytes("01")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    17: read (FD 3) 2
+        Tau
+        RV_bytes("23")
+
+Error:     17: read (FD 3) 2
+               Tau
+               RV_bytes("23")
+   unexpected results: RV_bytes("23")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # jump back to beginning
+    20: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+Error:     20: lseek (FD 3) 0 SEEK_SET
+               Tau
+               RV_num(0)
+   unexpected results: RV_num(0)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    21: read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+Error:     21: read (FD 3) 2
+               Tau
+               RV_bytes("01")
+   unexpected results: RV_bytes("01")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # jump to absolute position 4
+    24: lseek (FD 3) 4 SEEK_SET
+        Tau
+        RV_num(4)
+
+Error:     24: lseek (FD 3) 4 SEEK_SET
+               Tau
+               RV_num(4)
+   unexpected results: RV_num(4)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    25: read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+Error:     25: read (FD 3) 2
+               Tau
+               RV_bytes("45")
+   unexpected results: RV_bytes("45")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # jump after end
+    28: lseek (FD 3) 5 SEEK_END
+        Tau
+        RV_num(15)
+
+Error:     28: lseek (FD 3) 5 SEEK_END
+               Tau
+               RV_num(15)
+   unexpected results: RV_num(15)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    29: read (FD 3) 2
+        Tau
+        RV_bytes("")
+
+Error:     29: read (FD 3) 2
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # jump after end
+    32: lseek (FD 3) 5 SEEK_END
+        Tau
+        RV_num(15)
+
+Error:     32: lseek (FD 3) 5 SEEK_END
+               Tau
+               RV_num(15)
+   unexpected results: RV_num(15)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    33: read (FD 3) 2
+        Tau
+        RV_bytes("")
+
+Error:     33: read (FD 3) 2
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # jump 2 before end
+    36: lseek (FD 3) -2 SEEK_END
+        Tau
+        RV_num(8)
+
+Error:     36: lseek (FD 3) -2 SEEK_END
+               Tau
+               RV_num(8)
+   unexpected results: RV_num(8)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    37: read (FD 3) 2
+        Tau
+        RV_bytes("89")
+
+Error:     37: read (FD 3) 2
+               Tau
+               RV_bytes("89")
+   unexpected results: RV_bytes("89")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # 2 back and try again
+    40: lseek (FD 3) -2 SEEK_CUR
+        Tau
+        RV_num(8)
+
+Error:     40: lseek (FD 3) -2 SEEK_CUR
+               Tau
+               RV_num(8)
+   unexpected results: RV_num(8)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    41: read (FD 3) 2
+        Tau
+        RV_bytes("89")
+
+Error:     41: read (FD 3) 2
+               Tau
+               RV_bytes("89")
+   unexpected results: RV_bytes("89")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # jump just to zero
+    44: lseek (FD 3) -10 SEEK_CUR
+        Tau
+        RV_num(0)
+
+Error:     44: lseek (FD 3) -10 SEEK_CUR
+               Tau
+               RV_num(0)
+   unexpected results: RV_num(0)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    45: read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+Error:     45: read (FD 3) 2
+               Tau
+               RV_bytes("01")
+   unexpected results: RV_bytes("01")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # jump too far back (negative resulting offset)
+    48: lseek (FD 3) -10 SEEK_CUR
+        Tau
+        EINVAL
+
+Error:     48: lseek (FD 3) -10 SEEK_CUR
+               Tau
+               EINVAL
+   unexpected results: EINVAL
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    49: read (FD 3) 2
+        Tau
+        RV_bytes("23")
+
+Error:     49: read (FD 3) 2
+               Tau
+               RV_bytes("23")
+   unexpected results: RV_bytes("23")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # use wrong whence
+    52: lseek (FD 3) 0 5
+        Tau
+        EINVAL
+
+    53: read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+Error:     53: read (FD 3) 2
+               Tau
+               RV_bytes("45")
+   unexpected results: RV_bytes("45")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # check position
+    56: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(6)
+
+Error:     56: lseek (FD 3) 0 SEEK_CUR
+               Tau
+               RV_num(6)
+   unexpected results: RV_num(6)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    57: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(6)
+
+Error:     57: lseek (FD 3) 0 SEEK_CUR
+               Tau
+               RV_num(6)
+   unexpected results: RV_num(6)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+    59: close (FD 3)
+        Tau
+        RV_none
+
+Error:     59: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # use closed file-descriptor
+    62: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        EBADF
+
+
+        # use non-existing file-descriptor
+    65: lseek (FD 4) 0 SEEK_CUR
+        Tau
+        EBADF
+
+
+
+        ##############################################
+        # write and lseek
+        ##############################################
+
+        # jump after end of file should do nothing by itself
+    73: open f1.txt [O_APPEND;O_EXEC] 0o666
+        Tau
+        RV_num(3)
+
+Error:     73: open f1.txt [O_APPEND;O_EXEC] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    74: lseek (FD 3) 5 SEEK_SET
+        Tau
+        RV_num(5)
+
+Error:     74: lseek (FD 3) 5 SEEK_SET
+               Tau
+               RV_num(5)
+   unexpected results: RV_num(5)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    75: close (FD 3)
+        Tau
+        RV_none
+
+Error:     75: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+    77: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     77: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    78: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+Error:     78: read! (FD 3) 100
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    79: close (FD 3)
+        Tau
+        RV_none
+
+Error:     79: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+
+        # jump after end of file, then write adds 0s
+    83: open f1.txt [O_APPEND;O_EXEC] 0o666
+        Tau
+        RV_num(3)
+
+Error:     83: open f1.txt [O_APPEND;O_EXEC] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    84: lseek (FD 3) 5 SEEK_SET
+        Tau
+        RV_num(5)
+
+Error:     84: lseek (FD 3) 5 SEEK_SET
+               Tau
+               RV_num(5)
+   unexpected results: RV_num(5)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    85: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+Error:     85: write (FD 3) "0123456789" 10
+               Tau
+               RV_num(10)
+   unexpected results: RV_num(10)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    86: close (FD 3)
+        Tau
+        RV_none
+
+Error:     86: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+    88: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     88: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    89: read! (FD 3) 100
+        Tau
+        RV_bytes("\000\000\000\000\0000123456789")
+
+Error:     89: read! (FD 3) 100
+               Tau
+               RV_bytes("\000\000\000\000\0000123456789")
+   unexpected results: RV_bytes("\000\000\000\000\0000123456789")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    90: close (FD 3)
+        Tau
+        RV_none
+
+Error:     90: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+
+        # write then jump back and write, jump back, read
+    94: open f1.txt [O_APPEND;O_RDONLY] 0o666
+        Tau
+        RV_num(3)
+
+Error:     94: open f1.txt [O_APPEND;O_RDONLY] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    95: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+Error:     95: write (FD 3) "0123456789" 10
+               Tau
+               RV_num(10)
+   unexpected results: RV_num(10)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    96: lseek (FD 3) -2 SEEK_CUR
+        Tau
+        RV_num(8)
+
+Error:     96: lseek (FD 3) -2 SEEK_CUR
+               Tau
+               RV_num(8)
+   unexpected results: RV_num(8)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    97: write (FD 3) "XX" 2
+        Tau
+        RV_num(2)
+
+Error:     97: write (FD 3) "XX" 2
+               Tau
+               RV_num(2)
+   unexpected results: RV_num(2)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    98: lseek (FD 3) -6 SEEK_CUR
+        Tau
+        RV_num(4)
+
+Error:     98: lseek (FD 3) -6 SEEK_CUR
+               Tau
+               RV_num(4)
+   unexpected results: RV_num(4)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    99: read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+Error:     99: read (FD 3) 2
+               Tau
+               RV_bytes("45")
+   unexpected results: RV_bytes("45")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   100: write (FD 3) "YY" 2
+        Tau
+        RV_num(2)
+
+Error:    100: write (FD 3) "YY" 2
+               Tau
+               RV_num(2)
+   unexpected results: RV_num(2)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   101: close (FD 3)
+        Tau
+        RV_none
+
+Error:    101: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+   103: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    103: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   104: read! (FD 3) 100
+        Tau
+        RV_bytes("012345YYXX")
+
+Error:    104: read! (FD 3) 100
+               Tau
+               RV_bytes("012345YYXX")
+   unexpected results: RV_bytes("012345YYXX")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   105: close (FD 3)
+        Tau
+        RV_none
+
+Error:    105: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+
+        ##############################################
+        # lseek on dirs is not properly supported and 
+        # therefore not tested carefully
+        ##############################################
+
+   113: mkdir d1 0o777
+        Tau
+        RV_none
+
+   114: open_close d1/f1.txt [O_EXCL;O_EXEC] 0o666
+        Tau
+
+Error:    114: open_close d1/f1.txt [O_EXCL;O_EXEC] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    114: open_close d1/f1.txt [O_EXCL;O_EXEC] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   115: open_close d1/f2.txt [O_EXCL;O_EXEC] 0o666
+        Tau
+
+Error:    115: open_close d1/f2.txt [O_EXCL;O_EXEC] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    115: open_close d1/f2.txt [O_EXCL;O_EXEC] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   116: open_close d1/f3.txt [O_EXCL;O_EXEC] 0o666
+        Tau
+
+Error:    116: open_close d1/f3.txt [O_EXCL;O_EXEC] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    116: open_close d1/f3.txt [O_EXCL;O_EXEC] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+
+   119: open d1 [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   120: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+   121: read (FD 3) 10
+        Tau
+        EISDIR
+
+
+   123: lseek (FD 3) 4 SEEK_CUR
+        Tau
+        RV_num(4)
+
+   124: read (FD 3) 10
+        Tau
+        EISDIR
+
+
+        # the following fail with a oveflow
+   127: lseek (FD 3) 0 SEEK_END
+        Tau
+        RV_num(170)
+
+Error:    127: lseek (FD 3) 0 SEEK_END
+               Tau
+               RV_num(170)
+   unexpected results: RV_num(170)
+   allowed are only: EOVERFLOW
+   continuing execution with EOVERFLOW
+
+   128: lseek (FD 3) -2000 SEEK_END
+        Tau
+        EINVAL
+
+Error:    128: lseek (FD 3) -2000 SEEK_END
+               Tau
+               EINVAL
+   unexpected results: EINVAL
+   allowed are only: EOVERFLOW
+   continuing execution with EOVERFLOW
+
+
+   130: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+   131: read (FD 3) 10
+        Tau
+        EISDIR
+
+
+   133: lseek (FD 3) 10 SEEK_SET
+        Tau
+        RV_num(10)
+
+   134: read (FD 3) 10
+        Tau
+        EISDIR
+
+
+   136: close (FD 3)
+        Tau
+        RV_none
+
+
+trace not accepted

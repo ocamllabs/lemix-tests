@@ -1,0 +1,2999 @@
+        ###########################################
+        # Testing path resolution with permissions
+        ###########################################
+
+        # create 3 nested dirs /d1/d2/d3,
+        # d2 also contains a file. Then change read and
+        # write permission for d2 and see what files / dirs
+        # can still be accessed. To test path resolution the
+        # command stat is used, to read the dir d2, readdir.
+        # Both relative and absolute paths are tested.
+
+
+        ###########################################
+        # Initialisation
+        ###########################################
+
+    17: mkdir /d1 0o777
+        Tau
+        RV_none
+
+    18: mkdir /d1/d2/ 0o777
+        Tau
+        RV_none
+
+    19: mkdir /d1/d2/d3 0o777
+        Tau
+        RV_none
+
+    20: open_close /d1/file1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     20: open_close /d1/file1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     20: open_close /d1/file1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    21: open_close /d1/d2/file2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     21: open_close /d1/d2/file2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     21: open_close /d1/d2/file2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    22: open_close /d1/d2/d3/file3.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     22: open_close /d1/d2/d3/file3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     22: open_close /d1/d2/d3/file3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+
+        ###########################################
+        # Absolute paths
+        ###########################################
+
+        # rwx
+    30: chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+    31: opendir /d1/d2
+        Tau
+        RV_num(1)
+
+    32: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     32: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    33: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:     33: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+    34: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+    35: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:     35: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    36: closedir (DH 1)
+        Tau
+        RV_none
+
+    37: stat /d1/file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     37: stat /d1/file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    38: stat /d1/d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     38: stat /d1/d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    39: stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     39: stat /d1/d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    40: stat /d1/d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     40: stat /d1/d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    41: stat /d1/d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     41: stat /d1/d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    42: stat /d1/d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     42: stat /d1/d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    43: stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     43: stat /d1/d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    44: stat /d1/d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     44: stat /d1/d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    45: chdir /d1/d2
+        Tau
+        RV_none
+
+    46: chdir /
+        Tau
+        RV_none
+
+
+        # r-x
+    49: chmod /d1/d2 0o500
+        Tau
+        RV_none
+
+    50: opendir /d1/d2
+        Tau
+        RV_num(1)
+
+    51: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     51: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    52: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:     52: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+    53: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+    54: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:     54: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    55: closedir (DH 1)
+        Tau
+        RV_none
+
+    56: stat /d1/file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     56: stat /d1/file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    57: stat /d1/d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     57: stat /d1/d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    58: stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     58: stat /d1/d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    59: stat /d1
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:     59: stat /d1
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    60: stat /d1/d2
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:     60: stat /d1/d2
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    61: stat /d1/d2/
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:     61: stat /d1/d2/
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    62: stat /d1/d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     62: stat /d1/d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    63: stat /d1/d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     63: stat /d1/d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    64: stat /d1/d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     64: stat /d1/d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    65: stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     65: stat /d1/d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    66: stat /d1/d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     66: stat /d1/d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    67: chdir /d1/d2
+        Tau
+        RV_none
+
+    68: chdir /
+        Tau
+        RV_none
+
+
+        # --x
+    71: chmod /d1/d2 0o100
+        Tau
+        RV_none
+
+    72: opendir /d1/d2
+        Tau
+        RV_num(1)
+
+    73: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     73: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    74: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:     74: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+    75: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+    76: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:     76: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    77: closedir (DH 1)
+        Tau
+        RV_none
+
+    78: stat /d1/file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     78: stat /d1/file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    79: stat /d1/d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     79: stat /d1/d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    80: stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     80: stat /d1/d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    81: stat /d1
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:     81: stat /d1
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    82: stat /d1/d2
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:     82: stat /d1/d2
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    83: stat /d1/d2/
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:     83: stat /d1/d2/
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    84: stat /d1/d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     84: stat /d1/d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    85: stat /d1/d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     85: stat /d1/d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    86: stat /d1/d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     86: stat /d1/d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    87: stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     87: stat /d1/d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    88: stat /d1/d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:     88: stat /d1/d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+    89: chdir /d1/d2
+        Tau
+        RV_none
+
+
+        # r--
+    92: chmod /d1/d2 0o400
+        Tau
+        RV_none
+
+    93: opendir /d1/d2
+        Tau
+        RV_num(1)
+
+    94: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     94: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    95: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:     95: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+    96: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+    97: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:     97: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    98: closedir (DH 1)
+        Tau
+        RV_none
+
+    99: stat /d1/file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:     99: stat /d1/file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   100: stat /d1/d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    100: stat /d1/d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   101: stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    101: stat /d1/d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   102: stat /d1
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    102: stat /d1
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   103: stat /d1/d2
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    103: stat /d1/d2
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   104: stat /d1/d2/
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    104: stat /d1/d2/
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   105: stat /d1/d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    105: stat /d1/d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   106: stat /d1/d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    106: stat /d1/d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   107: stat /d1/d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    107: stat /d1/d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   108: stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    108: stat /d1/d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   109: stat /d1/d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    109: stat /d1/d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   110: chdir /d1/d2
+        Tau
+        RV_none
+
+   111: chdir /
+        Tau
+        RV_none
+
+
+
+        ###########################################
+        # Relative paths from d1
+        ###########################################
+
+   118: chdir /d1
+        Tau
+        RV_none
+
+
+        # rwx
+   121: chmod d2 0o700
+        Tau
+        RV_none
+
+   122: opendir d2
+        Tau
+        RV_num(1)
+
+   123: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    123: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   124: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    124: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   125: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   126: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    126: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   127: closedir (DH 1)
+        Tau
+        RV_none
+
+   128: stat file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    128: stat file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   129: stat d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    129: stat d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   130: stat d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    130: stat d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   131: stat .
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    131: stat .
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   132: stat d2
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    132: stat d2
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   133: stat d2/
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    133: stat d2/
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   134: stat d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    134: stat d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   135: stat d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    135: stat d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   136: stat d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    136: stat d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   137: stat d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    137: stat d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   138: stat d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    138: stat d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   139: chdir d2
+        Tau
+        RV_none
+
+   140: chdir /d1
+        Tau
+        RV_none
+
+
+        # r-x
+   143: chmod d2 0o500
+        Tau
+        RV_none
+
+   144: opendir d2
+        Tau
+        RV_num(1)
+
+   145: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    145: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   146: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    146: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   147: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   148: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    148: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   149: closedir (DH 1)
+        Tau
+        RV_none
+
+   150: stat file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    150: stat file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   151: stat d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    151: stat d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   152: stat d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    152: stat d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   153: stat .
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    153: stat .
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   154: stat d2
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    154: stat d2
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   155: stat d2/
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    155: stat d2/
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   156: stat d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    156: stat d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   157: stat d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    157: stat d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   158: stat d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    158: stat d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   159: stat d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    159: stat d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   160: stat d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    160: stat d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   161: chdir d2
+        Tau
+        RV_none
+
+   162: chdir /d1
+        Tau
+        RV_none
+
+
+        # --x
+   165: chmod d2 0o100
+        Tau
+        RV_none
+
+   166: opendir d2
+        Tau
+        RV_num(1)
+
+   167: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    167: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   168: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    168: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   169: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   170: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    170: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   171: closedir (DH 1)
+        Tau
+        RV_none
+
+   172: stat file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    172: stat file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   173: stat d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    173: stat d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   174: stat d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    174: stat d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   175: stat .
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    175: stat .
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   176: stat d2
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    176: stat d2
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   177: stat d2/
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    177: stat d2/
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   178: stat d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    178: stat d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   179: stat d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    179: stat d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   180: stat d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    180: stat d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   181: stat d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    181: stat d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   182: stat d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    182: stat d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   183: chdir d2
+        Tau
+        RV_none
+
+   184: chdir /d1
+        Tau
+        RV_none
+
+
+        # r--
+   187: chmod d2 0o400
+        Tau
+        RV_none
+
+   188: opendir d2
+        Tau
+        RV_num(1)
+
+   189: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    189: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   190: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    190: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   191: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   192: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    192: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   193: closedir (DH 1)
+        Tau
+        RV_none
+
+   194: stat file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    194: stat file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   195: stat d2/file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    195: stat d2/file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   196: stat d2/d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    196: stat d2/d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   197: stat .
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    197: stat .
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   198: stat d2
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    198: stat d2
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   199: stat d2/
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    199: stat d2/
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   200: stat d2/d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    200: stat d2/d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   201: stat d2//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    201: stat d2//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   202: stat d2//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    202: stat d2//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   203: stat d2/./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    203: stat d2/./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   204: stat d2/./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    204: stat d2/./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   205: chdir d2
+        Tau
+        RV_none
+
+   206: chdir /d1
+        Tau
+        RV_none
+
+
+        ###########################################
+        # Relative paths from d2
+        ###########################################
+
+   212: chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+   213: chdir /d1/d2
+        Tau
+        RV_none
+
+
+        # rwx
+   216: chmod . 0o700
+        Tau
+        RV_none
+
+   217: opendir .
+        Tau
+        RV_num(1)
+
+   218: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    218: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   219: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    219: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   220: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   221: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    221: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   222: closedir (DH 1)
+        Tau
+        RV_none
+
+   223: stat ../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    223: stat ../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   224: stat file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    224: stat file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   225: stat d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    225: stat d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   226: stat ..
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    226: stat ..
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   227: stat .
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    227: stat .
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   228: stat ./
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    228: stat ./
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o700; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   229: stat d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    229: stat d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   230: stat .//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    230: stat .//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   231: stat .//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    231: stat .//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   232: stat ./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    232: stat ./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   233: stat ./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    233: stat ./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   234: chdir .
+        Tau
+        RV_none
+
+
+        # r-x
+   237: chmod . 0o500
+        Tau
+        RV_none
+
+   238: opendir .
+        Tau
+        RV_num(1)
+
+   239: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    239: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   240: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    240: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   241: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   242: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    242: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   243: closedir (DH 1)
+        Tau
+        RV_none
+
+   244: stat ../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    244: stat ../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   245: stat file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    245: stat file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   246: stat d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    246: stat d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   247: stat ..
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    247: stat ..
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   248: stat .
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    248: stat .
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   249: stat ./
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    249: stat ./
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   250: stat d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    250: stat d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   251: stat .//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    251: stat .//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   252: stat .//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    252: stat .//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   253: stat ./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    253: stat ./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   254: stat ./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    254: stat ./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   255: chdir .
+        Tau
+        RV_none
+
+
+        # --x
+   258: chmod . 0o100
+        Tau
+        RV_none
+
+   259: opendir .
+        Tau
+        RV_num(1)
+
+   260: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    260: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   261: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    261: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   262: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   263: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    263: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   264: closedir (DH 1)
+        Tau
+        RV_none
+
+   265: stat ../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    265: stat ../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   266: stat file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    266: stat file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   267: stat d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    267: stat d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   268: stat ..
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    268: stat ..
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   269: stat .
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    269: stat .
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   270: stat ./
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    270: stat ./
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   271: stat d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    271: stat d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   272: stat .//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    272: stat .//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   273: stat .//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    273: stat .//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   274: stat ./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    274: stat ./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   275: stat ./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    275: stat ./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   276: chdir .
+        Tau
+        RV_none
+
+
+
+        # r--
+   280: chmod . 0o400
+        Tau
+        RV_none
+
+   281: opendir .
+        Tau
+        RV_num(1)
+
+   282: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    282: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   283: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    283: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   284: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   285: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    285: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   286: closedir (DH 1)
+        Tau
+        RV_none
+
+   287: stat ../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    287: stat ../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   288: stat file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    288: stat file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   289: stat d3/file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    289: stat d3/file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   290: stat ..
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    290: stat ..
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   291: stat .
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    291: stat .
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   292: stat ./
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    292: stat ./
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   293: stat d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    293: stat d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   294: stat .//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    294: stat .//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   295: stat .//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    295: stat .//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   296: stat ./file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    296: stat ./file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   297: stat ./d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    297: stat ./d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   298: chdir .
+        Tau
+        RV_none
+
+
+
+        ###########################################
+        # Relative paths from d3
+        ###########################################
+
+   305: chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+   306: chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        # rwx
+   309: chmod .. 0o700
+        Tau
+        RV_none
+
+   310: opendir ..
+        Tau
+        RV_num(1)
+
+   311: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    311: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   312: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    312: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   313: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   314: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    314: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   315: closedir (DH 1)
+        Tau
+        RV_none
+
+   316: stat ../../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    316: stat ../../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   317: stat ../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    317: stat ../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   318: stat file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    318: stat file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   319: stat ../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    319: stat ../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   320: stat ..//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    320: stat ..//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   321: stat ..//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    321: stat ..//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   322: stat .././file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    322: stat .././file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   323: stat .././d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    323: stat .././d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   324: stat ../d3/../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    324: stat ../d3/../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   325: stat ../d3/../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    325: stat ../d3/../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   326: chdir ..
+        Tau
+        RV_none
+
+
+   328: chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+   329: chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        # r-x
+   332: chmod .. 0o500
+        Tau
+        RV_none
+
+   333: opendir ..
+        Tau
+        RV_num(1)
+
+   334: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    334: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   335: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    335: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   336: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   337: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    337: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   338: closedir (DH 1)
+        Tau
+        RV_none
+
+   339: stat ../../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    339: stat ../../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   340: stat ../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    340: stat ../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   341: stat file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    341: stat file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   342: stat ../..
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    342: stat ../..
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   343: stat ..
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    343: stat ..
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   344: stat ../
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    344: stat ../
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o500; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   345: stat .
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    345: stat .
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   346: stat ../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    346: stat ../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   347: stat ..//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    347: stat ..//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   348: stat ..//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    348: stat ..//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   349: stat .././file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    349: stat .././file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   350: stat .././d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    350: stat .././d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   351: stat ../d3/../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    351: stat ../d3/../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   352: stat ../d3/../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    352: stat ../d3/../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   353: chdir ..
+        Tau
+        RV_none
+
+
+   355: chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+   356: chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        # --x
+   359: chmod .. 0o100
+        Tau
+        RV_none
+
+   360: opendir ..
+        Tau
+        RV_num(1)
+
+   361: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    361: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   362: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    362: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   363: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   364: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    364: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   365: closedir (DH 1)
+        Tau
+        RV_none
+
+   366: stat ../../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    366: stat ../../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   367: stat ../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    367: stat ../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   368: stat file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    368: stat file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   369: stat ../..
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    369: stat ../..
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   370: stat ..
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    370: stat ..
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   371: stat ../
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    371: stat ../
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o100; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   372: stat .
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    372: stat .
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   373: stat ../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    373: stat ../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   374: stat ..//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    374: stat ..//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   375: stat ..//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    375: stat ..//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   376: stat .././file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    376: stat .././file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   377: stat .././d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    377: stat .././d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   378: stat ../d3/../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    378: stat ../d3/../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   379: stat ../d3/../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    379: stat ../d3/../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   380: chdir ..
+        Tau
+        RV_none
+
+   381: chdir /d1
+        Tau
+        RV_none
+
+
+   383: chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+   384: chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        # r--
+   387: chmod .. 0o400
+        Tau
+        RV_none
+
+   388: opendir ..
+        Tau
+        RV_num(1)
+
+   389: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    389: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   390: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+Warning:    390: readdir (DH 1)
+                 Tau
+                 RV_bytes("..")
+   more than one possible result value
+
+   391: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+   392: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+Error:    392: readdir (DH 1)
+               Tau
+               RV_bytes("file2.txt")
+   unexpected results: RV_bytes("file2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   393: closedir (DH 1)
+        Tau
+        RV_none
+
+   394: stat ../../file1.txt
+        Tau
+        { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    394: stat ../../file1.txt
+               Tau
+               { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4544; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   395: stat ../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    395: stat ../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   396: stat file3.txt
+        Tau
+        { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    396: stat file3.txt
+               Tau
+               { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4548; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   397: stat ../..
+        Tau
+        { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    397: stat ../..
+               Tau
+               { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4539; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   398: stat ..
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    398: stat ..
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   399: stat ../
+        Tau
+        { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+
+Error:    399: stat ../
+               Tau
+               { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   unexpected results: { st_dev=16777220; st_ino=4541; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=136; }
+   allowed are only: { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=2; st_kind=S_IFDIR; st_perm=0o400; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   400: stat .
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    400: stat .
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   401: stat ../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    401: stat ../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   402: stat ..//file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    402: stat ..//file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   403: stat ..//d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    403: stat ..//d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   404: stat .././file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    404: stat .././file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   405: stat .././d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    405: stat .././d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   406: stat ../d3/../file2.txt
+        Tau
+        { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    406: stat ../d3/../file2.txt
+               Tau
+               { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4546; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   407: stat ../d3/../d3
+        Tau
+        { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+
+Error:    407: stat ../d3/../d3
+               Tau
+               { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   unexpected results: { st_dev=16777220; st_ino=4542; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=-1; st_gid=-1; st_rdev=0; st_size=102; }
+   allowed are only: { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=3; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+   408: chdir ..
+        Tau
+        RV_none
+
+
+   410: chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+   411: chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+trace not accepted

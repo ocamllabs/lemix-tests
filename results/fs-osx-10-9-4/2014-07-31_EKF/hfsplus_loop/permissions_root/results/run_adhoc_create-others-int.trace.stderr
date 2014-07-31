@@ -1,0 +1,650 @@
+< uname -s
+< id -u -n
+< id -g -n
+< uname -s
++ mkdir "-p" "/tmp/fs_test"
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_0"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_1"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_1"
+< dscl localhost -list /Local/Default/Users UniqueID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_1" "UniqueID" "503"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_1" "UserShell" "/usr/bin/false"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_1" "RealName" "fs_user_1"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_1" "PrimaryGroupID" "20"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_0"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_1"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_1"
+< dscl localhost -list /Local/Default/Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_1" "PrimaryGroupID" "403"
+$ Released lock /tmp/fs_test/pw.lock
++ dseditgroup "-o" "edit" "-a" "fs_user_1" "-t" "user" "fs_group_1"
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_2"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_3"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_3"
+< dscl localhost -list /Local/Default/Users UniqueID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_3" "UniqueID" "505"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_3" "UserShell" "/usr/bin/false"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_3" "RealName" "fs_user_3"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_3" "PrimaryGroupID" "20"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_2"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_3"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_4"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_4"
+< dscl localhost -list /Local/Default/Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_4" "PrimaryGroupID" "406"
+$ Released lock /tmp/fs_test/pw.lock
++ dseditgroup "-o" "edit" "-a" "fs_user_3" "-t" "user" "fs_group_4"
+
+Error:     47: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     47: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     48: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     48: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     53: Pid 3 -> mkdir d1 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     54: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     55: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     55: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     56: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     56: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     57: Pid 3 -> mkdir /dir_rwx/d3 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     58: Pid 3 -> mkdir /dir_rwx/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     59: Pid 3 -> open_close /dir_rwx/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     59: Pid 3 -> open_close /dir_rwx/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     60: Pid 3 -> open_close /dir_rwx/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     60: Pid 3 -> open_close /dir_rwx/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     67: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     67: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     68: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     68: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     75: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     76: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     79: Pid 3 -> open_close /dir_rw_/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     80: Pid 3 -> open_close /dir_rw_/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     87: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     87: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     88: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     88: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     94: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     95: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     95: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     96: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     96: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     98: Pid 3 -> mkdir /dir_r_x/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     99: Pid 3 -> open_close /dir_r_x/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     99: Pid 3 -> open_close /dir_r_x/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    100: Pid 3 -> open_close /dir_r_x/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    100: Pid 3 -> open_close /dir_r_x/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    107: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    107: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    108: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    108: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    115: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    116: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    119: Pid 3 -> open_close /dir_r__/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    120: Pid 3 -> open_close /dir_r__/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    128: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    128: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    129: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    129: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    134: Pid 3 -> mkdir d1 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    135: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    136: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    136: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    137: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    137: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    138: Pid 3 -> mkdir /dir__wx/d3 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    139: Pid 3 -> mkdir /dir__wx/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    140: Pid 3 -> open_close /dir__wx/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    140: Pid 3 -> open_close /dir__wx/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    141: Pid 3 -> open_close /dir__wx/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    141: Pid 3 -> open_close /dir__wx/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    149: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    149: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    150: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    150: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    157: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    158: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    161: Pid 3 -> open_close /dir__w_/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    162: Pid 3 -> open_close /dir__w_/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    169: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    169: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    170: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    170: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    176: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    177: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    177: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    178: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    178: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    180: Pid 3 -> mkdir /dir___x/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    181: Pid 3 -> open_close /dir___x/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    181: Pid 3 -> open_close /dir___x/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    182: Pid 3 -> open_close /dir___x/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    182: Pid 3 -> open_close /dir___x/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    189: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    189: Pid 2 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    190: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    190: Pid 2 -> open_close f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+               Pid 2 <- RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    197: Pid 3 -> open_close f1 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    198: Pid 3 -> open_close f2 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    201: Pid 3 -> open_close /dir____/f3 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    202: Pid 3 -> open_close /dir____/f4 [O_NOCTTY;O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+? dscl "localhost" "-delete" "/Local/Default/Groups/fs_group_1"
+? dscl "localhost" "-delete" "/Local/Default/Groups/fs_group_4"
+? dscl "localhost" "-delete" "/Local/Default/Users/fs_user_1"
+? dscl "localhost" "-delete" "/Local/Default/Users/fs_user_3"

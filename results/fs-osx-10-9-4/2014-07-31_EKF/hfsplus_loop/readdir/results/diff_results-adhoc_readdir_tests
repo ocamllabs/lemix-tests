@@ -1,0 +1,1619 @@
+        # adhoc_readdir_tests
+        #
+
+        ####################################
+        # Test 1 
+        # reading empty dir
+        ####################################
+
+     9: mkdir /d1 0o777
+        Tau
+        RV_none
+
+
+    11: opendir /d1
+        Tau
+        RV_num(1)
+
+    12: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     12: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    13: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+    14: readdir (DH 1)
+        Tau
+        RV_none
+
+    15: readdir (DH 1)
+        Tau
+        RV_none
+
+    16: closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        ####################################
+        # Test 2 
+        # reading non-empty dir without
+        # interference
+        ####################################
+
+    25: mkdir /d2 0o777
+        Tau
+        RV_none
+
+    26: chdir /d2
+        Tau
+        RV_none
+
+
+    28: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     28: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     28: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    29: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     29: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     29: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    30: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     30: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     30: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    31: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     31: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     31: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    32: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     32: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     32: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    34: opendir /d2
+        Tau
+        RV_num(1)
+
+    35: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     35: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    36: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+    37: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:     37: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    38: readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:     38: readdir (DH 1)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    39: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:     39: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    40: readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:     40: readdir (DH 1)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    41: readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:     41: readdir (DH 1)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    42: readdir (DH 1)
+        Tau
+        RV_none
+
+    43: readdir (DH 1)
+        Tau
+        RV_none
+
+    44: closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        ####################################
+        # Test 3
+        # reading non-empty dir with rewind
+        ####################################
+
+    52: mkdir /d3 0o777
+        Tau
+        RV_none
+
+    53: chdir /d3
+        Tau
+        RV_none
+
+
+    55: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     55: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     55: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    56: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     56: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     56: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    57: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     57: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     57: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    58: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     58: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     58: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    59: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     59: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     59: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+    61: opendir /d3
+        Tau
+        RV_num(1)
+
+    62: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     62: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    63: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+    64: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:     64: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    65: readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:     65: readdir (DH 1)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    66: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:     66: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    67: readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:     67: readdir (DH 1)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    68: readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:     68: readdir (DH 1)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    69: readdir (DH 1)
+        Tau
+        RV_none
+
+    70: readdir (DH 1)
+        Tau
+        RV_none
+
+    71: rewinddir (DH 1)
+        Tau
+        RV_none
+
+    72: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     72: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    73: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+    74: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:     74: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    75: rewinddir (DH 1)
+        Tau
+        RV_none
+
+    76: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:     76: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+    77: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+    78: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:     78: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    79: readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:     79: readdir (DH 1)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    80: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:     80: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    81: readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:     81: readdir (DH 1)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    82: readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:     82: readdir (DH 1)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+    83: readdir (DH 1)
+        Tau
+        RV_none
+
+    84: readdir (DH 1)
+        Tau
+        RV_none
+
+    85: readdir (DH 1)
+        Tau
+        RV_none
+
+    86: readdir (DH 1)
+        Tau
+        RV_none
+
+    87: readdir (DH 1)
+        Tau
+        RV_none
+
+    88: closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        ####################################
+        # Test 4
+        # reading a dir with two DHs
+        ####################################
+
+    96: mkdir /d4 0o777
+        Tau
+        RV_none
+
+    97: chdir /d4
+        Tau
+        RV_none
+
+
+    99: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     99: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     99: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   100: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    100: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    100: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   101: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    101: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    101: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   102: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    102: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    102: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   103: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    103: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    103: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   105: opendir /d4
+        Tau
+        RV_num(1)
+
+   106: opendir /d4
+        Tau
+        RV_num(2)
+
+   107: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    107: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   108: readdir (DH 2)
+        Tau
+        RV_bytes(".")
+
+Warning:    108: readdir (DH 2)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   109: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+   110: readdir (DH 2)
+        Tau
+        RV_bytes("..")
+
+   111: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    111: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   112: readdir (DH 2)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    112: readdir (DH 2)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   113: readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:    113: readdir (DH 1)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   114: readdir (DH 2)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:    114: readdir (DH 2)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   115: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    115: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   116: readdir (DH 2)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    116: readdir (DH 2)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   117: readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:    117: readdir (DH 1)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   118: readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:    118: readdir (DH 1)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   119: readdir (DH 1)
+        Tau
+        RV_none
+
+   120: readdir (DH 2)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:    120: readdir (DH 2)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   121: readdir (DH 2)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:    121: readdir (DH 2)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   122: readdir (DH 2)
+        Tau
+        RV_none
+
+   123: rewinddir (DH 1)
+        Tau
+        RV_none
+
+   124: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    124: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   125: readdir (DH 2)
+        Tau
+        RV_none
+
+   126: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+   127: readdir (DH 2)
+        Tau
+        RV_none
+
+   128: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    128: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   129: readdir (DH 2)
+        Tau
+        RV_none
+
+   130: readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:    130: readdir (DH 1)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   131: readdir (DH 2)
+        Tau
+        RV_none
+
+   132: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    132: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   133: readdir (DH 2)
+        Tau
+        RV_none
+
+   134: closedir (DH 2)
+        Tau
+        RV_none
+
+   135: closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        ####################################
+        # Test 5
+        # reading non-empty dir while
+        # changing its content
+        ####################################
+
+   144: mkdir /d5 0o777
+        Tau
+        RV_none
+
+   145: chdir /d5
+        Tau
+        RV_none
+
+
+   147: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    147: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    147: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   148: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    148: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    148: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   149: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    149: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    149: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   150: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    150: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    150: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   151: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    151: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    151: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   153: opendir /d5
+        Tau
+        RV_num(1)
+
+   154: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    154: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   155: unlink f1.txt
+        Tau
+        RV_none
+
+Error:    155: unlink f1.txt
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   156: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+   157: open_close f6.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    157: open_close f6.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    157: open_close f6.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   158: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    158: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    158: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   159: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    159: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   160: readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:    160: readdir (DH 1)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   161: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    161: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   162: unlink f6.txt
+        Tau
+        RV_none
+
+Error:    162: unlink f6.txt
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   163: rename f2.txt f2-changed.txt
+        Tau
+        RV_none
+
+Error:    163: rename f2.txt f2-changed.txt
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   164: readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:    164: readdir (DH 1)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   165: readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:    165: readdir (DH 1)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   166: readdir (DH 1)
+        Tau
+        RV_none
+
+   167: readdir (DH 1)
+        Tau
+        RV_none
+
+   168: rewinddir (DH 1)
+        Tau
+        RV_none
+
+   169: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    169: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   170: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+   171: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    171: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   172: readdir (DH 1)
+        Tau
+        RV_bytes("f2-changed.txt")
+
+Error:    172: readdir (DH 1)
+               Tau
+               RV_bytes("f2-changed.txt")
+   unexpected results: RV_bytes("f2-changed.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   173: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    173: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   174: readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:    174: readdir (DH 1)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   175: readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:    175: readdir (DH 1)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   176: readdir (DH 1)
+        Tau
+        RV_none
+
+   177: readdir (DH 1)
+        Tau
+        RV_none
+
+   178: readdir (DH 1)
+        Tau
+        RV_none
+
+   179: readdir (DH 1)
+        Tau
+        RV_none
+
+   180: readdir (DH 1)
+        Tau
+        RV_none
+
+   181: readdir (DH 1)
+        Tau
+        RV_none
+
+   182: closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        ####################################
+        # Test 6
+        # reading a dir with with to DHs
+        ####################################
+
+   190: mkdir /d6 0o777
+        Tau
+        RV_none
+
+   191: chdir /d6
+        Tau
+        RV_none
+
+
+   193: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    193: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    193: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   194: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    194: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    194: open_close f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   195: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    195: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    195: open_close f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   196: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    196: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    196: open_close f4.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   197: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    197: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    197: open_close f5.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+   199: opendir /d6
+        Tau
+        RV_num(1)
+
+   200: opendir /d6
+        Tau
+        RV_num(2)
+
+   201: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    201: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   202: readdir (DH 2)
+        Tau
+        RV_bytes(".")
+
+Warning:    202: readdir (DH 2)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   203: unlink f1.txt
+        Tau
+        RV_none
+
+Error:    203: unlink f1.txt
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   204: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+   205: readdir (DH 2)
+        Tau
+        RV_bytes("..")
+
+   206: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    206: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   207: readdir (DH 2)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    207: readdir (DH 2)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   208: open_close f6.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    208: open_close f6.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    208: open_close f6.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   209: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:    209: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:    209: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   210: readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:    210: readdir (DH 1)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   211: readdir (DH 2)
+        Tau
+        RV_bytes("f2.txt")
+
+Error:    211: readdir (DH 2)
+               Tau
+               RV_bytes("f2.txt")
+   unexpected results: RV_bytes("f2.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   212: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    212: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   213: readdir (DH 2)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    213: readdir (DH 2)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   214: unlink f6.txt
+        Tau
+        RV_none
+
+Error:    214: unlink f6.txt
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   215: rename f2.txt f2-changed.txt
+        Tau
+        RV_none
+
+Error:    215: rename f2.txt f2-changed.txt
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   216: readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:    216: readdir (DH 1)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   217: readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:    217: readdir (DH 1)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   218: readdir (DH 1)
+        Tau
+        RV_none
+
+   219: readdir (DH 2)
+        Tau
+        RV_bytes("f4.txt")
+
+Error:    219: readdir (DH 2)
+               Tau
+               RV_bytes("f4.txt")
+   unexpected results: RV_bytes("f4.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   220: readdir (DH 2)
+        Tau
+        RV_bytes("f5.txt")
+
+Error:    220: readdir (DH 2)
+               Tau
+               RV_bytes("f5.txt")
+   unexpected results: RV_bytes("f5.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   221: readdir (DH 2)
+        Tau
+        RV_none
+
+   222: rewinddir (DH 1)
+        Tau
+        RV_none
+
+   223: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+Warning:    223: readdir (DH 1)
+                 Tau
+                 RV_bytes(".")
+   more than one possible result value
+
+   224: readdir (DH 2)
+        Tau
+        RV_none
+
+   225: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+   226: readdir (DH 2)
+        Tau
+        RV_none
+
+   227: readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+Error:    227: readdir (DH 1)
+               Tau
+               RV_bytes("f1.txt")
+   unexpected results: RV_bytes("f1.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   228: readdir (DH 2)
+        Tau
+        RV_none
+
+   229: readdir (DH 1)
+        Tau
+        RV_bytes("f2-changed.txt")
+
+Error:    229: readdir (DH 1)
+               Tau
+               RV_bytes("f2-changed.txt")
+   unexpected results: RV_bytes("f2-changed.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   230: readdir (DH 2)
+        Tau
+        RV_none
+
+   231: readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+Error:    231: readdir (DH 1)
+               Tau
+               RV_bytes("f3.txt")
+   unexpected results: RV_bytes("f3.txt")
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+   232: readdir (DH 2)
+        Tau
+        RV_none
+
+   233: closedir (DH 2)
+        Tau
+        RV_none
+
+   234: closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+trace not accepted

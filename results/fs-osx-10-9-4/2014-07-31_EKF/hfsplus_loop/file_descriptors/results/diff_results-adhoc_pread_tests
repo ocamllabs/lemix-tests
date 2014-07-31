@@ -1,0 +1,1268 @@
+        # adhoc_pread_tests2: adhoc tests to check behaviour of read in various situations
+
+
+        ##############################################
+        # initialization
+        ##############################################
+
+        # empty and non-empty directories to read from
+     9: mkdir /empty_dir 0o777
+        Tau
+        RV_none
+
+    10: mkdir /non_empty_dir 0o777
+        Tau
+        RV_none
+
+
+        # create files with different contents in the non-empty directory
+    13: chdir /non_empty_dir
+        Tau
+        RV_none
+
+
+        # f1.txt is empty
+    16: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     16: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_none
+
+Error:     16: open_close f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+
+        # f2.txt contains some short text
+    19: open f2.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     19: open f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     19: open f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    20: write! (FD 3) "Lorem ipsum dolor sit a" 23
+        Tau
+        RV_num(23)
+
+Error:     20: write! (FD 3) "Lorem ipsum dolor sit a" 23
+               Tau
+               RV_num(23)
+   unexpected results: RV_num(23)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    21: close (FD 3)
+        Tau
+        RV_none
+
+Error:     21: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # f3.txt contains all kinds of strange characters
+    24: open f3.txt [O_EXCL;O_RDONLY] 0o666
+        Tau
+
+Error:     24: open f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+        RV_num(3)
+
+Error:     24: open f3.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    25: write! (FD 3) "\"-#@/\000\001\001\243\b" 10
+        Tau
+        RV_num(10)
+
+Error:     25: write! (FD 3) "\"-#@/\000\001\001\243\b" 10
+               Tau
+               RV_num(10)
+   unexpected results: RV_num(10)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    26: close (FD 3)
+        Tau
+        RV_none
+
+Error:     26: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+
+        ##############################################
+        # read on an empty file
+        ##############################################
+
+        # read nothing 
+    34: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     34: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    35: pread (FD 3) 0 0
+        Tau
+        RV_bytes("")
+
+Error:     35: pread (FD 3) 0 0
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    36: close (FD 3)
+        Tau
+        RV_none
+
+Error:     36: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read 1 char beyond end
+    39: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     39: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    40: pread (FD 3) 1 0
+        Tau
+        RV_bytes("")
+
+Error:     40: pread (FD 3) 1 0
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    41: close (FD 3)
+        Tau
+        RV_none
+
+Error:     41: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read 1 char after seeking beyond end
+    44: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     44: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    45: pread (FD 3) 1 100
+        Tau
+        RV_bytes("")
+
+Error:     45: pread (FD 3) 1 100
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    46: close (FD 3)
+        Tau
+        RV_none
+
+Error:     46: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read with negative offset 
+    49: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     49: open f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    50: pread (FD 3) 1 -100
+        Tau
+        EINVAL
+
+Error:     50: pread (FD 3) 1 -100
+               Tau
+               EINVAL
+   unexpected results: EINVAL
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    51: close (FD 3)
+        Tau
+        RV_none
+
+Error:     51: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+
+
+        ##############################################
+        # read on a non-empty file
+        ##############################################
+
+        # f2.txt is 23 bytes long
+
+        # pread 0 chars
+    62: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     62: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    63: pread (FD 3) 0 0
+        Tau
+        RV_bytes("")
+
+Error:     63: pread (FD 3) 0 0
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    64: close (FD 3)
+        Tau
+        RV_none
+
+Error:     64: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read 0 chars
+    67: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     67: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    68: read (FD 3) 0
+        Tau
+        RV_bytes("")
+
+Error:     68: read (FD 3) 0
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    69: close (FD 3)
+        Tau
+        RV_none
+
+Error:     69: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread 2 chars
+    72: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     72: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    73: pread (FD 3) 2 0
+        Tau
+        RV_bytes("Lo")
+
+Error:     73: pread (FD 3) 2 0
+               Tau
+               RV_bytes("Lo")
+   unexpected results: RV_bytes("Lo")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    74: close (FD 3)
+        Tau
+        RV_none
+
+Error:     74: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read 2 chars
+    77: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     77: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    78: read (FD 3) 2
+        Tau
+        RV_bytes("Lo")
+
+Error:     78: read (FD 3) 2
+               Tau
+               RV_bytes("Lo")
+   unexpected results: RV_bytes("Lo")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    79: close (FD 3)
+        Tau
+        RV_none
+
+Error:     79: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread 2 chars with offset 5
+    82: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     82: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    83: pread (FD 3) 2 5
+        Tau
+        RV_bytes(" i")
+
+Error:     83: pread (FD 3) 2 5
+               Tau
+               RV_bytes(" i")
+   unexpected results: RV_bytes(" i")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    84: close (FD 3)
+        Tau
+        RV_none
+
+Error:     84: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read 2 chars and then 3, preads don't influence each other
+    87: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     87: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    88: pread (FD 3) 2 0
+        Tau
+        RV_bytes("Lo")
+
+Error:     88: pread (FD 3) 2 0
+               Tau
+               RV_bytes("Lo")
+   unexpected results: RV_bytes("Lo")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    89: pread (FD 3) 3 0
+        Tau
+        RV_bytes("Lor")
+
+Error:     89: pread (FD 3) 3 0
+               Tau
+               RV_bytes("Lor")
+   unexpected results: RV_bytes("Lor")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    90: close (FD 3)
+        Tau
+        RV_none
+
+Error:     90: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read 2 chars and then 3, reads influence each other
+    93: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     93: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+    94: read (FD 3) 2
+        Tau
+        RV_bytes("Lo")
+
+Error:     94: read (FD 3) 2
+               Tau
+               RV_bytes("Lo")
+   unexpected results: RV_bytes("Lo")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    95: read (FD 3) 3
+        Tau
+        RV_bytes("rem")
+
+Error:     95: read (FD 3) 3
+               Tau
+               RV_bytes("rem")
+   unexpected results: RV_bytes("rem")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+    96: close (FD 3)
+        Tau
+        RV_none
+
+Error:     96: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread over end of file
+    99: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:     99: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   100: pread (FD 3) 100 0
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+Error:    100: pread (FD 3) 100 0
+               Tau
+               RV_bytes("Lorem ipsum dolor sit a")
+   unexpected results: RV_bytes("Lorem ipsum dolor sit a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   101: close (FD 3)
+        Tau
+        RV_none
+
+Error:    101: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read over end of file
+   104: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    104: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   105: read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+Error:    105: read (FD 3) 100
+               Tau
+               RV_bytes("Lorem ipsum dolor sit a")
+   unexpected results: RV_bytes("Lorem ipsum dolor sit a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   106: close (FD 3)
+        Tau
+        RV_none
+
+Error:    106: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread just after end
+   109: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    109: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   110: pread (FD 3) 1 23
+        Tau
+        RV_bytes("")
+
+Error:    110: pread (FD 3) 1 23
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   111: close (FD 3)
+        Tau
+        RV_none
+
+Error:    111: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread far beyond end
+   114: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    114: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   115: pread (FD 3) 1 100
+        Tau
+        RV_bytes("")
+
+Error:    115: pread (FD 3) 1 100
+               Tau
+               RV_bytes("")
+   unexpected results: RV_bytes("")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   116: close (FD 3)
+        Tau
+        RV_none
+
+Error:    116: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread over end
+   119: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    119: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   120: pread (FD 3) 5 20
+        Tau
+        RV_bytes("t a")
+
+Error:    120: pread (FD 3) 5 20
+               Tau
+               RV_bytes("t a")
+   unexpected results: RV_bytes("t a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   121: close (FD 3)
+        Tau
+        RV_none
+
+Error:    121: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread with negative offset
+   124: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    124: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   125: pread (FD 3) 1 -100
+        Tau
+        EINVAL
+
+Error:    125: pread (FD 3) 1 -100
+               Tau
+               EINVAL
+   unexpected results: EINVAL
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   126: close (FD 3)
+        Tau
+        RV_none
+
+Error:    126: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # multiple preads don't influence each other or reads
+   129: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    129: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   130: read (FD 3) 2
+        Tau
+        RV_bytes("Lo")
+
+Error:    130: read (FD 3) 2
+               Tau
+               RV_bytes("Lo")
+   unexpected results: RV_bytes("Lo")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   131: pread (FD 3) 5 10
+        Tau
+        RV_bytes("m dol")
+
+Error:    131: pread (FD 3) 5 10
+               Tau
+               RV_bytes("m dol")
+   unexpected results: RV_bytes("m dol")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   132: read (FD 3) 3
+        Tau
+        RV_bytes("rem")
+
+Error:    132: read (FD 3) 3
+               Tau
+               RV_bytes("rem")
+   unexpected results: RV_bytes("rem")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   133: pread (FD 3) 5 2
+        Tau
+        RV_bytes("rem i")
+
+Error:    133: pread (FD 3) 5 2
+               Tau
+               RV_bytes("rem i")
+   unexpected results: RV_bytes("rem i")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   134: read (FD 3) 2
+        Tau
+        RV_bytes(" i")
+
+Error:    134: read (FD 3) 2
+               Tau
+               RV_bytes(" i")
+   unexpected results: RV_bytes(" i")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   135: close (FD 3)
+        Tau
+        RV_none
+
+Error:    135: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # read is influenced by seek
+   138: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    138: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   139: lseek (FD 3) 6 SEEK_SET
+        Tau
+        RV_num(6)
+
+Error:    139: lseek (FD 3) 6 SEEK_SET
+               Tau
+               RV_num(6)
+   unexpected results: RV_num(6)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   140: read (FD 3) 5
+        Tau
+        RV_bytes("ipsum")
+
+Error:    140: read (FD 3) 5
+               Tau
+               RV_bytes("ipsum")
+   unexpected results: RV_bytes("ipsum")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   141: close (FD 3)
+        Tau
+        RV_none
+
+Error:    141: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # pread is not influenced by seek
+   144: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    144: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   145: lseek (FD 3) 7 SEEK_SET
+        Tau
+        RV_num(7)
+
+Error:    145: lseek (FD 3) 7 SEEK_SET
+               Tau
+               RV_num(7)
+   unexpected results: RV_num(7)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   146: pread (FD 3) 5 6
+        Tau
+        RV_bytes("ipsum")
+
+Error:    146: pread (FD 3) 5 6
+               Tau
+               RV_bytes("ipsum")
+   unexpected results: RV_bytes("ipsum")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   147: close (FD 3)
+        Tau
+        RV_none
+
+Error:    147: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        ##############################################
+        # test reading of special chars
+        ##############################################
+
+   153: open f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    153: open f3.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   154: read (FD 3) 100
+        Tau
+        RV_bytes("\"-#@/\000\001\001\243\b")
+
+Error:    154: read (FD 3) 100
+               Tau
+               RV_bytes("\"-#@/\000\001\001\243\b")
+   unexpected results: RV_bytes("\"-#@/\000\001\001\243\b")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   155: close (FD 3)
+        Tau
+        RV_none
+
+Error:    155: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+
+        ##############################################
+        # reading from file-descriptors open for 
+        # different modes
+        ##############################################
+
+   163: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    163: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   164: read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+Error:    164: read (FD 3) 100
+               Tau
+               RV_bytes("Lorem ipsum dolor sit a")
+   unexpected results: RV_bytes("Lorem ipsum dolor sit a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   165: close (FD 3)
+        Tau
+        RV_none
+
+Error:    165: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+   167: open f2.txt [O_EXEC]
+        Tau
+        RV_num(3)
+
+Error:    167: open f2.txt [O_EXEC]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   168: read (FD 3) 100
+        Tau
+        EBADF
+
+   169: close (FD 3)
+        Tau
+        RV_none
+
+Error:    169: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+   171: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    171: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   172: read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+Error:    172: read (FD 3) 100
+               Tau
+               RV_bytes("Lorem ipsum dolor sit a")
+   unexpected results: RV_bytes("Lorem ipsum dolor sit a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   173: close (FD 3)
+        Tau
+        RV_none
+
+Error:    173: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        # open a descriptor, remove permission on file
+        # and then read. Since descriptor is open
+        # that should be fine, but opening again is not
+   178: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    178: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   179: chmod f2.txt 0o000
+        Tau
+        RV_none
+
+Error:    179: chmod f2.txt 0o000
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   180: read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+Error:    180: read (FD 3) 100
+               Tau
+               RV_bytes("Lorem ipsum dolor sit a")
+   unexpected results: RV_bytes("Lorem ipsum dolor sit a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   181: close (FD 3)
+        Tau
+        RV_none
+
+Error:    181: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+   183: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    183: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   184: read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+Error:    184: read (FD 3) 100
+               Tau
+               RV_bytes("Lorem ipsum dolor sit a")
+   unexpected results: RV_bytes("Lorem ipsum dolor sit a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   185: close (FD 3)
+        Tau
+        RV_none
+
+Error:    185: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+   187: chmod f2.txt 0o666
+        Tau
+        RV_none
+
+Error:    187: chmod f2.txt 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   188: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+Error:    188: open f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+   189: read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+Error:    189: read (FD 3) 100
+               Tau
+               RV_bytes("Lorem ipsum dolor sit a")
+   unexpected results: RV_bytes("Lorem ipsum dolor sit a")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+   190: close (FD 3)
+        Tau
+        RV_none
+
+Error:    190: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+
+        ##############################################
+        # read on directories
+        ##############################################
+
+   196: open /empty_dir [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   197: pread (FD 3) 0 0
+        Tau
+        EISDIR
+
+   198: pread (FD 3) 1 0
+        Tau
+        EISDIR
+
+   199: pread (FD 3) 1 1
+        Tau
+        EISDIR
+
+   200: read (FD 3) 0
+        Tau
+        EISDIR
+
+   201: read (FD 3) 1
+        Tau
+        EISDIR
+
+   202: read (FD 3) 1
+        Tau
+        EISDIR
+
+   203: close (FD 3)
+        Tau
+        RV_none
+
+
+   205: open /non_empty_dir [O_RDONLY]
+        Tau
+        RV_num(3)
+
+   206: pread (FD 3) 0 0
+        Tau
+        EISDIR
+
+   207: pread (FD 3) 1 0
+        Tau
+        EISDIR
+
+   208: pread (FD 3) 1 1
+        Tau
+        EISDIR
+
+   209: read (FD 3) 0
+        Tau
+        EISDIR
+
+   210: read (FD 3) 1
+        Tau
+        EISDIR
+
+   211: read (FD 3) 1
+        Tau
+        EISDIR
+
+   212: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ##############################################
+        # finished :-)
+        ##############################################
+
+
+trace not accepted

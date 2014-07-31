@@ -1,0 +1,97 @@
+        # Tests for open and close with multiple
+        # file descriptors opened by multiple processes
+        # essentially just check we get the right ids back
+
+        # WARNING: these tests won't work with posix,
+        # because its implementation maps everything to
+        # just one process
+
+     9: create Pid 2 (User_id 0) (Group_id 0)
+
+        ##############################################
+        # basic cases that should work
+        ##############################################
+
+        # create a file 
+    16: open f1.txt [O_CREAT;O_WRONLY] 0o644
+        RV_num(3)
+    17: close (FD 3)
+        RV_none
+
+        # and another file
+    20: open f2.txt [O_CREAT;O_WRONLY] 0o644
+        RV_num(3)
+    21: close (FD 3)
+        RV_none
+
+
+        # open both files in the same process
+    25: open f1.txt [O_RDONLY]
+        RV_num(3)
+    26: open f2.txt [O_RDONLY]
+        RV_num(4)
+    27: close (FD 3)
+        RV_none
+    28: close (FD 4)
+        RV_none
+
+
+        # open both files in the same process 
+        # and close and open again
+    33: open f1.txt [O_RDONLY]
+        RV_num(3)
+    34: open f2.txt [O_RDONLY]
+        RV_num(4)
+    35: close (FD 4)
+        RV_none
+    36: open f2.txt [O_RDONLY]
+        RV_num(4)
+    37: close (FD 3)
+        RV_none
+    38: close (FD 4)
+        RV_none
+
+
+        # open both files in the same process 
+        # and close and open again
+    43: Pid 1 -> open f1.txt [O_RDONLY]
+        RV_num(3)
+    44: Pid 1 -> open f2.txt [O_RDONLY]
+        RV_num(4)
+    45: Pid 1 -> close (FD 3)
+        RV_none
+    46: Pid 1 -> open f1.txt [O_RDONLY]
+        RV_num(3)
+    47: Pid 1 -> close (FD 4)
+        RV_none
+    48: Pid 1 -> close (FD 3)
+        RV_none
+
+
+        # open both files in the same process 
+        # and close and open again
+    53: open f1.txt [O_RDONLY]
+        RV_num(3)
+    54: open f2.txt [O_RDONLY]
+        RV_num(4)
+    55: close (FD 3)
+        RV_none
+    56: open f1.txt [O_RDONLY]
+        RV_num(3)
+    57: close (FD 4)
+        RV_none
+    58: close (FD 3)
+        RV_none
+
+
+
+
+        # open both files in the different processes
+    64: Pid 1 -> open f1.txt [O_RDONLY]
+        RV_num(3)
+    65: Pid 2 -> open f2.txt [O_RDONLY]
+        RV_num(3)
+    66: Pid 1 -> close (FD 3)
+        RV_none
+    67: Pid 2 -> close (FD 3)
+        RV_none

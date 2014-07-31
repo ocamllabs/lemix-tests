@@ -1,0 +1,687 @@
+< uname -s
+< id -u -n
+< id -g -n
+
+Error:      9: open /dir_1/f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:      9: open /dir_1/f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     10: write! (FD 3) "content of /dir_1/f1.txt" 24
+               Tau
+               RV_num(24)
+   unexpected results: RV_num(24)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     11: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     13: open /dir_1/f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     13: open /dir_1/f2.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     14: write! (FD 3) "content of /dir_1/f2.txt" 24
+               Tau
+               RV_num(24)
+   unexpected results: RV_num(24)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     15: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     17: open /dir_2/f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:     17: open /dir_2/f1.txt [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     18: write! (FD 3) "content of /dir_2/f1.txt" 24
+               Tau
+               RV_num(24)
+   unexpected results: RV_num(24)
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     19: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     30: open /symlink_1 [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     31: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_1/f1.txt")
+   unexpected results: RV_bytes("content of /dir_1/f1.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     32: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     36: open /symlink_2 [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     37: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_1/f1.txt")
+   unexpected results: RV_bytes("content of /dir_1/f1.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     38: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+        /|D|0
+        /symlink_1|L|/dir_1/f1.txt
+        /symlink_2|L|/symlink_1
+        /dir_1|D|1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+
+
+Error:     39: dump-result
+           /|D|4685
+           /symlink_2|L|/symlink_1
+           /dir_2|D|4713
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /symlink_1
+
+
+
+        /|D|0
+        /symlink_2|L|/symlink_1
+        /dir_1|D|1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+
+
+Error:     46: dump-result
+           /|D|4685
+           /dir_2|D|4713
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /symlink_2
+
+
+
+Error:     51: open /symlink_1/f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     52: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_1/f1.txt")
+   unexpected results: RV_bytes("content of /dir_1/f1.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     53: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     55: open /symlink_2/f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     56: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_1/f1.txt")
+   unexpected results: RV_bytes("content of /dir_1/f1.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     57: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+        /|D|0
+        /symlink_1|L|/dir_1
+        /symlink_2b|L|/symlink_1
+        /dir_1|D|1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+
+
+Error:     61: dump-result
+           /|D|4685
+           /symlink_2b|L|/symlink_1
+           /dir_2|D|4713
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /symlink_1
+
+
+
+Error:     62: open /symlink_2b/f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     63: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_1/f1.txt")
+   unexpected results: RV_bytes("content of /dir_1/f1.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     64: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     66: open /dir_1/f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     67: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_1/f1.txt")
+   unexpected results: RV_bytes("content of /dir_1/f1.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     68: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+        /|D|0
+        /symlink_1|L|/dir_1
+        /symlink_2b|L|/symlink_1
+        /dir_1|D|1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+
+
+Error:     74: dump-result
+           /|D|4685
+           /symlink_2b|L|/symlink_1
+           /dir_2|D|4713
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /symlink_1
+
+
+
+Error:     79: open /dir_1/symlink_f2.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     80: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_1/f2.txt")
+   unexpected results: RV_bytes("content of /dir_1/f2.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     81: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     84: open /dir_1/symlink_d2_f1.txt [O_RDONLY]
+               Tau
+               RV_num(3)
+   unexpected results: RV_num(3)
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     85: pread! (FD 3) 1000 0
+               Tau
+               RV_bytes("content of /dir_2/f1.txt")
+   unexpected results: RV_bytes("content of /dir_2/f1.txt")
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+Error:     86: close (FD 3)
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EBADF
+   continuing execution with EBADF
+
+        /|D|0
+        /symlink_1|L|/dir_1
+        /symlink_2b|L|/symlink_1
+        /dir_1|D|1
+        /dir_1/symlink_d2_f1.txt|L|../dir_2/f1.txt
+        /dir_1/symlink_f2.txt|L|f2.txt
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+
+
+Error:     98: dump-result
+           /|D|4685
+           /symlink_2b|L|/symlink_1
+           /dir_2|D|4713
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/symlink_d2_f1.txt
+      missing entry: /dir_1/symlink_f2.txt
+      missing entry: /symlink_1
+
+
+
+        /|D|0
+        /dir_1|D|1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+
+
+Error:    103: dump-result
+           /|D|4685
+           /dir_2|D|4713
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+
+
+
+        /|D|0
+        /dir_1|D|1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    127: dump-result
+           /|D|4685
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /no_such_file/ss
+
+
+
+Error:    131: symlink /dir_1 /dir_1/f1.txt
+               Tau
+               EEXIST
+   unexpected results: EEXIST
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+        /|D|0
+        /dir_1|D|1
+        /dir_1/f1.txt|L|/dir_1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    135: dump-result
+           /|D|4685
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/f1.txt
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /no_such_file/ss
+
+
+
+Error:    139: symlink xyz /slink_2/
+               Tau
+               ENOENT
+   unexpected results: ENOENT
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+        /|D|0
+        /slink_2|L|xyz
+        /dir_1|D|1
+        /dir_1/f1.txt|L|/dir_1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    141: dump-result
+           /|D|4685
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/f1.txt
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /slink_2
+      missing entry: /no_such_file/ss
+
+
+
+        /|D|0
+        /slink_2|L|xyz
+        /dir_1|D|1
+        /dir_1/f1.txt|L|/dir_1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    149: dump-result
+           /|D|4685
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/f1.txt
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /slink_2
+      missing entry: /no_such_file/ss
+
+
+
+        /|D|0
+        /dirlink|L|/dir_1
+        /filelink|L|/dir_1/f1.txt
+        /slink_2|L|xyz
+        /dir_1|D|1
+        /dir_1/f1.txt|L|/dir_1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    154: dump-result
+           /|D|4685
+           /filelink|L|/dir_1/f1.txt
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/f1.txt
+      missing entry: /dirlink
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /slink_2
+      missing entry: /no_such_file/ss
+
+
+
+        /|D|0
+        /slink_2|L|xyz
+        /dir_1|D|1
+        /dir_1/f1.txt|L|/dir_1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    165: dump-result
+           /|D|4685
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/f1.txt
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /slink_2
+      missing entry: /no_such_file/ss
+
+
+
+        /|D|0
+        /slink_2|L|xyz
+        /dir_1|D|1
+        /dir_1/f1.txt|L|/dir_1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    175: dump-result
+           /|D|4685
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/f1.txt
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /slink_2
+      missing entry: /no_such_file/ss
+
+
+
+Error:    188: link /dir_link /dir_4
+               Tau
+               EPERM
+   unexpected results: EPERM
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    202: open_close /new_file_link_1 [O_EXCL;O_RDONLY] 0o666
+               Tau
+   special states found:
+     - OS_special (Undefined, "open: O_EXCL, no O_CREAT, posix/open.md D:1")
+   continuing with normal result states
+
+Error:    202: open_close /new_file_link_1 [O_EXCL;O_RDONLY] 0o666
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    205: stat /dir_link
+               Tau
+               { st_dev=16777220; st_ino=4701; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+   unexpected results: { st_dev=16777220; st_ino=4701; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+Error:    206: stat /file_link
+               Tau
+               { st_dev=16777220; st_ino=4717; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=24; }
+   unexpected results: { st_dev=16777220; st_ino=4717; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=24; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+Error:    208: truncate /file_link 0
+               Tau
+               RV_none
+   unexpected results: RV_none
+   allowed are only: EISDIR
+   continuing execution with EISDIR
+
+Error:    209: stat /file_link
+               Tau
+               { st_dev=16777220; st_ino=4717; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: { st_dev=16777220; st_ino=4717; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        /|D|0
+        /dir_4|L|/dir_1
+        /dir_link|L|/dir_1
+        /f1.txt|L|/dir_1
+        /f2.txt|L|/dir_1/f1.txt
+        /file_link|L|/dir_1/f1.txt
+        /new_dir_link|L|/dir_5
+        /new_file_link_1|L|/f_5
+        /new_file_link_2|L|/f_6
+        /slink_2|L|xyz
+        /dir_1|D|1
+        /dir_1/f1.txt|L|/dir_1
+        /dir_1/dir_11|D|2
+        /dir_2|D|3
+        /no_such_dir|D|11
+        /no_such_dir/ss|D|12
+        /no_such_file|D|13
+        /no_such_file/ss|D|14
+
+
+Error:    210: dump-result
+           /|D|4685
+           /f1.txt|F|4717|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /f_5|F|5008|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /new_dir_link|L|/dir_5
+           /new_file_link_2|L|/f_6
+           /dir_2|D|4713
+           /no_such_file|D|4817
+        end dump-result
+   
+   comparison of dump-results failed:
+      unexpected entry: /f_5
+      missing entry: /dir_1
+      missing entry: /dir_1/dir_11
+      missing entry: /dir_1/f1.txt
+      missing entry: /dir_4
+      missing entry: /dir_link
+      missing entry: /f2.txt
+      missing entry: /file_link
+      missing entry: /new_file_link_1
+      missing entry: /no_such_dir
+      missing entry: /no_such_dir/ss
+      missing entry: /slink_2
+      missing entry: /no_such_file/ss
+      differing entry: /f1.txt
+
+

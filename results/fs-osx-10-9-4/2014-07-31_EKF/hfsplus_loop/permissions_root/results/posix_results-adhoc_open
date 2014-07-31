@@ -1,0 +1,355 @@
+        ##################################################
+        # Testing open with various flags and permissions
+        #
+        # This tests user and other permissions and 
+        # therefore needs root access
+        ##################################################
+
+        ###################################
+        # Initialising processes and users
+        ###################################
+
+        # Pid 1 runs as root, we need 3 more processes that run 
+        # as non-superusers. The idea is to have 
+        #
+        # - Pid 2 : creates and owns the files
+        # - Pid 3 : tries to access the files while 
+        #           being in the right group but not the owner
+        # - Pid 4 : tries to access the files while 
+        #           not being a group member and not the owner
+
+    21: create Pid 2 (User_id 1) (Group_id 1)
+    22: add_user_to_group (User_id 1) (Group_id 1)
+        RV_none
+
+        # Pid 3 runs as different user in the group of User 1
+    25: create Pid 3 (User_id 2) (Group_id 2)
+    26: add_user_to_group (User_id 2) (Group_id 1)
+        RV_none
+    27: add_user_to_group (User_id 2) (Group_id 2)
+        RV_none
+
+        # Pid 4 runs as a different user not in the group of User 1
+    30: create Pid 4 (User_id 3) (Group_id 3)
+    31: add_user_to_group (User_id 3) (Group_id 3)
+        RV_none
+
+        # make sure the permissions below get not modified by umask
+    34: Pid 2 -> umask 0o000
+        RV_file_perm(0o022)
+
+
+        ###################################
+        # Owner tests
+        ###################################
+
+    41: Pid 2 -> mkdir /dir_u/ 0o755
+        RV_none
+
+    43: Pid 2 -> open /dir_u/f-nonexist.txt [O_RDONLY]
+        ENOENT
+
+        # rwx
+    46: Pid 2 -> open_close /dir_u/f_rwx.txt [O_CREAT;O_RDWR] 0o700
+        RV_none
+
+    48: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY]
+        RV_none
+    49: Pid 2 -> open_close /dir_u/f_rwx.txt [O_WRONLY]
+        RV_none
+    50: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDWR]
+        RV_none
+    51: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_TRUNC]
+        RV_none
+    52: Pid 2 -> open_close /dir_u/f_rwx.txt [O_TRUNC;O_WRONLY]
+        RV_none
+    53: Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_APPEND]
+        RV_none
+    54: Pid 2 -> open_close /dir_u/f_rwx.txt [O_APPEND;O_WRONLY]
+        RV_none
+
+        # r--
+    57: Pid 2 -> open_close /dir_u/f_r.txt [O_CREAT;O_RDWR] 0o400
+        RV_none
+    58: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY]
+        RV_none
+    59: Pid 2 -> open_close /dir_u/f_r.txt [O_WRONLY]
+        EACCES
+    60: Pid 2 -> open_close /dir_u/f_r.txt [O_RDWR]
+        EACCES
+    61: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_TRUNC]
+        EACCES
+    62: Pid 2 -> open_close /dir_u/f_r.txt [O_TRUNC;O_WRONLY]
+        EACCES
+    63: Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_APPEND]
+        RV_none
+    64: Pid 2 -> open_close /dir_u/f_r.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # -w-
+    67: Pid 2 -> open_close /dir_u/f_w.txt [O_CREAT;O_RDWR] 0o200
+        RV_none
+    68: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY]
+        EACCES
+    69: Pid 2 -> open_close /dir_u/f_w.txt [O_WRONLY]
+        RV_none
+    70: Pid 2 -> open_close /dir_u/f_w.txt [O_RDWR]
+        EACCES
+    71: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_TRUNC]
+        EACCES
+    72: Pid 2 -> open_close /dir_u/f_w.txt [O_TRUNC;O_WRONLY]
+        RV_none
+    73: Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_APPEND]
+        EACCES
+    74: Pid 2 -> open_close /dir_u/f_w.txt [O_APPEND;O_WRONLY]
+        RV_none
+
+        # --x
+    77: Pid 2 -> open_close /dir_u/f_x.txt [O_CREAT;O_RDWR] 0o100
+        RV_none
+    78: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY]
+        EACCES
+    79: Pid 2 -> open_close /dir_u/f_x.txt [O_WRONLY]
+        EACCES
+    80: Pid 2 -> open_close /dir_u/f_x.txt [O_RDWR]
+        EACCES
+    81: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_TRUNC]
+        EACCES
+    82: Pid 2 -> open_close /dir_u/f_x.txt [O_TRUNC;O_WRONLY]
+        EACCES
+    83: Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_APPEND]
+        EACCES
+    84: Pid 2 -> open_close /dir_u/f_x.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # rw-
+    87: Pid 2 -> open_close /dir_u/f_rw.txt [O_CREAT;O_RDWR] 0o600
+        RV_none
+    88: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY]
+        RV_none
+    89: Pid 2 -> open_close /dir_u/f_rw.txt [O_WRONLY]
+        RV_none
+    90: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDWR]
+        RV_none
+    91: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_TRUNC]
+        RV_none
+    92: Pid 2 -> open_close /dir_u/f_rw.txt [O_TRUNC;O_WRONLY]
+        RV_none
+    93: Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_APPEND]
+        RV_none
+    94: Pid 2 -> open_close /dir_u/f_rw.txt [O_APPEND;O_WRONLY]
+        RV_none
+
+
+        ###################################
+        # Group tests
+        ###################################
+
+   101: Pid 2 -> mkdir /dir_g/ 0o755
+        RV_none
+
+   103: Pid 3 -> open /dir_g/f-nonexist.txt [O_RDONLY]
+        ENOENT
+
+        # rwx
+   106: Pid 2 -> open_close /dir_g/f_rwx.txt [O_CREAT;O_RDWR] 0o070
+        RV_none
+
+   108: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY]
+        EACCES
+   109: Pid 3 -> open_close /dir_g/f_rwx.txt [O_WRONLY]
+        EACCES
+   110: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDWR]
+        EACCES
+   111: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   112: Pid 3 -> open_close /dir_g/f_rwx.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   113: Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_APPEND]
+        EACCES
+   114: Pid 3 -> open_close /dir_g/f_rwx.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # r--
+   117: Pid 2 -> open_close /dir_g/f_r.txt [O_CREAT;O_RDWR] 0o040
+        RV_none
+   118: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY]
+        EACCES
+   119: Pid 3 -> open_close /dir_g/f_r.txt [O_WRONLY]
+        EACCES
+   120: Pid 3 -> open_close /dir_g/f_r.txt [O_RDWR]
+        EACCES
+   121: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   122: Pid 3 -> open_close /dir_g/f_r.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   123: Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_APPEND]
+        EACCES
+   124: Pid 3 -> open_close /dir_g/f_r.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # -w-
+   127: Pid 2 -> open_close /dir_g/f_w.txt [O_CREAT;O_RDWR] 0o020
+        RV_none
+   128: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY]
+        EACCES
+   129: Pid 3 -> open_close /dir_g/f_w.txt [O_WRONLY]
+        EACCES
+   130: Pid 3 -> open_close /dir_g/f_w.txt [O_RDWR]
+        EACCES
+   131: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   132: Pid 3 -> open_close /dir_g/f_w.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   133: Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_APPEND]
+        EACCES
+   134: Pid 3 -> open_close /dir_g/f_w.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # --x
+   137: Pid 2 -> open_close /dir_g/f_x.txt [O_CREAT;O_RDWR] 0o010
+        RV_none
+   138: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY]
+        EACCES
+   139: Pid 3 -> open_close /dir_g/f_x.txt [O_WRONLY]
+        EACCES
+   140: Pid 3 -> open_close /dir_g/f_x.txt [O_RDWR]
+        EACCES
+   141: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   142: Pid 3 -> open_close /dir_g/f_x.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   143: Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_APPEND]
+        EACCES
+   144: Pid 3 -> open_close /dir_g/f_x.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # rw-
+   147: Pid 2 -> open_close /dir_g/f_rw.txt [O_CREAT;O_RDWR] 0o060
+        RV_none
+   148: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY]
+        EACCES
+   149: Pid 3 -> open_close /dir_g/f_rw.txt [O_WRONLY]
+        EACCES
+   150: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDWR]
+        EACCES
+   151: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   152: Pid 3 -> open_close /dir_g/f_rw.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   153: Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_APPEND]
+        EACCES
+   154: Pid 3 -> open_close /dir_g/f_rw.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+
+
+        ###################################
+        # Other tests
+        ###################################
+
+   162: Pid 2 -> mkdir /dir_o/ 0o755
+        RV_none
+   163: Pid 4 -> open /dir_o/f-nonexist.txt [O_RDONLY]
+        ENOENT
+
+        # rwx
+   166: Pid 2 -> open_close /dir_o/f_rwx.txt [O_CREAT;O_RDWR] 0o007
+        RV_none
+
+   168: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY]
+        EACCES
+   169: Pid 4 -> open_close /dir_o/f_rwx.txt [O_WRONLY]
+        EACCES
+   170: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDWR]
+        EACCES
+   171: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   172: Pid 4 -> open_close /dir_o/f_rwx.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   173: Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_APPEND]
+        EACCES
+   174: Pid 4 -> open_close /dir_o/f_rwx.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # r--
+   177: Pid 2 -> open_close /dir_o/f_r.txt [O_CREAT;O_RDWR] 0o004
+        RV_none
+   178: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY]
+        EACCES
+   179: Pid 4 -> open_close /dir_o/f_r.txt [O_WRONLY]
+        EACCES
+   180: Pid 4 -> open_close /dir_o/f_r.txt [O_RDWR]
+        EACCES
+   181: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   182: Pid 4 -> open_close /dir_o/f_r.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   183: Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_APPEND]
+        EACCES
+   184: Pid 4 -> open_close /dir_o/f_r.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # -w-
+   187: Pid 2 -> open_close /dir_o/f_w.txt [O_CREAT;O_RDWR] 0o002
+        RV_none
+   188: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY]
+        EACCES
+   189: Pid 4 -> open_close /dir_o/f_w.txt [O_WRONLY]
+        EACCES
+   190: Pid 4 -> open_close /dir_o/f_w.txt [O_RDWR]
+        EACCES
+   191: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   192: Pid 4 -> open_close /dir_o/f_w.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   193: Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_APPEND]
+        EACCES
+   194: Pid 4 -> open_close /dir_o/f_w.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # --x
+   197: Pid 2 -> open_close /dir_o/f_x.txt [O_CREAT;O_RDWR] 0o001
+        RV_none
+   198: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY]
+        EACCES
+   199: Pid 4 -> open_close /dir_o/f_x.txt [O_WRONLY]
+        EACCES
+   200: Pid 4 -> open_close /dir_o/f_x.txt [O_RDWR]
+        EACCES
+   201: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   202: Pid 4 -> open_close /dir_o/f_x.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   203: Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_APPEND]
+        EACCES
+   204: Pid 4 -> open_close /dir_o/f_x.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # rw-
+   207: Pid 2 -> open_close /dir_o/f_rw.txt [O_CREAT;O_RDWR] 0o006
+        RV_none
+   208: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY]
+        EACCES
+   209: Pid 4 -> open_close /dir_o/f_rw.txt [O_WRONLY]
+        EACCES
+   210: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDWR]
+        EACCES
+   211: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_TRUNC]
+        EACCES
+   212: Pid 4 -> open_close /dir_o/f_rw.txt [O_TRUNC;O_WRONLY]
+        EACCES
+   213: Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_APPEND]
+        EACCES
+   214: Pid 4 -> open_close /dir_o/f_rw.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+
+   217: dump
+
+        /|D|4529
+        /dir_o|D|76926
+        /dir_o/f_rw.txt|F|77016|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /dir_o/f_w.txt|F|76981|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+
+

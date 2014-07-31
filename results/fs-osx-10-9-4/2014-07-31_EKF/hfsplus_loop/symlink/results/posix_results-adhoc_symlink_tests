@@ -1,0 +1,409 @@
+        # adhoc_link_tests
+
+        # initialization
+
+     5: mkdir /dir_1 0o777
+        RV_none
+     6: mkdir /dir_1/dir_11 0o777
+        RV_none
+     7: mkdir /dir_2 0o777
+        RV_none
+
+     9: open /dir_1/f1.txt [O_CREAT;O_RDWR] 0o666
+        RV_num(3)
+    10: write! (FD 3) "content of /dir_1/f1.txt" 24
+        RV_num(24)
+    11: close (FD 3)
+        RV_none
+
+    13: open /dir_1/f2.txt [O_CREAT;O_RDWR] 0o666
+        RV_num(3)
+    14: write! (FD 3) "content of /dir_1/f2.txt" 24
+        RV_num(24)
+    15: close (FD 3)
+        RV_none
+
+    17: open /dir_2/f1.txt [O_CREAT;O_RDWR] 0o666
+        RV_num(3)
+    18: write! (FD 3) "content of /dir_2/f1.txt" 24
+        RV_num(24)
+    19: close (FD 3)
+        RV_none
+
+
+        ###################################################
+        # simple tests, that mimic common use-cases
+        ###################################################
+
+        # create a symlink to an existing file an read the file
+        # through the symlink
+
+    29: symlink /dir_1/f1.txt /symlink_1
+        RV_none
+    30: open /symlink_1 [O_RDONLY]
+        RV_num(3)
+    31: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_1/f1.txt")
+    32: close (FD 3)
+        RV_none
+
+        # try two indirections
+    35: symlink /symlink_1 /symlink_2
+        RV_none
+    36: open /symlink_2 [O_RDONLY]
+        RV_num(3)
+    37: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_1/f1.txt")
+    38: close (FD 3)
+        RV_none
+    39: dump
+
+        /|D|4685
+        /symlink_2|L|/symlink_1
+        /dir_2|D|4713
+
+
+        # remove symlink 1 and read symlink 2
+    42: unlink /symlink_1
+        RV_none
+    43: open /symlink_2 [O_RDONLY]
+        ENOENT
+    44: pread! (FD 3) 1000 0
+        EBADF
+    45: close (FD 3)
+        EBADF
+    46: dump
+
+        /|D|4685
+        /dir_2|D|4713
+
+
+        # now try symbolic links to a directory
+    49: symlink /dir_1 /symlink_1
+        RV_none
+
+    51: open /symlink_1/f1.txt [O_RDONLY]
+        RV_num(3)
+    52: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_1/f1.txt")
+    53: close (FD 3)
+        RV_none
+
+    55: open /symlink_2/f1.txt [O_RDONLY]
+        RV_num(3)
+    56: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_1/f1.txt")
+    57: close (FD 3)
+        RV_none
+
+        # renaming of symbolic links renames links not pointed to files
+    60: rename /symlink_2 /symlink_2b
+        RV_none
+    61: dump
+
+        /|D|4685
+        /symlink_2b|L|/symlink_1
+        /dir_2|D|4713
+
+    62: open /symlink_2b/f1.txt [O_RDONLY]
+        RV_num(3)
+    63: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_1/f1.txt")
+    64: close (FD 3)
+        RV_none
+
+    66: open /dir_1/f1.txt [O_RDONLY]
+        RV_num(3)
+    67: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_1/f1.txt")
+    68: close (FD 3)
+        RV_none
+
+    70: open /symlink_2/f1.txt [O_RDONLY]
+        ENOENT
+    71: pread! (FD 3) 1000 0
+        EBADF
+    72: close (FD 3)
+        EBADF
+
+    74: dump
+
+        /|D|4685
+        /symlink_2b|L|/symlink_1
+        /dir_2|D|4713
+
+
+
+        # try relative symbolic links
+    78: symlink f2.txt /dir_1/symlink_f2.txt
+        RV_none
+    79: open /dir_1/symlink_f2.txt [O_RDONLY]
+        RV_num(3)
+    80: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_1/f2.txt")
+    81: close (FD 3)
+        RV_none
+
+    83: symlink ../dir_2/f1.txt /dir_1/symlink_d2_f1.txt
+        RV_none
+    84: open /dir_1/symlink_d2_f1.txt [O_RDONLY]
+        RV_num(3)
+    85: pread! (FD 3) 1000 0
+        RV_bytes("content of /dir_2/f1.txt")
+    86: close (FD 3)
+        RV_none
+
+        # read the content of symbolic links
+    89: readlink /symlink_1
+        RV_bytes("/dir_1")
+    90: readlink /symlink_1/
+        EINVAL
+    91: readlink /no_such_link
+        ENOENT
+    92: readlink /symlink_1b
+        ENOENT
+    93: readlink /symlink_1b/
+        ENOENT
+    94: readlink /dir_1/symlink_f2.txt
+        RV_bytes("f2.txt")
+    95: readlink /dir_1/symlink_d2_f1.txt
+        RV_bytes("../dir_2/f1.txt")
+
+        # cleanup
+    98: dump
+
+        /|D|4685
+        /symlink_2b|L|/symlink_1
+        /dir_2|D|4713
+
+    99: unlink /symlink_1
+        RV_none
+   100: unlink /symlink_2b
+        RV_none
+   101: unlink /dir_1/symlink_f2.txt
+        RV_none
+   102: unlink /dir_1/symlink_d2_f1.txt
+        RV_none
+   103: dump
+
+        /|D|4685
+        /dir_2|D|4713
+
+
+
+        ###################################################
+        # testing for corners
+        ###################################################
+
+        # linking to non-existing is OK
+   111: symlink /no_such_dir/ /slink_no_such1
+        RV_none
+   112: symlink /no_such_file /slink_no_such2
+        RV_none
+   113: chdir /slink_no_such1
+        ENOENT
+   114: chdir /slink_no_such1/
+        ENOENT
+   115: chdir /slink_no_such2
+        ENOENT
+   116: chdir /slink_no_such2/
+        ENOENT
+   117: chdir /slink_no_such1/something_else
+        ENOENT
+   118: chdir /slink_no_such1/something_else/
+        ENOENT
+   119: mkdir /slink_no_such1/ 0o777
+        RV_none
+   120: mkdir /slink_no_such1/ss 0o777
+        RV_none
+   121: mkdir /slink_no_such1 0o777
+        EEXIST
+   122: mkdir /slink_no_such2/ 0o777
+        RV_none
+   123: mkdir /slink_no_such2/ss 0o777
+        RV_none
+   124: mkdir /slink_no_such2 0o777
+        EEXIST
+   125: unlink /slink_no_such1
+        RV_none
+   126: unlink /slink_no_such2
+        RV_none
+   127: dump
+
+        /|D|4685
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+
+        # existing files and dirs canot be overriden by symlink
+   130: symlink /dir_1 /dir_2
+        EEXIST
+   131: symlink /dir_1 /dir_1/f1.txt
+        EEXIST
+   132: symlink /dir_1 /dir_1/symlink.txt
+        RV_none
+   133: symlink /dir_2 /dir_1/symlink.txt
+        EEXIST
+   134: unlink /dir_1/symlink.txt
+        RV_none
+   135: dump
+
+        /|D|4685
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+
+        # the new link name must not end with a slash
+   138: symlink xyz /slink_1
+        RV_none
+   139: symlink xyz /slink_2/
+        ENOENT
+   140: unlink /slink_1
+        RV_none
+   141: dump
+
+        /|D|4685
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+
+        # cyclic links can be created, but raise ELOOP when followed
+   144: symlink /cyclic_link1 /cyclic_link2
+        RV_none
+   145: symlink /cyclic_link2 /cyclic_link1
+        RV_none
+   146: chdir /cyclic_link1
+        ELOOP
+   147: unlink /cyclic_link1
+        RV_none
+   148: unlink /cyclic_link2
+        RV_none
+   149: dump
+
+        /|D|4685
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+
+        # playing around with trailing slashes
+   152: symlink /dir_1/f1.txt /filelink
+        RV_none
+   153: symlink /dir_1 /dirlink
+        RV_none
+   154: dump
+
+        /|D|4685
+        /filelink|L|/dir_1/f1.txt
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+
+   156: open_close /filelink [O_RDONLY]
+        RV_none
+   157: open_close /filelink [O_RDONLY]
+        RV_none
+
+   159: chdir /dirlink
+        RV_none
+   160: chdir /dirlink/
+        RV_none
+   161: open_close f1.txt [O_RDONLY]
+        RV_none
+   162: unlink /dirlink
+        RV_none
+   163: unlink /filelink
+        RV_none
+   164: chdir /
+        RV_none
+   165: dump
+
+        /|D|4685
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+
+        # follow a symlink to a dir and then go to parent dir
+   168: symlink /dir_1/dir_11 /dirlink
+        RV_none
+   169: chdir /dirlink
+        RV_none
+   170: chdir ..
+        RV_none
+        # we should be in /dir_1 now, not /, so we can read f1.txt
+   172: open_close f1.txt [O_RDONLY]
+        RV_none
+   173: open_close dir_1/f1.txt [O_RDONLY]
+        ENOENT
+   174: unlink /dirlink
+        RV_none
+   175: dump
+
+        /|D|4685
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+
+
+        ###################################################
+        # whether a symbolic link that occurs as the last
+        # component of a resolved path is followed depends
+        # on the command, so test it for all commands
+        ###################################################
+
+   184: symlink /dir_1 /dir_link
+        RV_none
+   185: symlink /dir_1/f1.txt /file_link
+        RV_none
+
+   187: link /dir_1 /dir_3
+        EPERM
+   188: link /dir_link /dir_4
+        EPERM
+   189: link /dir_1/f1.txt /f1.txt
+        RV_none
+   190: link /file_link /f2.txt
+        RV_none
+
+   192: mkdir /dir_link 0o777
+        EEXIST
+   193: mkdir /file_link 0o777
+        EEXIST
+   194: mkdir /dir_1 0o777
+        EEXIST
+   195: mkdir /dir_1/f1.txt 0o777
+        EEXIST
+
+   197: symlink /dir_5 /new_dir_link
+        RV_none
+   198: mkdir /new_dir_link 0o777
+        EEXIST
+
+   200: symlink /f_5 /new_file_link_1
+        RV_none
+   201: symlink /f_6 /new_file_link_2
+        RV_none
+   202: open_close /new_file_link_1 [O_CREAT;O_RDWR] 0o666
+        RV_none
+   203: symlink xyz /new_file_link_2
+        EEXIST
+
+   205: stat /dir_link
+        { st_dev=16777220; st_ino=4701; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+   206: stat /file_link
+        { st_dev=16777220; st_ino=4717; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=24; }
+
+   208: truncate /file_link 0
+        RV_none
+   209: stat /file_link
+        { st_dev=16777220; st_ino=4717; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   210: dump
+
+        /|D|4685
+        /f1.txt|F|4717|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /f_5|F|5008|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /new_dir_link|L|/dir_5
+        /new_file_link_2|L|/f_6
+        /dir_2|D|4713
+        /no_such_file|D|4817
+
+

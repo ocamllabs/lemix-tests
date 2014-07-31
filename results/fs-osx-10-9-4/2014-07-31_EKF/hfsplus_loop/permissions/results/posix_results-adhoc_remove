@@ -1,0 +1,149 @@
+        ###########################################
+        # Testing removing files and directories
+        ###########################################
+
+        # create dirs with various permissions and
+        # a file and dir inside it
+     7: mkdir /tmp_dir_rwx/ 0o777
+        RV_none
+     8: open_close /tmp_dir_rwx/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+     9: mkdir /tmp_dir_rwx/subdir 0o777
+        RV_none
+    10: chmod /tmp_dir_rwx/ 0o700
+        RV_none
+
+    12: mkdir /tmp_dir_rwt/ 0o777
+        RV_none
+    13: open_close /tmp_dir_rwt/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    14: mkdir /tmp_dir_rwt/subdir 0o777
+        RV_none
+    15: chmod /tmp_dir_rwt/ 0o1700
+        RV_none
+
+    17: mkdir /tmp_dir_rw/ 0o777
+        RV_none
+    18: open_close /tmp_dir_rw/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    19: mkdir /tmp_dir_rw/subdir 0o777
+        RV_none
+    20: chmod /tmp_dir_rw/ 0o600
+        RV_none
+
+    22: mkdir /tmp_dir_rx/ 0o777
+        RV_none
+    23: open_close /tmp_dir_rx/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    24: mkdir /tmp_dir_rx/subdir 0o777
+        RV_none
+    25: chmod /tmp_dir_rx/ 0o500
+        RV_none
+
+    27: mkdir /tmp_dir_r/ 0o777
+        RV_none
+    28: open_close /tmp_dir_r/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    29: mkdir /tmp_dir_r/subdir 0o777
+        RV_none
+    30: chmod /tmp_dir_r/ 0o400
+        RV_none
+
+    32: mkdir /tmp_dir_wx/ 0o777
+        RV_none
+    33: open_close /tmp_dir_wx/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    34: mkdir /tmp_dir_wx/subdir 0o777
+        RV_none
+    35: chmod /tmp_dir_wx/ 0o300
+        RV_none
+
+    37: mkdir /tmp_dir_w/ 0o777
+        RV_none
+    38: open_close /tmp_dir_w/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    39: mkdir /tmp_dir_w/subdir 0o777
+        RV_none
+    40: chmod /tmp_dir_w/ 0o200
+        RV_none
+
+    42: mkdir /tmp_dir_wt/ 0o777
+        RV_none
+    43: open_close /tmp_dir_wt/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    44: mkdir /tmp_dir_wt/subdir 0o777
+        RV_none
+    45: chmod /tmp_dir_wt/ 0o1300
+        RV_none
+
+    47: mkdir /tmp_dir_rwx/ 0o777
+        EEXIST
+    48: open_close /tmp_dir_rwx/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    49: mkdir /tmp_dir_rwx/subdir 0o777
+        EEXIST
+    50: chmod /tmp_dir_x/ 0o100
+        ENOENT
+
+    52: mkdir /tmp_dir_/ 0o777
+        RV_none
+    53: open_close /tmp_dir_/file.txt [O_CREAT;O_RDWR] 0o666
+        RV_none
+    54: mkdir /tmp_dir_/subdir 0o666
+        RV_none
+    55: chmod /tmp_dir_/ 0o000
+        RV_none
+
+
+        # trying to delete the file
+    59: unlink /tmp_dir_rwx/file.txt
+        RV_none
+    60: unlink /tmp_dir_rwt/file.txt
+        RV_none
+    61: unlink /tmp_dir_rw/file.txt
+        RV_none
+    62: unlink /tmp_dir_rx/file.txt
+        RV_none
+    63: unlink /tmp_dir_r/file.txt
+        RV_none
+    64: unlink /tmp_dir_wx/file.txt
+        RV_none
+    65: unlink /tmp_dir_wt/file.txt
+        RV_none
+    66: unlink /tmp_dir_w/file.txt
+        RV_none
+    67: unlink /tmp_dir_x/file.txt
+        ENOENT
+    68: unlink /tmp_dir_/file.txt
+        RV_none
+
+        # trying to delete the dir
+    71: rmdir /tmp_dir_rwx/subdir
+        RV_none
+    72: rmdir /tmp_dir_rwt/subdir
+        RV_none
+    73: rmdir /tmp_dir_rw/subdir
+        RV_none
+    74: rmdir /tmp_dir_rx/subdir
+        RV_none
+    75: rmdir /tmp_dir_r/subdir
+        RV_none
+    76: rmdir /tmp_dir_wx/subdir
+        RV_none
+    77: rmdir /tmp_dir_wt/subdir
+        RV_none
+    78: rmdir /tmp_dir_w/subdir
+        RV_none
+    79: rmdir /tmp_dir_x/subdir
+        ENOENT
+    80: rmdir /tmp_dir_/subdir
+        RV_none
+
+    82: dump
+
+        /|D|4501
+        /tmp_dir_r|D|4619
+        /tmp_dir_rwt|D|4580
+        /tmp_dir_rx|D|4608
+        /tmp_dir_wt|D|4660
+
