@@ -1,0 +1,113 @@
+        ##################################################
+        # Testing open with various flags and permissions
+        ##################################################
+
+     5: mkdir /tmp_dir_uwx/ 0o300
+        RV_none
+
+        # non-existent
+     8: open /tmp_dir_uw/f-nonexist.txt [O_RDONLY]
+        ENOENT
+
+        # rwx
+    11: open_close /tmp_dir_uwx/f_rwx.txt [O_CREAT;O_RDWR] 0o700
+        RV_none
+    12: open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY]
+        RV_none
+    13: open_close /tmp_dir_uwx/f_rwx.txt [O_WRONLY]
+        RV_none
+    14: open_close /tmp_dir_uwx/f_rwx.txt [O_RDWR]
+        RV_none
+    15: open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_TRUNC]
+        RV_none
+    16: open_close /tmp_dir_uwx/f_rwx.txt [O_TRUNC;O_WRONLY]
+        RV_none
+    17: open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_APPEND]
+        RV_none
+    18: open_close /tmp_dir_uwx/f_rwx.txt [O_APPEND;O_WRONLY]
+        RV_none
+
+        # r--
+    21: open_close /tmp_dir_uwx/f_r.txt [O_CREAT;O_RDWR] 0o400
+        RV_none
+    22: open_close /tmp_dir_uwx/f_r.txt [O_RDONLY]
+        RV_none
+    23: open_close /tmp_dir_uwx/f_r.txt [O_WRONLY]
+        EACCES
+    24: open_close /tmp_dir_uwx/f_r.txt [O_RDWR]
+        EACCES
+    25: open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_TRUNC]
+        EACCES
+    26: open_close /tmp_dir_uwx/f_r.txt [O_TRUNC;O_WRONLY]
+        EACCES
+    27: open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_APPEND]
+        RV_none
+    28: open_close /tmp_dir_uwx/f_r.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # -w-
+    31: open_close /tmp_dir_uwx/f_w.txt [O_CREAT;O_RDWR] 0o200
+        RV_none
+    32: open_close /tmp_dir_uwx/f_w.txt [O_RDONLY]
+        EACCES
+    33: open_close /tmp_dir_uwx/f_w.txt [O_WRONLY]
+        RV_none
+    34: open_close /tmp_dir_uwx/f_w.txt [O_RDWR]
+        EACCES
+    35: open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_TRUNC]
+        EACCES
+    36: open_close /tmp_dir_uwx/f_w.txt [O_TRUNC;O_WRONLY]
+        RV_none
+    37: open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_APPEND]
+        EACCES
+    38: open_close /tmp_dir_uwx/f_w.txt [O_APPEND;O_WRONLY]
+        RV_none
+
+        # --x
+    41: open_close /tmp_dir_uwx/f_x.txt [O_CREAT;O_RDWR] 0o100
+        RV_none
+    42: open_close /tmp_dir_uwx/f_x.txt [O_RDONLY]
+        EACCES
+    43: open_close /tmp_dir_uwx/f_x.txt [O_WRONLY]
+        EACCES
+    44: open_close /tmp_dir_uwx/f_x.txt [O_RDWR]
+        EACCES
+    45: open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_TRUNC]
+        EACCES
+    46: open_close /tmp_dir_uwx/f_x.txt [O_TRUNC;O_WRONLY]
+        EACCES
+    47: open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_APPEND]
+        EACCES
+    48: open_close /tmp_dir_uwx/f_x.txt [O_APPEND;O_WRONLY]
+        EACCES
+
+        # rw-
+    51: open_close /tmp_dir_uwx/f_rw.txt [O_CREAT;O_RDWR] 0o600
+        RV_none
+    52: open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY]
+        RV_none
+    53: open_close /tmp_dir_uwx/f_rw.txt [O_WRONLY]
+        RV_none
+    54: open_close /tmp_dir_uwx/f_rw.txt [O_RDWR]
+        RV_none
+    55: open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_TRUNC]
+        RV_none
+    56: open_close /tmp_dir_uwx/f_rw.txt [O_TRUNC;O_WRONLY]
+        RV_none
+    57: open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_APPEND]
+        RV_none
+    58: open_close /tmp_dir_uwx/f_rw.txt [O_APPEND;O_WRONLY]
+        RV_none
+
+
+    61: dump
+
+        /|D|3935847
+        /tmp_dir_uwx|D|4067084
+        /tmp_dir_uwx/f_r.txt|F|4072535|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /tmp_dir_uwx/f_rw.txt|F|4081512|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /tmp_dir_uwx/f_rwx.txt|F|4067085|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /tmp_dir_uwx/f_w.txt|F|4081510|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /tmp_dir_uwx/f_x.txt|F|4081511|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+
+

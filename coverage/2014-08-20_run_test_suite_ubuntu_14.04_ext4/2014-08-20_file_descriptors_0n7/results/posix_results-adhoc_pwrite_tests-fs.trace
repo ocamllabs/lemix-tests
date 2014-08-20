@@ -1,0 +1,564 @@
+# tesing pwrite and write
+
+
+##############################################
+# initialization
+##############################################
+
+# empty and non-empty directories to write to
+mkdir /empty_dir 0o777
+Tau
+RV_none
+
+mkdir /non_empty_dir 0o777
+Tau
+RV_none
+
+
+chdir /non_empty_dir
+Tau
+RV_none
+
+
+
+##############################################
+# simple writes
+##############################################
+
+# start on empty file and write something
+open f1.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("0123456789")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# write even more stuff at the end
+open f1.txt [O_APPEND;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("01234567890123456789")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# overwrite at begining
+open f1.txt [O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "XXX" 3
+Tau
+RV_num(3)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("XXX34567890123456789")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# truncate file
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("0123456789")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# shorter size
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 5
+Tau
+RV_num(5)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("01234")
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+##############################################
+# pwrite
+##############################################
+
+# write with pwrite at arbitrary positions
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+pwrite (FD 3) "X" 1 4
+Tau
+RV_num(1)
+
+pwrite (FD 3) "X" 1 6
+Tau
+RV_num(1)
+
+pwrite (FD 3) "X" 1 8
+Tau
+RV_num(1)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("0123X5X7X90123456789")
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+# pwrite with negative index
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+pwrite (FD 3) "XXX" 3 -100
+Tau
+EINVAL
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("")
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+# pwrite after end of file
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+pwrite (FD 3) "XXX" 3 10
+Tau
+RV_num(3)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("\000\000\000\000\000\000\000\000\000\000XXX")
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+# pwrite then write
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+pwrite (FD 3) "XXX" 3 10
+Tau
+RV_num(3)
+
+write (FD 3) "01234" 5
+Tau
+RV_num(5)
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("01234\000\000\000\000\000XXX")
+
+close (FD 3)
+Tau
+RV_none
+
+
+
+
+##############################################
+# lseek 
+##############################################
+
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+lseek (FD 3) -3 SEEK_CUR
+Tau
+RV_num(7)
+
+write (FD 3) "ABC" 3
+Tau
+RV_num(3)
+
+pwrite (FD 3) "X" 1 4
+Tau
+RV_num(1)
+
+lseek (FD 3) 2 SEEK_SET
+Tau
+RV_num(2)
+
+write (FD 3) "Y" 1
+Tau
+RV_num(1)
+
+lseek (FD 3) 0 SEEK_SET
+Tau
+RV_num(0)
+
+read! (FD 3) 100
+Tau
+RV_bytes("01Y3X56ABC")
+
+close (FD 3)
+Tau
+RV_none
+
+
+#write after end adds 0s
+open f1.txt [O_TRUNC;O_RDWR] 0o666
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+lseek (FD 3) 5 SEEK_CUR
+Tau
+RV_num(15)
+
+write (FD 3) "ABCDE" 5
+Tau
+RV_num(5)
+
+lseek (FD 3) 0 SEEK_SET
+Tau
+RV_num(0)
+
+read! (FD 3) 100
+Tau
+RV_bytes("0123456789\000\000\000\000\000ABCDE")
+
+close (FD 3)
+Tau
+RV_none
+
+
+##############################################
+# writes with different file-descriptors
+##############################################
+
+# read/write is fine
+open f1.txt [O_TRUNC;O_RDWR]
+Tau
+RV_num(3)
+
+write (FD 3) "0123456789" 10
+Tau
+RV_num(10)
+
+lseek (FD 3) 0 SEEK_SET
+Tau
+RV_num(0)
+
+read! (FD 3) 100
+Tau
+RV_bytes("0123456789")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# write_only is fine / truncate works
+open f1.txt [O_TRUNC;O_WRONLY]
+Tau
+RV_num(3)
+
+write (FD 3) "ABCDE" 5
+Tau
+RV_num(5)
+
+close (FD 3)
+Tau
+RV_none
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("ABCDE")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# write_only without truncate keeps old content, but overwrites it 
+open f1.txt [O_WRONLY]
+Tau
+RV_num(3)
+
+write (FD 3) "012" 3
+Tau
+RV_num(3)
+
+lseek (FD 3) 0 SEEK_SET
+Tau
+RV_num(0)
+
+read (FD 3) 100
+Tau
+EBADF
+
+close (FD 3)
+Tau
+RV_none
+
+
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+read! (FD 3) 100
+Tau
+RV_bytes("012DE")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# append is adding at end
+open f1.txt [O_APPEND;O_RDWR]
+Tau
+RV_num(3)
+
+write (FD 3) "ABCDE" 5
+Tau
+RV_num(5)
+
+lseek (FD 3) 0 SEEK_SET
+Tau
+RV_num(0)
+
+read! (FD 3) 100
+Tau
+RV_bytes("012DEABCDE")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# writing a read-only file fails
+open f1.txt [O_RDONLY]
+Tau
+RV_num(3)
+
+write (FD 3) "ABCDE" 5
+Tau
+EBADF
+
+lseek (FD 3) 0 SEEK_SET
+Tau
+RV_num(0)
+
+read (FD 3) 100
+Tau
+RV_bytes("012DEABCDE")
+
+close (FD 3)
+Tau
+RV_none
+
+
+# closed FD cannot be written to
+write (FD 3) "ABCDE" 5
+Tau
+EBADF
+
+
+# non existing FD can't be used
+write (FD 300) "ABCDE" 5
+Tau
+EBADF
+
+
+
+##############################################
+# writing to directories
+# this is already prohibited 
+# by the open command
+##############################################
+
+open /non_empty_dir [O_RDWR]
+Tau
+EISDIR
+
+write (FD 3) "ABC" 3
+Tau
+EBADF
+
+close (FD 3)
+Tau
+EBADF
+
+
+open /non_empty_dir [O_WRONLY]
+Tau
+EISDIR
+
+write (FD 3) "ABC" 3
+Tau
+EBADF
+
+close (FD 3)
+Tau
+EBADF
+
+
+open /non_empty_dir [O_RDONLY]
+Tau
+RV_num(3)
+
+write (FD 3) "ABC" 3
+Tau
+EBADF
+
+close (FD 3)
+Tau
+RV_none
+
+

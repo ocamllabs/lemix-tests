@@ -1,0 +1,285 @@
+        ###########################################
+        # Testing removing files and directories
+        ###########################################
+
+        # create dirs with various permissions and
+        # a file and dir inside it
+     7: mkdir /tmp_dir_rwx/ 0o777
+        Tau
+        RV_none
+
+     8: open_close /tmp_dir_rwx/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+     9: mkdir /tmp_dir_rwx/subdir 0o777
+        Tau
+        RV_none
+
+    10: chmod /tmp_dir_rwx/ 0o700
+        Tau
+        RV_none
+
+
+    12: mkdir /tmp_dir_rwt/ 0o777
+        Tau
+        RV_none
+
+    13: open_close /tmp_dir_rwt/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    14: mkdir /tmp_dir_rwt/subdir 0o777
+        Tau
+        RV_none
+
+    15: chmod /tmp_dir_rwt/ 0o1700
+        Tau
+        RV_none
+
+
+    17: mkdir /tmp_dir_rw/ 0o777
+        Tau
+        RV_none
+
+    18: open_close /tmp_dir_rw/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    19: mkdir /tmp_dir_rw/subdir 0o777
+        Tau
+        RV_none
+
+    20: chmod /tmp_dir_rw/ 0o600
+        Tau
+        RV_none
+
+
+    22: mkdir /tmp_dir_rx/ 0o777
+        Tau
+        RV_none
+
+    23: open_close /tmp_dir_rx/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    24: mkdir /tmp_dir_rx/subdir 0o777
+        Tau
+        RV_none
+
+    25: chmod /tmp_dir_rx/ 0o500
+        Tau
+        RV_none
+
+
+    27: mkdir /tmp_dir_r/ 0o777
+        Tau
+        RV_none
+
+    28: open_close /tmp_dir_r/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    29: mkdir /tmp_dir_r/subdir 0o777
+        Tau
+        RV_none
+
+    30: chmod /tmp_dir_r/ 0o400
+        Tau
+        RV_none
+
+
+    32: mkdir /tmp_dir_wx/ 0o777
+        Tau
+        RV_none
+
+    33: open_close /tmp_dir_wx/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    34: mkdir /tmp_dir_wx/subdir 0o777
+        Tau
+        RV_none
+
+    35: chmod /tmp_dir_wx/ 0o300
+        Tau
+        RV_none
+
+
+    37: mkdir /tmp_dir_w/ 0o777
+        Tau
+        RV_none
+
+    38: open_close /tmp_dir_w/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    39: mkdir /tmp_dir_w/subdir 0o777
+        Tau
+        RV_none
+
+    40: chmod /tmp_dir_w/ 0o200
+        Tau
+        RV_none
+
+
+    42: mkdir /tmp_dir_wt/ 0o777
+        Tau
+        RV_none
+
+    43: open_close /tmp_dir_wt/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    44: mkdir /tmp_dir_wt/subdir 0o777
+        Tau
+        RV_none
+
+    45: chmod /tmp_dir_wt/ 0o1300
+        Tau
+        RV_none
+
+
+    47: mkdir /tmp_dir_rwx/ 0o777
+        Tau
+        EEXIST
+
+    48: open_close /tmp_dir_rwx/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    49: mkdir /tmp_dir_rwx/subdir 0o777
+        Tau
+        EEXIST
+
+    50: chmod /tmp_dir_x/ 0o100
+        Tau
+        ENOENT
+
+
+    52: mkdir /tmp_dir_/ 0o777
+        Tau
+        RV_none
+
+    53: open_close /tmp_dir_/file.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+    54: mkdir /tmp_dir_/subdir 0o666
+        Tau
+        RV_none
+
+    55: chmod /tmp_dir_/ 0o000
+        Tau
+        RV_none
+
+
+
+        # trying to delete the file
+    59: unlink /tmp_dir_rwx/file.txt
+        Tau
+        RV_none
+
+    60: unlink /tmp_dir_rwt/file.txt
+        Tau
+        RV_none
+
+    61: unlink /tmp_dir_rw/file.txt
+        Tau
+        EACCES
+
+    62: unlink /tmp_dir_rx/file.txt
+        Tau
+        EACCES
+
+    63: unlink /tmp_dir_r/file.txt
+        Tau
+        EACCES
+
+    64: unlink /tmp_dir_wx/file.txt
+        Tau
+        RV_none
+
+    65: unlink /tmp_dir_wt/file.txt
+        Tau
+        RV_none
+
+    66: unlink /tmp_dir_w/file.txt
+        Tau
+        EACCES
+
+    67: unlink /tmp_dir_x/file.txt
+        Tau
+        ENOENT
+
+    68: unlink /tmp_dir_/file.txt
+        Tau
+        EACCES
+
+
+        # trying to delete the dir
+    71: rmdir /tmp_dir_rwx/subdir
+        Tau
+        RV_none
+
+    72: rmdir /tmp_dir_rwt/subdir
+        Tau
+        RV_none
+
+    73: rmdir /tmp_dir_rw/subdir
+        Tau
+        EACCES
+
+    74: rmdir /tmp_dir_rx/subdir
+        Tau
+        EACCES
+
+    75: rmdir /tmp_dir_r/subdir
+        Tau
+        EACCES
+
+    76: rmdir /tmp_dir_wx/subdir
+        Tau
+        RV_none
+
+    77: rmdir /tmp_dir_wt/subdir
+        Tau
+        RV_none
+
+    78: rmdir /tmp_dir_w/subdir
+        Tau
+        EACCES
+
+    79: rmdir /tmp_dir_x/subdir
+        Tau
+        ENOENT
+
+    80: rmdir /tmp_dir_/subdir
+        Tau
+        EACCES
+
+
+    82: dump-result 
+           /|D|3935847
+           /tmp_dir_|D|4857138
+           /tmp_dir_/file.txt|F|4857139|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_/subdir|D|4866614
+           /tmp_dir_r|D|4596326
+           /tmp_dir_r/file.txt|F|4596327|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_r/subdir|D|4596328
+           /tmp_dir_rw|D|4465061
+           /tmp_dir_rw/file.txt|F|4465062|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_rw/subdir|D|4465063
+           /tmp_dir_rwt|D|4328736
+           /tmp_dir_rwx|D|4067084
+           /tmp_dir_rx|D|4465064
+           /tmp_dir_rx/file.txt|F|4465065|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_rx/subdir|D|4596325
+           /tmp_dir_w|D|4722460
+           /tmp_dir_w/file.txt|F|4722461|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_w/subdir|D|4857135
+           /tmp_dir_wt|D|4722462
+           /tmp_dir_wx|D|4721938
+        end dump-result
+
+trace accepted

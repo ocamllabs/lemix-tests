@@ -1,0 +1,246 @@
+# adhoc_chdir_tests
+
+# initialization
+# create directory structure
+#
+# - d1
+#   + d11
+#   + d12
+# - d2
+#   + d21
+#   + d22
+#
+# in each directory create a file with the same name 
+# as the directory
+
+open_close /root.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_none
+
+
+mkdir /d1 0o777
+Tau
+RV_none
+
+mkdir /d1/d11 0o777
+Tau
+RV_none
+
+mkdir /d1/d12 0o777
+Tau
+RV_none
+
+open_close /d1/f1.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_none
+
+open_close /d1/d11/f11.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_none
+
+open_close /d1/d12/f12.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_none
+
+
+mkdir /d2 0o777
+Tau
+RV_none
+
+mkdir /d2/d21 0o777
+Tau
+RV_none
+
+mkdir /d2/d22 0o777
+Tau
+RV_none
+
+open_close /d2/f2.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_none
+
+open_close /d2/d21/f21.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_none
+
+open_close /d2/d22/f22.txt [O_CREAT;O_RDWR] 0o666
+Tau
+RV_none
+
+
+
+###############################################
+# Tests
+###############################################
+
+# we test whether we are in the correct directory
+# by opening a file. The file-names should correspond
+# to the directory names 
+
+# check we are at the beginning in root directory
+open_close root.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close no_such_file.txt [O_RDONLY]
+Tau
+ENOENT
+
+open_close f1.txt [O_RDONLY]
+Tau
+ENOENT
+
+
+# change to d1
+chdir d1
+Tau
+RV_none
+
+open_close f1.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close root.txt [O_RDONLY]
+Tau
+ENOENT
+
+
+# change to d11
+chdir d11
+Tau
+RV_none
+
+open_close f11.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close ../f1.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close ../../root.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close no_such_file.txt [O_RDONLY]
+Tau
+ENOENT
+
+
+# change back to d1
+chdir ..
+Tau
+RV_none
+
+open_close d11/f11.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close d12/f12.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close f1.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close ../root.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close no_such_file.txt [O_RDONLY]
+Tau
+ENOENT
+
+
+# stay in d1
+chdir .
+Tau
+RV_none
+
+open_close d11/f11.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close d12/f12.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close f1.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close ../root.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close no_such_file.txt [O_RDONLY]
+Tau
+ENOENT
+
+
+# switch to d2
+chdir ../d2
+Tau
+RV_none
+
+open_close d21/f21.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close f2.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close ../root.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close no_such_file.txt [O_RDONLY]
+Tau
+ENOENT
+
+
+# switch to non-existing subdirectory, should fail and stay in d2
+chdir no_such_dir
+Tau
+ENOENT
+
+open_close d21/f21.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close f2.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close ../root.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close no_such_file.txt [O_RDONLY]
+Tau
+ENOENT
+
+
+# switch to file
+chdir f2.txt
+Tau
+ENOTDIR
+
+open_close d21/f21.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close f2.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close ../root.txt [O_RDONLY]
+Tau
+RV_none
+
+open_close no_such_file.txt [O_RDONLY]
+Tau
+ENOENT
+
