@@ -1,0 +1,104 @@
+        ######################################
+        ## Test rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__
+        ######################################
+     4: mkdir /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__ 0o777
+        Tau
+        RV_none
+     5: chdir /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__
+        Tau
+        RV_none
+     6: mkdir empty_dir1 0o777
+        Tau
+        RV_none
+     7: mkdir empty_dir2 0o777
+        Tau
+        RV_none
+     8: mkdir nonempty_dir1 0o777
+        Tau
+        RV_none
+     9: mkdir nonempty_dir1/d2 0o777
+        Tau
+        RV_none
+    10: open nonempty_dir1/d2/f3.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    11: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+    12: close (FD 3)
+        Tau
+        RV_none
+    13: mkdir nonempty_dir1/d2/d3 0o777
+        Tau
+        RV_none
+    14: symlink ../f1.txt nonempty_dir1/d2/sl_dotdot_f1.txt
+        Tau
+        RV_none
+    15: symlink no_such_target nonempty_dir1/d2/sl_no_such_target
+        Tau
+        RV_none
+    16: symlink ../no_such_target nonempty_dir1/d2/sl_dotdot_no_such_target
+        Tau
+        RV_none
+    17: symlink ../d2 nonempty_dir1/d2/sl_dotdot_d2
+        Tau
+        RV_none
+    18: open_close nonempty_dir1/f1.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+    19: symlink f1.txt nonempty_dir1/sl_f1.txt
+        Tau
+        RV_none
+    20: mkdir nonempty_dir2 0o777
+        Tau
+        RV_none
+    21: open_close nonempty_dir2/f1.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+    22: open nonempty_dir2/f2.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    23: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+    24: close (FD 3)
+        Tau
+        RV_none
+    25: mkdir nonempty_dir2/d2 0o777
+        Tau
+        RV_none
+    26: mkdir nonempty_dir2/d2/d3 0o777
+        Tau
+        RV_none
+    27: symlink ../../nonempty_dir1/d2/f3.txt nonempty_dir2/d2/sl_f3.txt
+        Tau
+        RV_none
+
+    29: rename nonempty_dir2 nonempty_dir1/d2/f3.txt/
+        Tau
+        ENOTDIR
+
+    31: dump /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__
+
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__|D|1134019
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/empty_dir1|D|1134020
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/empty_dir2|D|1134021
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1|D|1134022
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/f1.txt|F|1134030|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/sl_f1.txt|L|f1.txt
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/d2|D|1134023
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/d2/f3.txt|F|1134024|83|4b535f836f6006423fc132a59e78dfcc4fe6292f
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/d2/sl_dotdot_d2|L|../d2
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/d2/sl_dotdot_f1.txt|L|../f1.txt
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/d2/sl_dotdot_no_such_target|L|../no_such_target
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/d2/sl_no_such_target|L|no_such_target
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir1/d2/d3|D|1134025
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir2|D|1134032
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir2/f1.txt|F|1134033|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir2/f2.txt|F|1134034|167|d09f4e47c22373e56c2369633ac3dcb71d598601
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir2/d2|D|1134035
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir2/d2/sl_f3.txt|L|../../nonempty_dir1/d2/f3.txt
+        /test_dir_rename___rename_nonempty_dir2___nonempty_dir1__d2__f3.txt__/nonempty_dir2/d2/d3|D|1134036
+
+
+

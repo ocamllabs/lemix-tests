@@ -1,0 +1,134 @@
+        ## Tests for a file underlying a file-descriptor
+        ## being modified while the descriptor is open
+
+        ## create a file with some content
+     5: open f1.txt [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+     6: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+
+     8: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(4)
+
+        ## check we are at the beginning
+    10: read! (FD 4) 100
+        Tau
+        RV_bytes("0123456789")
+
+
+        ## check lseek to FD 4 does not affect FD 3
+    13: lseek (FD 4) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+    14: write! (FD 3) "AB" 2
+        Tau
+        RV_num(2)
+
+
+        ## but content is present in both
+    17: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+    18: pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+
+    20: close (FD 3)
+        Tau
+        RV_none
+
+    21: close (FD 4)
+        Tau
+        RV_none
+
+
+
+
+        ## open f1, then delete it
+    26: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+    27: unlink f1.txt
+        Tau
+        RV_none
+
+    28: pread (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+Warning:     28: pread (FD 3) 100 0
+                 Tau
+                 RV_bytes("0123456789AB")
+   more than one possible result value
+
+
+    30: open_close f1.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+    32: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## open f1, then rename it
+    36: open f1.txt [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+    37: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+    38: close (FD 3)
+        Tau
+        RV_none
+
+
+    40: open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+    41: rename f1.txt f2.txt
+        Tau
+        RV_none
+
+    42: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+
+    44: open_close f1.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+    45: open f2.txt [O_RDONLY]
+        Tau
+        RV_num(4)
+
+    46: pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+    47: close (FD 4)
+        Tau
+        RV_none
+
+    48: close (FD 3)
+        Tau
+        RV_none
+
+
+
+trace accepted
