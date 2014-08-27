@@ -1,0 +1,58 @@
+        ######################################
+        ## Test open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3
+        ######################################
+     4: mkdir /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3 0o777
+        Tau
+        RV_none
+     5: chdir /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3
+        Tau
+        RV_none
+     6: mkdir empty_dir 0o777
+        Tau
+        RV_none
+     7: mkdir nonempty_dir 0o777
+        Tau
+        RV_none
+     8: open_close nonempty_dir/f1.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+     9: open nonempty_dir/f2.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    10: write! (FD 3) "Lorem ipsum dolor sit amet, co" 30
+        Tau
+        RV_num(30)
+    11: close (FD 3)
+        Tau
+        RV_none
+    12: symlink nonempty_dir/f2.txt f3_sl.txt
+        Tau
+        RV_none
+    13: symlink broken broken_sl
+        Tau
+        RV_none
+    14: link nonempty_dir/f4.txt f4_link.txt
+        Tau
+        ENOENT
+    15: link nonempty_dir dir_link
+        Tau
+        EPERM
+
+    17: open nonempty_dir/f1.txt/ [O_NOFOLLOW;O_EXCL;O_DIRECTORY;O_CREAT;O_WRONLY] 0o666
+        Tau
+        EISDIR
+    18: close (FD 3)
+        Tau
+        EBADF
+
+    20: dump-result /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3
+           /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3|D|32641
+           /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3/broken_sl|L|broken
+           /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3/f3_sl.txt|L|nonempty_dir/f2.txt
+           /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3/empty_dir|D|32642
+           /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3/nonempty_dir|D|32643
+           /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3/nonempty_dir/f1.txt|F|13|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_open___open_nonempty_dir__f1.txt_____O_CREAT__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_WRONLY___0666___close_3/nonempty_dir/f2.txt|F|14|30|e88ee12dedd1a9c6d9e9e5dea1a43e510dede7d5
+        end dump-result
+
+
