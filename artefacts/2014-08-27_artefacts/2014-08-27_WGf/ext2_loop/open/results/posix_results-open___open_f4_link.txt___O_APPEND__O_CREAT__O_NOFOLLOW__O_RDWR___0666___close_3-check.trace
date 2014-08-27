@@ -1,0 +1,73 @@
+        ######################################
+        ## Test open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3
+        ######################################
+        mkdir /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3 0o777
+        Tau
+        RV_none
+
+        chdir /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3
+        Tau
+        RV_none
+
+        mkdir empty_dir 0o777
+        Tau
+        RV_none
+
+        mkdir nonempty_dir 0o777
+        Tau
+        RV_none
+
+        open_close nonempty_dir/f1.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+
+        open nonempty_dir/f2.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "Lorem ipsum dolor sit amet, co" 30
+        Tau
+        RV_num(30)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        symlink nonempty_dir/f2.txt f3_sl.txt
+        Tau
+        RV_none
+
+        symlink broken broken_sl
+        Tau
+        RV_none
+
+        link nonempty_dir/f4.txt f4_link.txt
+        Tau
+        ENOENT
+
+        link nonempty_dir dir_link
+        Tau
+        EPERM
+
+
+        open f4_link.txt [O_NOFOLLOW;O_CREAT;O_APPEND;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        dump-result /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3|D|65345
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3/broken_sl|L|broken
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3/f3_sl.txt|L|nonempty_dir/f2.txt
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3/f4_link.txt|F|65536|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3/empty_dir|D|65377
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3/nonempty_dir|D|65409
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3/nonempty_dir/f1.txt|F|65441|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /test_dir_open___open_f4_link.txt___O_APPEND__O_CREAT__O_NOFOLLOW__O_RDWR___0666___close_3/nonempty_dir/f2.txt|F|65473|30|e88ee12dedd1a9c6d9e9e5dea1a43e510dede7d5
+        end dump-result
+
+

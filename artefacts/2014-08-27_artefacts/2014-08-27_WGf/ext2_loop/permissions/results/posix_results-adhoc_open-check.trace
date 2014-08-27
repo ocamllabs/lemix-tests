@@ -1,0 +1,196 @@
+        ###################################################
+        ## Testing open with various flags and permissions
+        ###################################################
+
+        mkdir /tmp_dir_uwx/ 0o300
+        Tau
+        RV_none
+
+
+        ## non-existent
+        open /tmp_dir_uw/f-nonexist.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        ## rwx
+        open_close /tmp_dir_uwx/f_rwx.txt [O_CREAT;O_RDWR] 0o700
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## r--
+        open_close /tmp_dir_uwx/f_r.txt [O_CREAT;O_RDWR] 0o400
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## -w-
+        open_close /tmp_dir_uwx/f_w.txt [O_CREAT;O_RDWR] 0o200
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## --x
+        open_close /tmp_dir_uwx/f_x.txt [O_CREAT;O_RDWR] 0o100
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## rw-
+        open_close /tmp_dir_uwx/f_rw.txt [O_CREAT;O_RDWR] 0o600
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+
+        dump-result /
+           /|D|98200
+           /tmp_dir_uwx|D|98201
+           /tmp_dir_uwx/f_r.txt|F|98203|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_rw.txt|F|98206|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_rwx.txt|F|98202|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_w.txt|F|98204|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_x.txt|F|98205|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        end dump-result
+
