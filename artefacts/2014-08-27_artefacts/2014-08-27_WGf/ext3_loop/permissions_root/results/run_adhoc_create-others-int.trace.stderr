@@ -1,0 +1,658 @@
+< uname -s
+@ /root/fs/fs_test/./posix.native "-c" "adhoc_create-others-int.trace" "-cpo" "results/posix_results-adhoc_create-others-check.trace" "-cpl" "results/posix_results-adhoc_create-others" "-cl" "results/diff_results-adhoc_create-others" "-tmp" "/root/fs/fs_test/mnt/ext3_loop" "-arch" "linux"
+< id -u -n
+< id -g -n
+< uname -s
++ mkdir "-p" "/tmp/fs_test"
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_0"
+useradd: user 'fs_user_0' already exists
+? useradd "-s" "/bin/false" "fs_user_1"
+useradd: user 'fs_user_1' already exists
+? useradd "-s" "/bin/false" "fs_user_2"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_0"
+groupadd: group 'fs_group_0' already exists
+? groupadd "fs_group_1"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_2" "fs_group_1"
+Adding user `fs_user_2' to group `fs_group_1' ...
+Adding user fs_user_2 to group fs_group_1
+Done.
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_3"
+useradd: user 'fs_user_3' already exists
+? useradd "-s" "/bin/false" "fs_user_4"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_2"
+groupadd: group 'fs_group_2' already exists
+? groupadd "fs_group_3"
+groupadd: group 'fs_group_3' already exists
+? groupadd "fs_group_4"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_4" "fs_group_4"
+Adding user `fs_user_4' to group `fs_group_4' ...
+Adding user fs_user_4 to group fs_group_4
+Done.
+
+Error:     44: Pid 2 -> mkdir /dir_rwx/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     45: Pid 2 -> chdir /dir_rwx
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     46: Pid 3 -> chdir /dir_rwx
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     47: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     48: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     49: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     50: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     51: Pid 2 -> chmod /dir_rwx/ 0o007
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     53: Pid 3 -> mkdir d1 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     54: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     55: Pid 3 -> open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     56: Pid 3 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     57: Pid 3 -> mkdir /dir_rwx/d3 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     58: Pid 3 -> mkdir /dir_rwx/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     59: Pid 3 -> open_close /dir_rwx/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     60: Pid 3 -> open_close /dir_rwx/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     64: Pid 2 -> mkdir /dir_rw_/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     65: Pid 2 -> chdir /dir_rw_
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     66: Pid 3 -> chdir /dir_rw_
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     67: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     68: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     69: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     70: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     71: Pid 2 -> chmod /dir_rw_/ 0o006
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     84: Pid 2 -> mkdir /dir_r_x/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     85: Pid 2 -> chdir /dir_r_x
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     86: Pid 3 -> chdir /dir_r_x
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     87: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     88: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     89: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     90: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     91: Pid 2 -> chmod /dir_r_x/ 0o005
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     94: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     96: Pid 3 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:     98: Pid 3 -> mkdir /dir_r_x/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    100: Pid 3 -> open_close /dir_r_x/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    104: Pid 2 -> mkdir /dir_r__/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    105: Pid 2 -> chdir /dir_r__
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    106: Pid 3 -> chdir /dir_r__
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    107: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    108: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    109: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    110: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    111: Pid 2 -> chmod /dir_r__/ 0o004
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    125: Pid 2 -> mkdir /dir__wx/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    126: Pid 2 -> chdir /dir__wx
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    127: Pid 3 -> chdir /dir__wx
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    128: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    129: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    130: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    131: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    132: Pid 2 -> chmod /dir__wx/ 0o003
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    134: Pid 3 -> mkdir d1 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    135: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    136: Pid 3 -> open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    137: Pid 3 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    138: Pid 3 -> mkdir /dir__wx/d3 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    139: Pid 3 -> mkdir /dir__wx/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    140: Pid 3 -> open_close /dir__wx/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    141: Pid 3 -> open_close /dir__wx/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    146: Pid 2 -> mkdir /dir__w_/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    147: Pid 2 -> chdir /dir__w_
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    148: Pid 3 -> chdir /dir__w_
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    149: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    150: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    151: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    152: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    153: Pid 2 -> chmod /dir__w_/ 0o002
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    166: Pid 2 -> mkdir /dir___x/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    167: Pid 2 -> chdir /dir___x
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    168: Pid 3 -> chdir /dir___x
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    169: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    170: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    171: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    172: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    173: Pid 2 -> chmod /dir___x/ 0o001
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    176: Pid 3 -> mkdir d2 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    178: Pid 3 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    180: Pid 3 -> mkdir /dir___x/d4 0o777
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    182: Pid 3 -> open_close /dir___x/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: EEXIST
+   continuing execution with EEXIST
+
+Error:    186: Pid 2 -> mkdir /dir____/ 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    187: Pid 2 -> chdir /dir____
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    188: Pid 3 -> chdir /dir____
+               Tau
+               Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    189: Pid 2 -> open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    190: Pid 2 -> open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    191: Pid 2 -> mkdir d2 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    192: Pid 2 -> mkdir d4 0o777
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    193: Pid 2 -> chmod /dir____/ 0o000
+               Tau
+               Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
++ groupdel "fs_group_1"
++ groupdel "fs_group_4"
++ userdel "fs_user_2"
++ userdel "fs_user_4"

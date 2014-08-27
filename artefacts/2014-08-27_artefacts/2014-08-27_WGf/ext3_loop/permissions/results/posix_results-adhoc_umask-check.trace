@@ -1,0 +1,281 @@
+        ############################################
+        ## Testing umask
+        ############################################
+
+        ## for testing umask 
+        ## files and dirs are created with different
+        ## permission given as arguments.
+
+        ## in directory d_xxx 
+        ## a f_yyy.txt or 
+        ## a directory dir_yyy
+        ## are created with umask 0oxxx and
+        ## permission argument 0oyyy
+        ## after creating stat is used to get
+        ## the actual permission of the newly
+        ## created file or directory
+
+
+        ############################################
+        ## Initialisation
+        ############################################
+
+        umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+        mkdir /d_022 0o777
+        Tau
+        RV_none
+
+        mkdir /d_000 0o777
+        Tau
+        RV_none
+
+        mkdir /d_444 0o777
+        Tau
+        RV_none
+
+
+
+        ############################################
+        ## umask 0o022
+        ############################################
+
+        umask 0o022
+        Tau
+        RV_file_perm(0o000)
+
+        chdir /d_022
+        Tau
+        RV_none
+
+
+        open f_777.txt [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_777.txt
+        Tau
+        { st_dev=1792; st_ino=97925; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_444.txt [O_CREAT;O_RDWR] 0o444
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_444.txt
+        Tau
+        { st_dev=1792; st_ino=97926; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_322.txt [O_CREAT;O_RDWR] 0o322
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_322.txt
+        Tau
+        { st_dev=1792; st_ino=97927; st_kind=S_IFREG; st_perm=0o300; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        mkdir dir_777 0o777
+        Tau
+        RV_none
+
+        stat dir_777
+        Tau
+        { st_dev=1792; st_ino=97928; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_444 0o444
+        Tau
+        RV_none
+
+        stat dir_444
+        Tau
+        { st_dev=1792; st_ino=97929; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_322 0o322
+        Tau
+        RV_none
+
+        stat dir_322
+        Tau
+        { st_dev=1792; st_ino=97930; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+
+
+        ############################################
+        ## umask 0o000
+        ############################################
+
+        umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+        chdir /d_000
+        Tau
+        RV_none
+
+
+        open f_777.txt [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_777.txt
+        Tau
+        { st_dev=1792; st_ino=97931; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_444.txt [O_CREAT;O_RDWR] 0o444
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_444.txt
+        Tau
+        { st_dev=1792; st_ino=97932; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_322.txt [O_CREAT;O_RDWR] 0o322
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_322.txt
+        Tau
+        { st_dev=1792; st_ino=97933; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        mkdir dir_777 0o777
+        Tau
+        RV_none
+
+        stat dir_777
+        Tau
+        { st_dev=1792; st_ino=97934; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_444 0o444
+        Tau
+        RV_none
+
+        stat dir_444
+        Tau
+        { st_dev=1792; st_ino=97935; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_322 0o322
+        Tau
+        RV_none
+
+        stat dir_322
+        Tau
+        { st_dev=1792; st_ino=97936; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+
+
+
+        ############################################
+        ## umask 0o444
+        ############################################
+
+        umask 0o444
+        Tau
+        RV_file_perm(0o000)
+
+        chdir /d_444
+        Tau
+        RV_none
+
+
+        open f_777.txt [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_777.txt
+        Tau
+        { st_dev=1792; st_ino=97937; st_kind=S_IFREG; st_perm=0o333; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_444.txt [O_CREAT;O_RDWR] 0o444
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_444.txt
+        Tau
+        { st_dev=1792; st_ino=97938; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_322.txt [O_CREAT;O_RDWR] 0o322
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_322.txt
+        Tau
+        { st_dev=1792; st_ino=97939; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        mkdir dir_777 0o777
+        Tau
+        RV_none
+
+        stat dir_777
+        Tau
+        { st_dev=1792; st_ino=97940; st_kind=S_IFDIR; st_perm=0o333; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_444 0o444
+        Tau
+        RV_none
+
+        stat dir_444
+        Tau
+        { st_dev=1792; st_ino=97941; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_322 0o322
+        Tau
+        RV_none
+
+        stat dir_322
+        Tau
+        { st_dev=1792; st_ino=97942; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+

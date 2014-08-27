@@ -1,0 +1,769 @@
+        ## adhoc_readdir_tests
+        ##
+
+        #####################################
+        ## Test 1 
+        ## reading empty dir
+        #####################################
+
+        mkdir /d1 0o777
+        Tau
+        RV_none
+
+
+        opendir /d1
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        #####################################
+        ## Test 2 
+        ## reading non-empty dir without
+        ## interference
+        #####################################
+
+        mkdir /d2 0o777
+        Tau
+        RV_none
+
+        chdir /d2
+        Tau
+        RV_none
+
+
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f3.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f5.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+        opendir /d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        #####################################
+        ## Test 3
+        ## reading non-empty dir with rewind
+        #####################################
+
+        mkdir /d3 0o777
+        Tau
+        RV_none
+
+        chdir /d3
+        Tau
+        RV_none
+
+
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f3.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f5.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+        opendir /d3
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        rewinddir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        rewinddir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        #####################################
+        ## Test 4
+        ## reading a dir with two DHs
+        #####################################
+
+        mkdir /d4 0o777
+        Tau
+        RV_none
+
+        chdir /d4
+        Tau
+        RV_none
+
+
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f3.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f5.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+        opendir /d4
+        Tau
+        RV_num(1)
+
+        opendir /d4
+        Tau
+        RV_num(2)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        rewinddir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        closedir (DH 2)
+        Tau
+        RV_none
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        #####################################
+        ## Test 5
+        ## reading non-empty dir while
+        ## changing its content
+        #####################################
+
+        mkdir /d5 0o777
+        Tau
+        RV_none
+
+        chdir /d5
+        Tau
+        RV_none
+
+
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f3.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f5.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+        opendir /d5
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        unlink f1.txt
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        open_close f6.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        unlink f6.txt
+        Tau
+        RV_none
+
+        rename f2.txt f2-changed.txt
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        rewinddir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2-changed.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+
+
+        #####################################
+        ## Test 6
+        ## reading a dir with with to DHs
+        #####################################
+
+        mkdir /d6 0o777
+        Tau
+        RV_none
+
+        chdir /d6
+        Tau
+        RV_none
+
+
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f3.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f5.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+        opendir /d6
+        Tau
+        RV_num(1)
+
+        opendir /d6
+        Tau
+        RV_num(2)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f3.txt")
+
+        unlink f1.txt
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f2.txt")
+
+        open_close f6.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f1.txt")
+
+        unlink f6.txt
+        Tau
+        RV_none
+
+        rename f2.txt f2-changed.txt
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f4.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_bytes("f5.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        rewinddir (DH 1)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f3.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f2-changed.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("f1.txt")
+
+        readdir (DH 2)
+        Tau
+        RV_none
+
+        closedir (DH 2)
+        Tau
+        RV_none
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+
