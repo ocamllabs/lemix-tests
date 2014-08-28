@@ -1,8 +1,7 @@
 #!/bin/sh -ex
 
 . /root/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
-apt-get install -y m4 make wget libffi-dev
-git clone https://bitbucket.org/thtuerk/lem.git
+git clone https://bitbucket.org/dsheets/lem.git
 cd lem
 git fetch origin fs:fs
 git checkout fs
