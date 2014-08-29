@@ -114,6 +114,22 @@ trace anyhow. Again, depending on the name of the trace the execution
 of `check` or `posix` might be skipped.
 
 
+## ``run_coverage_on_results.sh``
+
+``run_coverage_on_results`` generates a test coverage report from a
+directory contains results obtained running posix. It is important
+that a sub-directory ``results`` exists in the given path, where the
+posix results are stored. Having met these requirements,
+``run_coverage_on_results.sh dir`` merges the results and runs on
+these merged files the checker, generating for each of this a test
+coverage report. The script accepts options, run it without any
+parameters to see the help me message.
+
+This scripts requires the installation of the bisect coverage tool
+through OPAM.  (The version used for the FAST paper can be installed
+following the instructions on Tom Ridge's fs_ocaml-bisect bitbucket
+repository)
+
 ## Troubleshooting
 
 - `check` or `posix` can't be found
