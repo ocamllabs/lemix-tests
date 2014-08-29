@@ -13,13 +13,13 @@ if [[ ! $@ || $1 == "-h" || $1 == "--help" ]]
 then
     echo "Usage: run_coverage_on_results.sh [OPTION] ... [DIR]
       
-      run_coverage_on_results.sh compares
-      the results of running a trace of file systems commands
-      against an implementation with the results expected
-      by the POSIX specification
+      run_coverage_on_results.sh generates a coverage testing report,
+      after checking that running a file system trace
+      against an implementation has the same results expected
+      by the POSIX specification.
       
       OPTIONS:
-      -m            uses make to build the posix and the checker executables
+      -m            uses make to build the posix and the checker instrumented (they produce a coverage report) executables
       -a <ARCH>     architecture of the spec: it can be [posix,linux,mac_os_x]
       -h,--help     show a message help
       "
