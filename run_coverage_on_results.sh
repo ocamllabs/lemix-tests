@@ -28,11 +28,8 @@ fi;
 
 # adapt to fit the dirs in your installation
 check_command=`readlink -f ./src_ext/fs/fs_test/check.native`
-posix_command=`readlink -f ./src_ext/fs/fs_test/posix.native`
 
 echo "Using check command \"$check_command\""
-echo "Using posix command \"$posix_command\""
-
 
 # safety check: fs must have the Makefile_bisect
 if  [[ -f ../src_ext/fs/Makefile_bisect ]]
@@ -57,7 +54,7 @@ architecture=posix
 if [[ $1 = "-a" ]]
 then
     shift
-    #safety check on the architecture
+    #sanity check on the architecture
     if ! [[ $1 = "posix" || $1 = "linux" || $1 = "mac_os_x" ]]
     then
         echo "Wrong architecture: the only allowed are posix, linux or mac_os_x"
@@ -69,7 +66,7 @@ fi;
 
 echo "Checker uses the $architecture architecture"
 
-# safety check on passed directory
+# sanity check on passed directory
 if ! [[ -d $1 ]]
 then
     echo "Missing directory containing results
@@ -81,10 +78,13 @@ fi;
 results_dir=`readlink -f $1`
 coverage_dir=$results_dir/coverage
 #remove results of a previous run
-rm -rf $coverage_dir
+if [[-d $coverage_dir]]
+then
+    rm -rf $coverage_dir
+fi;
 mkdir $coverage_dir
 
-for d in $results_dir/*; # TODO remove coverage/ from this list
+for d in $results_dir/*;
 do
     if [[ $d == $coverage_dir ]]
     then
@@ -98,8 +98,8 @@ do
     for f in `find $d -name posix*.trace`;
     do
         # echo "  merging $f in $merge_trace"
-        echo "" >> $f
         cat $f >> $merge_trace
+        echo "" >> $merge_trace
     done;
     echo ""
     echo "  checker is running on $merge_trace"
