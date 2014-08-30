@@ -78,10 +78,11 @@ fi;
 results_dir=`readlink -f $1`
 coverage_dir=$results_dir/coverage
 #remove results of a previous run
-if [[-d $coverage_dir]]
+if [[ -d $coverage_dir ]]
 then
     rm -rf $coverage_dir
 fi;
+
 mkdir $coverage_dir
 
 for d in $results_dir/*;
