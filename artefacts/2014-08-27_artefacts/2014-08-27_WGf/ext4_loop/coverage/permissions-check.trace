@@ -1,0 +1,2664 @@
+        ############################################
+        ## Testing umask
+        ############################################
+
+        ## for testing umask 
+        ## files and dirs are created with different
+        ## permission given as arguments.
+
+        ## in directory d_xxx 
+        ## a f_yyy.txt or 
+        ## a directory dir_yyy
+        ## are created with umask 0oxxx and
+        ## permission argument 0oyyy
+        ## after creating stat is used to get
+        ## the actual permission of the newly
+        ## created file or directory
+
+
+        ############################################
+        ## Initialisation
+        ############################################
+
+        umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+        mkdir /d_022 0o777
+        Tau
+        RV_none
+
+        mkdir /d_000 0o777
+        Tau
+        RV_none
+
+        mkdir /d_444 0o777
+        Tau
+        RV_none
+
+
+
+        ############################################
+        ## umask 0o022
+        ############################################
+
+        umask 0o022
+        Tau
+        RV_file_perm(0o000)
+
+        chdir /d_022
+        Tau
+        RV_none
+
+
+        open f_777.txt [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_777.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_444.txt [O_CREAT;O_RDWR] 0o444
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_444.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_322.txt [O_CREAT;O_RDWR] 0o322
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_322.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o300; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        mkdir dir_777 0o777
+        Tau
+        RV_none
+
+        stat dir_777
+        Tau
+        { st_dev=1792; st_ino=32644; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_444 0o444
+        Tau
+        RV_none
+
+        stat dir_444
+        Tau
+        { st_dev=1792; st_ino=32645; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_322 0o322
+        Tau
+        RV_none
+
+        stat dir_322
+        Tau
+        { st_dev=1792; st_ino=32646; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+
+
+        ############################################
+        ## umask 0o000
+        ############################################
+
+        umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+        chdir /d_000
+        Tau
+        RV_none
+
+
+        open f_777.txt [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_777.txt
+        Tau
+        { st_dev=1792; st_ino=16; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_444.txt [O_CREAT;O_RDWR] 0o444
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_444.txt
+        Tau
+        { st_dev=1792; st_ino=17; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_322.txt [O_CREAT;O_RDWR] 0o322
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_322.txt
+        Tau
+        { st_dev=1792; st_ino=18; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        mkdir dir_777 0o777
+        Tau
+        RV_none
+
+        stat dir_777
+        Tau
+        { st_dev=1792; st_ino=32647; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_444 0o444
+        Tau
+        RV_none
+
+        stat dir_444
+        Tau
+        { st_dev=1792; st_ino=32648; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_322 0o322
+        Tau
+        RV_none
+
+        stat dir_322
+        Tau
+        { st_dev=1792; st_ino=32649; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+
+
+
+        ############################################
+        ## umask 0o444
+        ############################################
+
+        umask 0o444
+        Tau
+        RV_file_perm(0o000)
+
+        chdir /d_444
+        Tau
+        RV_none
+
+
+        open f_777.txt [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_777.txt
+        Tau
+        { st_dev=1792; st_ino=19; st_kind=S_IFREG; st_perm=0o333; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_444.txt [O_CREAT;O_RDWR] 0o444
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_444.txt
+        Tau
+        { st_dev=1792; st_ino=20; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        open f_322.txt [O_CREAT;O_RDWR] 0o322
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f_322.txt
+        Tau
+        { st_dev=1792; st_ino=21; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        mkdir dir_777 0o777
+        Tau
+        RV_none
+
+        stat dir_777
+        Tau
+        { st_dev=1792; st_ino=32650; st_kind=S_IFDIR; st_perm=0o333; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_444 0o444
+        Tau
+        RV_none
+
+        stat dir_444
+        Tau
+        { st_dev=1792; st_ino=32651; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        mkdir dir_322 0o322
+        Tau
+        RV_none
+
+        stat dir_322
+        Tau
+        { st_dev=1792; st_ino=32652; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+
+
+
+        ############################################
+        ## Testing chmod
+        ############################################
+
+        ## try chmod with different values on an exiting file,
+        ## an existing directory, something non-existing and
+        ## a symbolic link. Also test that it is not affected
+        ## by the current umask
+
+
+        ## Initialisation
+
+        mkdir /dir 0o777
+        Tau
+        RV_none
+
+        open /file.txt [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        symlink /file.txt /sl
+        Tau
+        RV_none
+
+        umask 0o022
+        Tau
+        RV_file_perm(0o022)
+
+
+        ## test initial permissions
+
+        stat /dir
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /file.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /sl
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+
+        ## Test 1
+        chmod /dir 0o000
+        Tau
+        RV_none
+
+        stat /dir
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        ## Test 2
+        chmod /dir 0o777
+        Tau
+        RV_none
+
+        stat /dir
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        ## Test 3
+        chmod /dir 0o755
+        Tau
+        RV_none
+
+        stat /dir
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        ## Test 4
+        chmod /file.txt 0o000
+        Tau
+        RV_none
+
+        stat /file.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /sl
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        ## Test 5
+        chmod /file.txt 0o666
+        Tau
+        RV_none
+
+        stat /file.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /sl
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        ## Test 6
+        chmod /file.txt 0o644
+        Tau
+        RV_none
+
+        stat /file.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /sl
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        ## Test 7
+        chmod /no_such_dir/ 0o755
+        Tau
+        ENOENT
+
+
+        ## Test 8
+        chmod /no_such_file 0o755
+        Tau
+        ENOENT
+
+
+
+        ## try again with different umask
+        umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+
+        ## Test 1
+        chmod /dir 0o000
+        Tau
+        RV_none
+
+        stat /dir
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        ## Test 2
+        chmod /dir 0o777
+        Tau
+        RV_none
+
+        stat /dir
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        ## Test 3
+        chmod /dir 0o755
+        Tau
+        RV_none
+
+        stat /dir
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+
+        ## Test 4
+        chmod /file.txt 0o000
+        Tau
+        RV_none
+
+        stat /file.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /sl
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        ## Test 5
+        chmod /file.txt 0o666
+        Tau
+        RV_none
+
+        stat /file.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /sl
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        ## Test 6
+        chmod /file.txt 0o644
+        Tau
+        RV_none
+
+        stat /file.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /sl
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        ## Test 7
+        chmod /no_such_dir/ 0o755
+        Tau
+        ENOENT
+
+
+        ## Test 8
+        chmod /no_such_file 0o755
+        Tau
+        ENOENT
+
+
+
+
+
+        ###################################################
+        ## Testing open with various flags and permissions
+        ###################################################
+
+        mkdir /tmp_dir_uwx/ 0o300
+        Tau
+        RV_none
+
+
+        ## non-existent
+        open /tmp_dir_uw/f-nonexist.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        ## rwx
+        open_close /tmp_dir_uwx/f_rwx.txt [O_CREAT;O_RDWR] 0o700
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rwx.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## r--
+        open_close /tmp_dir_uwx/f_r.txt [O_CREAT;O_RDWR] 0o400
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_r.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## -w-
+        open_close /tmp_dir_uwx/f_w.txt [O_CREAT;O_RDWR] 0o200
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_w.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## --x
+        open_close /tmp_dir_uwx/f_x.txt [O_CREAT;O_RDWR] 0o100
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_x.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## rw-
+        open_close /tmp_dir_uwx/f_rw.txt [O_CREAT;O_RDWR] 0o600
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDWR]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_none
+
+        open_close /tmp_dir_uwx/f_rw.txt [O_APPEND;O_WRONLY]
+        Tau
+        RV_none
+
+
+
+        dump-result /
+           /|D|12
+           /tmp_dir_uwx|D|32641
+           /tmp_dir_uwx/f_r.txt|F|14|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_rw.txt|F|17|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_rwx.txt|F|13|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_w.txt|F|15|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+           /tmp_dir_uwx/f_x.txt|F|16|0|da39a3ee5e6b4b0d3255bfef95601890afd80709
+        end dump-result
+
+
+
+
+
+        ############################################
+        ## Testing path resolution with permissions
+        ############################################
+
+        ## create 3 nested dirs /d1/d2/d3,
+        ## d2 also contains a file. Then change read and
+        ## write permission for d2 and see what files / dirs
+        ## can still be accessed. To test path resolution the
+        ## command stat is used, to read the dir d2, readdir.
+        ## Both relative and absolute paths are tested.
+
+
+        ############################################
+        ## Initialisation
+        ############################################
+
+        mkdir /d1 0o777
+        Tau
+        RV_none
+
+        mkdir /d1/d2/ 0o777
+        Tau
+        RV_none
+
+        mkdir /d1/d2/d3 0o777
+        Tau
+        RV_none
+
+        open_close /d1/file1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /d1/d2/file2.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /d1/d2/d3/file3.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+
+        ############################################
+        ## Absolute paths
+        ############################################
+
+        ## rwx
+        chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+        opendir /d1/d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat /d1/file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir /d1/d2
+        Tau
+        RV_none
+
+        chdir /
+        Tau
+        RV_none
+
+
+        ## r-x
+        chmod /d1/d2 0o500
+        Tau
+        RV_none
+
+        opendir /d1/d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat /d1/file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir /d1/d2
+        Tau
+        RV_none
+
+        chdir /
+        Tau
+        RV_none
+
+
+        ## --x
+        chmod /d1/d2 0o100
+        Tau
+        RV_none
+
+        opendir /d1/d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat /d1/file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir /d1/d2
+        Tau
+        RV_none
+
+
+        ## r--
+        chmod /d1/d2 0o400
+        Tau
+        RV_none
+
+        opendir /d1/d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat /d1/file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat /d1/d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat /d1/d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir /d1/d2
+        Tau
+        RV_none
+
+        chdir /
+        Tau
+        RV_none
+
+
+
+        ############################################
+        ## Relative paths from d1
+        ############################################
+
+        chdir /d1
+        Tau
+        RV_none
+
+
+        ## rwx
+        chmod d2 0o700
+        Tau
+        RV_none
+
+        opendir d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir d2
+        Tau
+        RV_none
+
+        chdir /d1
+        Tau
+        RV_none
+
+
+        ## r-x
+        chmod d2 0o500
+        Tau
+        RV_none
+
+        opendir d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir d2
+        Tau
+        RV_none
+
+        chdir /d1
+        Tau
+        RV_none
+
+
+        ## --x
+        chmod d2 0o100
+        Tau
+        RV_none
+
+        opendir d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir d2
+        Tau
+        RV_none
+
+        chdir /d1
+        Tau
+        RV_none
+
+
+        ## r--
+        chmod d2 0o400
+        Tau
+        RV_none
+
+        opendir d2
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d2/./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d2/./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir d2
+        Tau
+        RV_none
+
+        chdir /d1
+        Tau
+        RV_none
+
+
+        ############################################
+        ## Relative paths from d2
+        ############################################
+
+        chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+        chdir /d1/d2
+        Tau
+        RV_none
+
+
+        ## rwx
+        chmod . 0o700
+        Tau
+        RV_none
+
+        opendir .
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir .
+        Tau
+        RV_none
+
+
+        ## r-x
+        chmod . 0o500
+        Tau
+        RV_none
+
+        opendir .
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir .
+        Tau
+        RV_none
+
+
+        ## --x
+        chmod . 0o100
+        Tau
+        RV_none
+
+        opendir .
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir .
+        Tau
+        RV_none
+
+
+
+        ## r--
+        chmod . 0o400
+        Tau
+        RV_none
+
+        opendir .
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat d3/file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ./file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ./d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir .
+        Tau
+        RV_none
+
+
+
+        ############################################
+        ## Relative paths from d3
+        ############################################
+
+        chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+        chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        ## rwx
+        chmod .. 0o700
+        Tau
+        RV_none
+
+        opendir ..
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ..//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .././file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .././d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../d3/../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../d3/../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir ..
+        Tau
+        RV_none
+
+
+        chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+        chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        ## r-x
+        chmod .. 0o500
+        Tau
+        RV_none
+
+        opendir ..
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../..
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ..
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ..//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .././file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .././d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../d3/../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../d3/../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir ..
+        Tau
+        RV_none
+
+
+        chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+        chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        ## --x
+        chmod .. 0o100
+        Tau
+        RV_none
+
+        opendir ..
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../..
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ..
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ..//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .././file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .././d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../d3/../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../d3/../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir ..
+        Tau
+        RV_none
+
+        chdir /d1
+        Tau
+        RV_none
+
+
+        chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+        chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+        ## r--
+        chmod .. 0o400
+        Tau
+        RV_none
+
+        opendir ..
+        Tau
+        RV_num(1)
+
+        readdir (DH 1)
+        Tau
+        RV_bytes(".")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+
+        readdir (DH 1)
+        Tau
+        RV_bytes("..")
+
+        closedir (DH 1)
+        Tau
+        RV_none
+
+        stat ../../file1.txt
+        Tau
+        { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat file3.txt
+        Tau
+        { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../..
+        Tau
+        { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ..
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../
+        Tau
+        { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ..//file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ..//d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat .././file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat .././d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        stat ../d3/../file2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        stat ../d3/../d3
+        Tau
+        { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        chdir ..
+        Tau
+        RV_none
+
+
+        chmod /d1/d2 0o700
+        Tau
+        RV_none
+
+        chdir /d1/d2/d3
+        Tau
+        RV_none
+
+
+
+
+
+        ############################################
+        ## Testing mkdir and creating files
+        ############################################
+
+        ## these tests create parent-directories with various permissions and
+        ## then try to create files and directories inside these parent
+        ## directories.  This should only work, if one has search and 
+        ## write permission to the parent dir. However, the search permission
+        ## is also needed needed for path resolution. The tests therefore also
+        ## try to create the files in the current working directory. 
+        ## before removing x permission.
+
+
+        ## rwx
+        mkdir /tmp_dir_rwx/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir_rwx
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir_rwx/ 0o700
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir_rwx/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir_rwx/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir_rwx/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir_rwx/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+        ## rw_
+        mkdir /tmp_dir_rw_/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir_rw_
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir_rw_/ 0o600
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir_rw_/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir_rw_/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir_rw_/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir_rw_/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+        ## r_x
+        mkdir /tmp_dir_r_x/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir_r_x
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir_r_x/ 0o500
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir_r_x/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir_r_x/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir_r_x/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir_r_x/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+        ## r__
+        mkdir /tmp_dir_r__/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir_r__
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir_r__/ 0o400
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir_r__/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir_r__/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir_r__/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir_r__/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+
+        ## _wx
+        mkdir /tmp_dir__wx/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir__wx
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir__wx/ 0o300
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir__wx/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir__wx/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir__wx/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir__wx/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+
+        ## _w_
+        mkdir /tmp_dir__w_/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir__w_
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir__w_/ 0o200
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir__w_/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir__w_/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir__w_/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir__w_/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+        ## __x
+        mkdir /tmp_dir___x/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir___x
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir___x/ 0o100
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir___x/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir___x/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir___x/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir___x/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+        ## ___
+        mkdir /tmp_dir____/ 0o777
+        Tau
+        RV_none
+
+        chdir /tmp_dir____
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        RV_none
+
+        mkdir d4 0o777
+        Tau
+        RV_none
+
+        chmod /tmp_dir____/ 0o000
+        Tau
+        RV_none
+
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        mkdir d2 0o777
+        Tau
+        EEXIST
+
+        open_close f1 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close f2 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+        mkdir /tmp_dir____/d3 0o777
+        Tau
+        RV_none
+
+        mkdir /tmp_dir____/d4 0o777
+        Tau
+        EEXIST
+
+        open_close /tmp_dir____/f3 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+        open_close /tmp_dir____/f4 [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        EEXIST
+
+
+
+
+

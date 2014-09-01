@@ -1,0 +1,2898 @@
+        ## Tests for open and close
+
+        ###############################################
+        ## basic cases that should work
+        ###############################################
+
+        ## create a file with some content
+        open f1.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read that file again
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read-write 
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE56789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## write only on existing file
+        open f1.txt [O_WRONLY]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "012" 3
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read that file again
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("012DE56789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## open for execute 
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("012DE56789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        mkdir d1 0o755
+        Tau
+        RV_none
+
+
+        ## open directory for searching
+        open d1 [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## opening problems with 
+        ## non-existing files and dirs
+        ###############################################
+
+        open non-such-file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        open /no_such_dir/non-such-file.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        open non-such-dir/ [O_RDONLY]
+        Tau
+        ENOENT
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        open /no_such_dir/non-such-dir2/ [O_RDONLY]
+        Tau
+        ENOENT
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        ## opening an existing file with a slash at the end
+        open f1.txt/ [O_RDONLY]
+        Tau
+        ENOTDIR
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+
+        ###############################################
+        ## O_CREAT
+        ###############################################
+
+        ## create without write flag is fine. It create
+        ## a file (if it does not exist before), but
+        ## we can only read from it
+        open f1.txt [O_RDONLY;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("012DE56789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f2.txt [O_RDONLY;O_CREAT] 0o644
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        unlink f2.txt
+        Tau
+        RV_none
+
+
+        ## if O_EXCL is given the file must not exist
+        open f1.txt [O_EXCL;O_CREAT;O_RDWR] 0o644
+        Tau
+        EEXIST
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        open f2.txt [O_EXCL;O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        unlink f2.txt
+        Tau
+        RV_none
+
+
+        ## if O_EXCL but not O_CREATE is set, the result is undefined
+        ## open f1.txt [O_RDWR;O_EXCL] 0o777
+        ## close (FD 3)
+
+        ## to create a file, we need write access to the parent dir
+        ##chmod /d1 r-xr-xr-x
+        open /d1/f3.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ##chmod /d1 rwxr-xr-x
+        open /d1/f3.txt [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        unlink /d1/f3.txt
+        Tau
+        RV_none
+
+
+        ## the file-permissions of a newly created file don't matter
+        open /d1/f3.txt [O_CREAT;O_RDWR] 0o444
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open /d1/f3.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open /d1/f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## open does not change the permissions on existing files
+        open /d1/f3.txt [O_RDONLY;O_CREAT] 0o000
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open /d1/f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        unlink /d1/f3.txt
+        Tau
+        RV_none
+
+
+        ## not even read permission is needed on newly created files
+        open /d1/f3.txt [O_RDONLY;O_CREAT] 0o000
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open /d1/f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        unlink /d1/f3.txt
+        Tau
+        RV_none
+
+
+
+        ## O_CREAT flag only creates files not the dirs in path
+        open /no-such-dir/file.txt [O_RDONLY;O_CREAT] 0o644
+        Tau
+        ENOENT
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+
+        ## creating a file without providing a mode is
+        ## unspecified in Posix. For Linux, the
+        ## default mode is 0o101
+        open f2.txt [O_CREAT;O_WRONLY]
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        stat f2.txt
+        Tau
+        { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o101; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        unlink f2.txt
+        Tau
+        RV_none
+
+
+        ###############################################
+        ## O_TRUNC
+        ###############################################
+
+        ## O_TRUNC works as expected
+        unlink f1.txt
+        Tau
+        RV_none
+
+        open f1.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_TRUNC;O_RDWR]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## behaviour of O_TRUNC without write flag is undefined
+        ## on linux architecture, the O_TRUNC just truncates 
+        ## even in read-only mode
+        open f1.txt [O_TRUNC;O_RDWR]
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## but we can't truncate file we don't have write permission to
+        open f1.txt [O_TRUNC;O_RDWR]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o444
+        Tau
+        RV_none
+
+        open f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o644
+        Tau
+        RV_none
+
+        open f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## O_DIRECTORY
+        ###############################################
+
+        ## using O_DIRECTORY with dirs is fine
+        ## but we can't do anything afterwards :-)
+        open d1 [O_RDONLY;O_DIRECTORY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## using O_DIRECTORY with files fails
+        open f1.txt [O_RDONLY;O_DIRECTORY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## using O_DIRECTORY on non-existing files
+        open no-such-file.txt [O_RDONLY;O_DIRECTORY]
+        Tau
+        ENOENT
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        ## using O_DIRECTORY on non-existing dir
+        open /no-such-dir/ [O_RDONLY;O_DIRECTORY]
+        Tau
+        ENOENT
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        ## we can't create directories
+        open /no-such-dir/ [O_RDONLY;O_DIRECTORY;O_CREAT]
+        Tau
+        EISDIR
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        open /no-such-dir/ [O_RDONLY;O_CREAT]
+        Tau
+        EISDIR
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+
+        ###############################################
+        ## O_APPEND
+        ###############################################
+
+        ## write fresh content
+        open f1.txt [O_TRUNC;O_RDWR]
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## override at beginning
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## override at end
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## O_APPEND sets file-offset before every(!) write
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "XXX" 3
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        write (FD 3) "YYY" 3
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        write (FD 3) "ZZZ" 3
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZ")
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZ")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## O_APPEND also affects pwrite
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        pwrite (FD 3) "AAA" 3 0
+        Tau
+        RV_num(3)
+
+        pwrite (FD 3) "BBB" 3 -1
+        Tau
+        EINVAL
+
+        pwrite (FD 3) "CCC" 3 5
+        Tau
+        RV_num(3)
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCC")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pwrite does not modify fd-offset, whereas write does
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+        pwrite (FD 3) "DDD" 3 0
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+        write (FD 3) "EEE" 3
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(36)
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## O_APPEND does only influence write and pwrite
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("ABCDE56789ABCDEXXXYYYZZZAAACCCDDDEEE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## testing file permissions
+        ###############################################
+
+        ## read-only needs read permission
+        chmod f1.txt 0o400
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o000
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+
+        ## write-only needs write permission
+        chmod f1.txt 0o200
+        Tau
+        RV_none
+
+        open_close f1.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o000
+        Tau
+        RV_none
+
+        open_close f1.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o400
+        Tau
+        RV_none
+
+        open_close f1.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## read-write needs read and write permission
+        chmod f1.txt 0o600
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o400
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o200
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o000
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDWR]
+        Tau
+        RV_none
+
+
+
+        ## truncate requires write permission
+        chmod f1.txt 0o600
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+
+        chmod f1.txt 0o400
+        Tau
+        RV_none
+
+        open_close f1.txt [O_RDONLY;O_TRUNC]
+        Tau
+        RV_none
+
+
+
+        ## append makes only sense with write, but 
+        ## does not require it
+        chmod f1.txt 0o400
+        Tau
+        RV_none
+
+        open f1.txt [O_RDONLY;O_APPEND]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## testing dir permissions
+        ###############################################
+
+        ## creating a file needs search and write permission
+        ## to the parent directory
+        chmod d1 0o000
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_none
+
+
+        chmod d1 0o200
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_none
+
+
+        chmod d1 0o100
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_none
+
+
+        chmod d1 0o300
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_none
+
+
+
+        ## to read a file, we needs search permission for the
+        ## parent directory (as well as to the file itself)
+
+        chmod d1 0o000
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+        chmod d1 0o100
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_RDONLY]
+        Tau
+        RV_none
+
+
+
+        ## search permission to the parent is enough to modify a file
+        chmod d1 0o000
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+        chmod d1 0o100
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_WRONLY]
+        Tau
+        RV_none
+
+
+        ## clean-up for dump etc.
+        chmod d1 0o700
+        Tau
+        RV_none
+
+
+
+
+
+
+
+
+        ## tesing pwrite and write
+
+
+        ###############################################
+        ## initialization
+        ###############################################
+
+        ## empty and non-empty directories to write to
+        mkdir /empty_dir 0o777
+        Tau
+        RV_none
+
+        mkdir /non_empty_dir 0o777
+        Tau
+        RV_none
+
+
+        chdir /non_empty_dir
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## simple writes
+        ###############################################
+
+        ## start on empty file and write something
+        open f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## write even more stuff at the end
+        open f1.txt [O_APPEND;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("01234567890123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## overwrite at begining
+        open f1.txt [O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "XXX" 3
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("XXX34567890123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## truncate file
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## shorter size
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 5
+        Tau
+        RV_num(5)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("01234")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## pwrite
+        ###############################################
+
+        ## write with pwrite at arbitrary positions
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        pwrite (FD 3) "X" 1 4
+        Tau
+        RV_num(1)
+
+        pwrite (FD 3) "X" 1 6
+        Tau
+        RV_num(1)
+
+        pwrite (FD 3) "X" 1 8
+        Tau
+        RV_num(1)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123X5X7X90123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## pwrite with negative index
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        pwrite (FD 3) "XXX" 3 -100
+        Tau
+        EINVAL
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## pwrite after end of file
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        pwrite (FD 3) "XXX" 3 10
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("\000\000\000\000\000\000\000\000\000\000XXX")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## pwrite then write
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        pwrite (FD 3) "XXX" 3 10
+        Tau
+        RV_num(3)
+
+        write (FD 3) "01234" 5
+        Tau
+        RV_num(5)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("01234\000\000\000\000\000XXX")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+
+        ###############################################
+        ## lseek 
+        ###############################################
+
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        lseek (FD 3) -3 SEEK_CUR
+        Tau
+        RV_num(7)
+
+        write (FD 3) "ABC" 3
+        Tau
+        RV_num(3)
+
+        pwrite (FD 3) "X" 1 4
+        Tau
+        RV_num(1)
+
+        lseek (FD 3) 2 SEEK_SET
+        Tau
+        RV_num(2)
+
+        write (FD 3) "Y" 1
+        Tau
+        RV_num(1)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("01Y3X56ABC")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ##write after end adds 0s
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        lseek (FD 3) 5 SEEK_CUR
+        Tau
+        RV_num(15)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789\000\000\000\000\000ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ###############################################
+        ## writes with different file-descriptors
+        ###############################################
+
+        ## read/write is fine
+        open f1.txt [O_TRUNC;O_RDWR]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## write_only is fine / truncate works
+        open f1.txt [O_TRUNC;O_WRONLY]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("ABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## write_only without truncate keeps old content, but overwrites it 
+        open f1.txt [O_WRONLY]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "012" 3
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("012DE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## append is adding at end
+        open f1.txt [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("012DEABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## writing a read-only file fails
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("012DEABCDE")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## closed FD cannot be written to
+        write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+
+
+        ## non existing FD can't be used
+        write (FD 300) "ABCDE" 5
+        Tau
+        EBADF
+
+
+
+        ###############################################
+        ## writing to directories
+        ## this is already prohibited 
+        ## by the open command
+        ###############################################
+
+        open /non_empty_dir [O_RDWR]
+        Tau
+        EISDIR
+
+        write (FD 3) "ABC" 3
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        open /non_empty_dir [O_WRONLY]
+        Tau
+        EISDIR
+
+        write (FD 3) "ABC" 3
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        open /non_empty_dir [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        write (FD 3) "ABC" 3
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+
+
+
+
+
+
+        ## Tests for close
+
+        ## close on an fd that was never used
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        ## and again
+        close (FD 4)
+        Tau
+        EBADF
+
+
+        ## open a normal file, and close
+        open f1.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## open a normal file, and close twice
+        open f2.txt [O_CREAT;O_WRONLY] 0o644
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        ## open and close a recently closed fd
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1 [O_RDWR]
+        Tau
+        ENOENT
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+
+        ## multiple overlapping opens
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        open f2.txt [O_RDWR]
+        Tau
+        RV_num(4)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        open f1.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        close (FD 4)
+        Tau
+        RV_none
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## opening a directory
+        mkdir d1 0o755
+        Tau
+        RV_none
+
+        open d1 [O_RDWR]
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        EBADF
+
+        open d1 [O_RDWR]
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        EBADF
+
+
+        ## closing stdin
+        close (FD 0)
+        Tau
+        RV_none
+
+
+        ## FIXME we can't close stdout because we are using it to return results of tests!
+        ## close (FD 1)
+
+        ## FIXME we probably shouldn't close stderr either
+        ## close (FD 2)
+
+
+
+
+
+
+
+
+        ## Tests for lseek
+
+
+        ###############################################
+        ## reads combined with lseek
+        ###############################################
+
+        ## initialise a file with some text
+        open f1.txt [O_TRUNC;O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+
+        ## read 2 bytes and then 2 again
+        read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("23")
+
+
+        ## jump back to beginning
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+
+        ## jump to absolute position 4
+        lseek (FD 3) 4 SEEK_SET
+        Tau
+        RV_num(4)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+
+        ## jump after end
+        lseek (FD 3) 5 SEEK_END
+        Tau
+        RV_num(15)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("")
+
+
+        ## jump after end
+        lseek (FD 3) 5 SEEK_END
+        Tau
+        RV_num(15)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("")
+
+
+        ## jump 2 before end
+        lseek (FD 3) -2 SEEK_END
+        Tau
+        RV_num(8)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("89")
+
+
+        ## 2 back and try again
+        lseek (FD 3) -2 SEEK_CUR
+        Tau
+        RV_num(8)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("89")
+
+
+        ## jump just to zero
+        lseek (FD 3) -10 SEEK_CUR
+        Tau
+        RV_num(0)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+
+        ## jump too far back (negative resulting offset)
+        lseek (FD 3) -10 SEEK_CUR
+        Tau
+        EINVAL
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("23")
+
+
+        ## use wrong whence
+        lseek (FD 3) 0 5
+        Tau
+        EINVAL
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+
+        ## check position
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(6)
+
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(6)
+
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## use closed file-descriptor
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        EBADF
+
+
+        ## use non-existing file-descriptor
+        lseek (FD 4) 0 SEEK_CUR
+        Tau
+        EBADF
+
+
+
+        ###############################################
+        ## write and lseek
+        ###############################################
+
+        ## jump after end of file should do nothing by itself
+        open f1.txt [O_TRUNC;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 5 SEEK_SET
+        Tau
+        RV_num(5)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## jump after end of file, then write adds 0s
+        open f1.txt [O_TRUNC;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 5 SEEK_SET
+        Tau
+        RV_num(5)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("\000\000\000\000\0000123456789")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## write then jump back and write, jump back, read
+        open f1.txt [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        lseek (FD 3) -2 SEEK_CUR
+        Tau
+        RV_num(8)
+
+        write (FD 3) "XX" 2
+        Tau
+        RV_num(2)
+
+        lseek (FD 3) -6 SEEK_CUR
+        Tau
+        RV_num(4)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+        write (FD 3) "YY" 2
+        Tau
+        RV_num(2)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read! (FD 3) 100
+        Tau
+        RV_bytes("012345YYXX")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## lseek on dirs is not properly supported and 
+        ## therefore not tested carefully
+        ###############################################
+
+        mkdir d1 0o777
+        Tau
+        RV_none
+
+        open_close d1/f1.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+
+        open_close d1/f2.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+
+        open_close d1/f3.txt [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+
+
+
+        open d1 [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+
+        read (FD 3) 10
+        Tau
+        EISDIR
+
+
+        lseek (FD 3) 4 SEEK_CUR
+        Tau
+        RV_num(4)
+
+        read (FD 3) 10
+        Tau
+        EISDIR
+
+
+        ## the following fail with a oveflow
+        lseek (FD 3) 0 SEEK_END
+        Tau
+        EOVERFLOW
+
+        lseek (FD 3) -2000 SEEK_END
+        Tau
+        EOVERFLOW
+
+
+        lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        read (FD 3) 10
+        Tau
+        EISDIR
+
+
+        lseek (FD 3) 10 SEEK_SET
+        Tau
+        RV_num(10)
+
+        read (FD 3) 10
+        Tau
+        EISDIR
+
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+
+
+
+
+
+        ## adhoc_pread_tests2: adhoc tests to check behaviour of read in various situations
+
+
+        ###############################################
+        ## initialization
+        ###############################################
+
+        ## empty and non-empty directories to read from
+        mkdir /empty_dir 0o777
+        Tau
+        RV_none
+
+        mkdir /non_empty_dir 0o777
+        Tau
+        RV_none
+
+
+        ## create files with different contents in the non-empty directory
+        chdir /non_empty_dir
+        Tau
+        RV_none
+
+
+        ## f1.txt is empty
+        open_close f1.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+        ## f2.txt contains some short text
+        open f2.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "Lorem ipsum dolor sit a" 23
+        Tau
+        RV_num(23)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## f3.txt contains all kinds of strange characters
+        open f3.txt [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "\"-#@/\000\001\001\243\b" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## read on an empty file
+        ###############################################
+
+        ## read nothing 
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 0 0
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read 1 char beyond end
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 1 0
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read 1 char after seeking beyond end
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 1 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read with negative offset 
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 1 -100
+        Tau
+        EINVAL
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+
+        ###############################################
+        ## read on a non-empty file
+        ###############################################
+
+        ## f2.txt is 23 bytes long
+
+        ## pread 0 chars
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 0 0
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read 0 chars
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 0
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread 2 chars
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 2 0
+        Tau
+        RV_bytes("Lo")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read 2 chars
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("Lo")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread 2 chars with offset 5
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 2 5
+        Tau
+        RV_bytes(" i")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read 2 chars and then 3, preads don't influence each other
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 2 0
+        Tau
+        RV_bytes("Lo")
+
+        pread (FD 3) 3 0
+        Tau
+        RV_bytes("Lor")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read 2 chars and then 3, reads influence each other
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("Lo")
+
+        read (FD 3) 3
+        Tau
+        RV_bytes("rem")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread over end of file
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read over end of file
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread just after end
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 1 23
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread far beyond end
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 1 100
+        Tau
+        RV_bytes("")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread over end
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 5 20
+        Tau
+        RV_bytes("t a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread with negative offset
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 1 -100
+        Tau
+        EINVAL
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## multiple preads don't influence each other or reads
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 2
+        Tau
+        RV_bytes("Lo")
+
+        pread (FD 3) 5 10
+        Tau
+        RV_bytes("m dol")
+
+        read (FD 3) 3
+        Tau
+        RV_bytes("rem")
+
+        pread (FD 3) 5 2
+        Tau
+        RV_bytes("rem i")
+
+        read (FD 3) 2
+        Tau
+        RV_bytes(" i")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## read is influenced by seek
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 6 SEEK_SET
+        Tau
+        RV_num(6)
+
+        read (FD 3) 5
+        Tau
+        RV_bytes("ipsum")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## pread is not influenced by seek
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        lseek (FD 3) 7 SEEK_SET
+        Tau
+        RV_num(7)
+
+        pread (FD 3) 5 6
+        Tau
+        RV_bytes("ipsum")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ###############################################
+        ## test reading of special chars
+        ###############################################
+
+        open f3.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("\"-#@/\000\001\001\243\b")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## reading from file-descriptors open for 
+        ## different modes
+        ###############################################
+
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f2.txt [O_WRONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        EBADF
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f2.txt [O_RDWR]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ## open a descriptor, remove permission on file
+        ## and then read. Since descriptor is open
+        ## that should be fine, but opening again is not
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        chmod f2.txt 0o000
+        Tau
+        RV_none
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        chmod f2.txt 0o666
+        Tau
+        RV_none
+
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        read (FD 3) 100
+        Tau
+        RV_bytes("Lorem ipsum dolor sit a")
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        ###############################################
+        ## read on directories
+        ###############################################
+
+        open /empty_dir [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 0 0
+        Tau
+        EISDIR
+
+        pread (FD 3) 1 0
+        Tau
+        EISDIR
+
+        pread (FD 3) 1 1
+        Tau
+        EISDIR
+
+        read (FD 3) 0
+        Tau
+        EISDIR
+
+        read (FD 3) 1
+        Tau
+        EISDIR
+
+        read (FD 3) 1
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open /non_empty_dir [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        pread (FD 3) 0 0
+        Tau
+        EISDIR
+
+        pread (FD 3) 1 0
+        Tau
+        EISDIR
+
+        pread (FD 3) 1 1
+        Tau
+        EISDIR
+
+        read (FD 3) 0
+        Tau
+        EISDIR
+
+        read (FD 3) 1
+        Tau
+        EISDIR
+
+        read (FD 3) 1
+        Tau
+        EISDIR
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ###############################################
+        ## finished :-)
+        ###############################################
+
+
+
+
+
+
+
+
+        ## Tests for a file underlying a file-descriptor
+        ## being modified while the descriptor is open
+
+        ## create a file with some content
+        open f1.txt [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(4)
+
+        ## check we are at the beginning
+        read! (FD 4) 100
+        Tau
+        RV_bytes("0123456789")
+
+
+        ## check lseek to FD 4 does not affect FD 3
+        lseek (FD 4) 0 SEEK_SET
+        Tau
+        RV_num(0)
+
+        write! (FD 3) "AB" 2
+        Tau
+        RV_num(2)
+
+
+        ## but content is present in both
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+        pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+
+        close (FD 3)
+        Tau
+        RV_none
+
+        close (FD 4)
+        Tau
+        RV_none
+
+
+
+
+        ## open f1, then delete it
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        unlink f1.txt
+        Tau
+        RV_none
+
+        pread (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+
+        open_close f1.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ## open f1, then rename it
+        open f1.txt [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+
+        write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+        open f1.txt [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        rename f1.txt f2.txt
+        Tau
+        RV_none
+
+        pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+
+        open_close f1.txt [O_RDONLY]
+        Tau
+        ENOENT
+
+        open f2.txt [O_RDONLY]
+        Tau
+        RV_num(4)
+
+        pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+        close (FD 4)
+        Tau
+        RV_none
+
+        close (FD 3)
+        Tau
+        RV_none
+
+
+
+
+
+
+
+
+

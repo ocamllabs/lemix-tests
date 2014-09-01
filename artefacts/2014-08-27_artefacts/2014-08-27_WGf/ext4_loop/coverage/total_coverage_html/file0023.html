@@ -1,0 +1,485 @@
+<html>
+  <head>
+    <title>Bisect report</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript">
+      <!--
+        function jump(id) {
+          document.body.scrollTop = document.getElementById(id).offsetTop;
+        }
+      -->
+    </script>
+    <script language="javascript" src="file0023.js"></script>
+  </head>
+  <body>
+    <div class="section">File: build_spec/dynarray.ml (<a href="index.html">return to index</a>)</div>
+    <br/>
+    <hr class="codeSep"/>
+    <br/>
+    <table>
+      <tr>
+        <td valign="top" class="section">Statistics:&nbsp;&nbsp;</td>
+        <td valign="top">
+          <table class="simple">
+            <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
+            <tr><td>binding</td><td width="16px">&nbsp;</td><td>21 / 26 (80%)</td></tr>
+            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>for</td><td width="16px">&nbsp;</td><td>1 / 1 (100%)</td></tr>
+            <tr><td>if/then</td><td width="16px">&nbsp;</td><td>8 / 14 (57%)</td></tr>
+            <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>13 / 20 (65%)</td></tr>
+          </table>
+        </td>
+        <td valign="top">
+          <table class="simple">
+            <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
+            <tr><td>class expression</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>class initializer</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>class method</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>class value</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>toplevel expression</td><td width="16px">&nbsp;</td><td>0 / 0 (-%)</td></tr>
+            <tr><td>lazy operator</td><td width="16px">&nbsp;</td><td>0 / 2 (0%)</td></tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <br/>
+    <hr class="codeSep"/>
+    <br/>
+    <div class="section">Source:</div>
+    <br/>
+<div style="font-size: smaller;"><a href="javascript:foldAll();">fold all</a> <a href="javascript:unfoldAll();">unfold all</a></div>
+    <code>
+      <div id="fold000001">
+      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| type&nbsp;myfusebuffer&nbsp;=&nbsp;(char,&nbsp;Bigarray.int8_unsigned_elt,&nbsp;Bigarray.c_layout)&nbsp;Bigarray.Array1.t</div>
+      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| &nbsp;&nbsp;</div>
+      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| &nbsp;</div>
+      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| (*&nbsp;dynamic&nbsp;arrays:&nbsp;resize&nbsp;an&nbsp;array&nbsp;to&nbsp;a&nbsp;target&nbsp;size,&nbsp;using&nbsp;doubling&nbsp;*)</div>
+      <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| module&nbsp;MyDynArray1&nbsp;=&nbsp;struct</div>
+      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| &nbsp;&nbsp;</div>
+      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| &nbsp;&nbsp;module&nbsp;A&nbsp;=&nbsp;Bigarray.Array1</div>
+      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;</div>
+      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;type&nbsp;t&nbsp;=&nbsp;myfusebuffer&nbsp;(*&nbsp;keep&nbsp;abstract?&nbsp;*)</div>
+      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;&nbsp;</div>
+      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| &nbsp;&nbsp;(*&nbsp;let&nbsp;get_array&nbsp;(da:t)&nbsp;=&nbsp;(da:myfusebuffer)&nbsp;*)</div>
+      <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;</div>
+      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| &nbsp;&nbsp;(*&nbsp;FIXME&nbsp;hopefully&nbsp;this&nbsp;works&nbsp;with&nbsp;0&nbsp;length&nbsp;arrays&nbsp;*)</div>
+      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| &nbsp;&nbsp;(*&nbsp;target&nbsp;&lt;=&nbsp;resize'&nbsp;target&nbsp;cur&nbsp;*)</div>
+      <div id="line000015" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000015| &nbsp;&nbsp;let&nbsp;rec&nbsp;resize'&nbsp;target&nbsp;cur&nbsp;=&nbsp;(</div>
+      <div id="line000016" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000016| &nbsp;&nbsp;&nbsp;&nbsp;(*[12018649]*)let&nbsp;cur&nbsp;=&nbsp;(if&nbsp;cur=0&nbsp;then&nbsp;(*[1823523]*)1&nbsp;else&nbsp;(*[10195126]*)cur)&nbsp;in</div>
+      <div id="line000017" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;&nbsp;&nbsp;&nbsp;(*[12018649]*)if&nbsp;target&nbsp;&lt;=&nbsp;cur&nbsp;then&nbsp;(*[1824404]*)cur&nbsp;else&nbsp;(*[10194245]*)resize'&nbsp;target&nbsp;(2*cur))</div>
+      <div id="line000018" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;</div>
+      <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;(*&nbsp;resize&nbsp;an&nbsp;array&nbsp;so&nbsp;that&nbsp;it&nbsp;is&nbsp;at&nbsp;least&nbsp;as&nbsp;big&nbsp;as&nbsp;n;&nbsp;invariant:&nbsp;minsize&nbsp;&lt;=&nbsp;dim&nbsp;(resize&nbsp;da&nbsp;minsize)&nbsp;*)</div>
+      <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;let&nbsp;resize&nbsp;da&nbsp;minsize&nbsp;=&nbsp;(</div>
+      <div id="line000021" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000021| &nbsp;&nbsp;&nbsp;&nbsp;(*[1824404]*)let&nbsp;cur&nbsp;=&nbsp;Bigarray.Array1.dim&nbsp;da&nbsp;in</div>
+      <div id="line000022" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;&nbsp;&nbsp;(*[1824404]*)let&nbsp;newsize&nbsp;=&nbsp;resize'&nbsp;minsize&nbsp;cur&nbsp;in</div>
+      <div id="line000023" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;&nbsp;&nbsp;&nbsp;(*[1824404]*)if&nbsp;(newsize&nbsp;=&nbsp;cur)&nbsp;then&nbsp;(*[861]*)da&nbsp;else&nbsp;(</div>
+      <div id="line000024" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000024| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[1823543]*)let&nbsp;newbuf&nbsp;=&nbsp;A.create&nbsp;(A.kind&nbsp;da)&nbsp;(A.layout&nbsp;da)&nbsp;newsize&nbsp;in</div>
+      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[1823543]*)let&nbsp;_&nbsp;=&nbsp;A.fill&nbsp;newbuf&nbsp;'\x00'&nbsp;in&nbsp;(*&nbsp;remember&nbsp;to&nbsp;zero&nbsp;the&nbsp;array&nbsp;*)</div>
+      <div id="line000026" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[1823543]*)let&nbsp;_&nbsp;=&nbsp;A.blit&nbsp;da&nbsp;(A.sub&nbsp;newbuf&nbsp;0&nbsp;(A.dim&nbsp;da))&nbsp;in</div>
+      <div id="line000027" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000027| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[1823543]*)newbuf))</div>
+      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+      <div id="line000029" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000029| end</div>
+      <div id="line000030" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000030| &nbsp;</div>
+      <div id="line000031" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000031| module&nbsp;type&nbsp;MYDYNARRAY&nbsp;=&nbsp;sig</div>
+      <div id="line000032" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;</div>
+      <div id="line000033" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;type&nbsp;myfusebuffer&nbsp;=&nbsp;(char,&nbsp;Bigarray.int8_unsigned_elt,&nbsp;Bigarray.c_layout)&nbsp;Bigarray.Array1.t</div>
+      <div id="line000034" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;</div>
+      <div id="line000035" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000035| &nbsp;&nbsp;type&nbsp;t</div>
+      <div id="line000036" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000036| &nbsp;</div>
+      <div id="line000037" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000037| &nbsp;&nbsp;val&nbsp;of_array&nbsp;:&nbsp;myfusebuffer&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000038" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;</div>
+      <div id="line000039" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000039| &nbsp;&nbsp;val&nbsp;of_string&nbsp;:&nbsp;string&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000040" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000040| &nbsp;</div>
+      <div id="line000041" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000041| &nbsp;&nbsp;val&nbsp;to_array:&nbsp;t&nbsp;-&gt;&nbsp;myfusebuffer</div>
+      <div id="line000042" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000042| &nbsp;</div>
+      <div id="line000043" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000043| &nbsp;&nbsp;val&nbsp;to_string:&nbsp;t&nbsp;-&gt;&nbsp;string</div>
+      <div id="line000044" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000044| &nbsp;</div>
+      <div id="line000045" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000045| &nbsp;&nbsp;val&nbsp;repn:&nbsp;t&nbsp;-&gt;&nbsp;int&nbsp;*&nbsp;myfusebuffer</div>
+      <div id="line000046" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000046| &nbsp;</div>
+      <div id="line000047" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000047| &nbsp;&nbsp;val&nbsp;create&nbsp;:&nbsp;unit&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000048" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000048| &nbsp;</div>
+      <div id="line000049" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000049| &nbsp;&nbsp;val&nbsp;dim&nbsp;:&nbsp;t&nbsp;-&gt;&nbsp;int</div>
+      <div id="line000050" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000050| &nbsp;</div>
+      <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| &nbsp;&nbsp;val&nbsp;resize&nbsp;:&nbsp;t&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000052" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000052| &nbsp;</div>
+      <div id="line000053" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000053| &nbsp;&nbsp;val&nbsp;get:&nbsp;t&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;char</div>
+      <div id="line000054" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000054| &nbsp;</div>
+      <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| &nbsp;&nbsp;val&nbsp;set:&nbsp;t&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;char&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| &nbsp;</div>
+      <div id="line000057" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000057| &nbsp;&nbsp;val&nbsp;blit&nbsp;:&nbsp;t&nbsp;*&nbsp;int&nbsp;*&nbsp;int&nbsp;-&gt;&nbsp;t&nbsp;*&nbsp;int&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| &nbsp;</div>
+      <div id="line000059" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000059| &nbsp;&nbsp;(*&nbsp;FIXME&nbsp;don't&nbsp;need&nbsp;if&nbsp;have&nbsp;to_array&nbsp;etc?&nbsp;*)</div>
+      <div id="line000060" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000060| &nbsp;&nbsp;(*&nbsp;val&nbsp;blit_array1:&nbsp;t&nbsp;*&nbsp;int&nbsp;*&nbsp;int&nbsp;-&gt;&nbsp;myfusebuffer&nbsp;*&nbsp;int&nbsp;-&gt;&nbsp;int&nbsp;*)</div>
+      <div id="line000061" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000061| &nbsp;</div>
+      <div id="line000062" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000062| &nbsp;&nbsp;val&nbsp;sub:&nbsp;t&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000063" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000063| &nbsp;</div>
+      <div id="line000064" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000064| &nbsp;&nbsp;(*&nbsp;copy&nbsp;bytes&nbsp;from&nbsp;arr1&nbsp;to&nbsp;arr2,&nbsp;giving&nbsp;a&nbsp;new&nbsp;array&nbsp;*)</div>
+      <div id="line000065" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000065| &nbsp;&nbsp;val&nbsp;write:&nbsp;(t*int*int)&nbsp;-&gt;&nbsp;(t*int)&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000066" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000066| &nbsp;</div>
+      <div id="line000067" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000067| end</div>
+      <div id="line000068" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000068| &nbsp;</div>
+      <div id="line000069" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000069| &nbsp;</div>
+      <div id="line000070" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000070| (*&nbsp;like&nbsp;an&nbsp;array,&nbsp;but&nbsp;the&nbsp;array&nbsp;is&nbsp;potentially&nbsp;larger&nbsp;than&nbsp;the&nbsp;data&nbsp;we&nbsp;need&nbsp;to&nbsp;store,&nbsp;so&nbsp;we&nbsp;also&nbsp;keep&nbsp;track&nbsp;of&nbsp;the&nbsp;length&nbsp;of&nbsp;the&nbsp;data&nbsp;*)</div>
+      <div id="line000071" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000071| module&nbsp;MyDynArray2&nbsp;=&nbsp;struct</div>
+      <div id="line000072" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000072| &nbsp;</div>
+      <div id="line000073" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000073| &nbsp;&nbsp;type&nbsp;myfusebuffer&nbsp;=&nbsp;(char,&nbsp;Bigarray.int8_unsigned_elt,&nbsp;Bigarray.c_layout)&nbsp;Bigarray.Array1.t</div>
+      <div id="line000074" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000074| &nbsp;</div>
+      <div id="line000075" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000075| &nbsp;&nbsp;module&nbsp;A&nbsp;=&nbsp;Bigarray.Array1</div>
+      <div id="line000076" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000076| &nbsp;</div>
+      <div id="line000077" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000077| &nbsp;&nbsp;(*&nbsp;i&nbsp;is&nbsp;the&nbsp;length&nbsp;of&nbsp;the&nbsp;dynamic&nbsp;array,&nbsp;given&nbsp;some&nbsp;implementation;&nbsp;invariant&nbsp;(i,arr):&nbsp;i&nbsp;&lt;=&nbsp;dim&nbsp;arr&nbsp;*)</div>
+      <div id="line000078" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000078| &nbsp;&nbsp;type&nbsp;t&nbsp;=&nbsp;int&nbsp;*&nbsp;MyDynArray1.t</div>
+      <div id="line000079" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000079| &nbsp;</div>
+      <div id="line000080" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000080| &nbsp;&nbsp;type&nbsp;mynewtypefixme&nbsp;=&nbsp;int</div>
+      <div id="line000081" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000081| &nbsp;</div>
+      </div>
+      <div id="line000082" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000082| &nbsp;&nbsp;let&nbsp;repn&nbsp;(i,arr)&nbsp;=&nbsp;((*[0]*)i,arr)</div>
+      <div id="fold000083">
+      <div id="line000083" class="lineNone"><a href="javascript:fold('fold000083');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000083| &nbsp;</div>
+      <div id="line000084" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000084| &nbsp;&nbsp;let&nbsp;dim&nbsp;(i,arr)&nbsp;=&nbsp;(*[718887]*)i</div>
+      <div id="line000085" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000085| &nbsp;</div>
+      <div id="line000086" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000086| &nbsp;&nbsp;let&nbsp;resize&nbsp;(i,arr)&nbsp;j&nbsp;=&nbsp;((*[28]*)j,MyDynArray1.resize&nbsp;arr&nbsp;j)</div>
+      <div id="line000087" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000087| &nbsp;</div>
+      <div id="line000088" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000088| &nbsp;&nbsp;let&nbsp;of_array&nbsp;arr&nbsp;=&nbsp;((*[65238]*)A.dim&nbsp;arr,arr)</div>
+      <div id="line000089" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000089| &nbsp;</div>
+      <div id="line000090" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000090| &nbsp;&nbsp;(*&nbsp;convenience&nbsp;only;&nbsp;don't&nbsp;use&nbsp;in&nbsp;production&nbsp;code&nbsp;*)</div>
+      <div id="line000091" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000091| &nbsp;&nbsp;let&nbsp;of_string&nbsp;bs&nbsp;=&nbsp;(</div>
+      <div id="line000092" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000092| &nbsp;&nbsp;&nbsp;&nbsp;(*[65238]*)let&nbsp;arr&nbsp;=&nbsp;(Array.init&nbsp;(String.length&nbsp;bs)&nbsp;(String.get&nbsp;bs))&nbsp;in</div>
+      <div id="line000093" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000093| &nbsp;&nbsp;&nbsp;&nbsp;(*[65238]*)let&nbsp;contents&nbsp;:&nbsp;myfusebuffer&nbsp;=&nbsp;A.of_array&nbsp;Bigarray.char&nbsp;Bigarray.c_layout&nbsp;arr&nbsp;in</div>
+      <div id="line000094" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000094| &nbsp;&nbsp;&nbsp;&nbsp;(*[65238]*)of_array&nbsp;contents)</div>
+      </div>
+      <div id="line000095" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000095| &nbsp;&nbsp;let&nbsp;of_list&nbsp;l&nbsp;=&nbsp;(*[0]*)of_string&nbsp;(Xstring.implode&nbsp;l)</div>
+      <div id="fold000096">
+      <div id="line000096" class="lineNone"><a href="javascript:fold('fold000096');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000096| &nbsp;</div>
+      <div id="line000097" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000097| &nbsp;&nbsp;let&nbsp;equal&nbsp;(i1,arr1)&nbsp;(i2,arr2)&nbsp;=&nbsp;(</div>
+      </div>
+      <div id="line000098" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000098| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)((*[0]*)i1&nbsp;=&nbsp;i2)&nbsp;&amp;&amp;&nbsp;((*[0]*)A.sub&nbsp;arr1&nbsp;0&nbsp;i1&nbsp;=&nbsp;A.sub&nbsp;arr2&nbsp;0&nbsp;i2))</div>
+      <div id="fold000099">
+      <div id="line000099" class="lineNone"><a href="javascript:fold('fold000099');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000099| &nbsp;</div>
+      <div id="line000100" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000100| &nbsp;&nbsp;(*&nbsp;FIXME&nbsp;we&nbsp;could&nbsp;return&nbsp;the&nbsp;underlying&nbsp;array&nbsp;directly,&nbsp;with&nbsp;a&nbsp;sub&nbsp;*)</div>
+      <div id="line000101" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000101| &nbsp;&nbsp;let&nbsp;to_array&nbsp;(i,arr1)&nbsp;=&nbsp;(</div>
+      </div>
+      <div id="line000102" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000102| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)let&nbsp;arr2&nbsp;=&nbsp;A.create&nbsp;Bigarray.char&nbsp;Bigarray.c_layout&nbsp;i&nbsp;in</div>
+      <div id="line000103" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000103| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)let&nbsp;_&nbsp;=&nbsp;A.blit&nbsp;(A.sub&nbsp;arr1&nbsp;0&nbsp;i)&nbsp;arr2&nbsp;in</div>
+      <div id="line000104" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000104| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)arr2)</div>
+      <div id="fold000105">
+      <div id="line000105" class="lineNone"><a href="javascript:fold('fold000105');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000105| &nbsp;</div>
+      <div id="line000106" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000106| &nbsp;&nbsp;let&nbsp;to_string&nbsp;(i,arr1)&nbsp;=&nbsp;(</div>
+      <div id="line000107" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000107| &nbsp;&nbsp;&nbsp;&nbsp;(*[150679]*)let&nbsp;s&nbsp;=&nbsp;String.create&nbsp;i&nbsp;in</div>
+      <div id="line000108" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000108| &nbsp;&nbsp;&nbsp;&nbsp;(*[150679]*)let&nbsp;_&nbsp;=&nbsp;</div>
+      <div id="line000109" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000109| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;j=0&nbsp;to&nbsp;i-1&nbsp;do</div>
+      <div id="line000110" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000110| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[4526222]*)String.set&nbsp;s&nbsp;j&nbsp;(A.get&nbsp;arr1&nbsp;j)</div>
+      <div id="line000111" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000111| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;done</div>
+      <div id="line000112" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000112| &nbsp;&nbsp;&nbsp;&nbsp;in</div>
+      <div id="line000113" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000113| &nbsp;&nbsp;&nbsp;&nbsp;(*[150679]*)s)</div>
+      <div id="line000114" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000114| &nbsp;</div>
+      </div>
+      <div id="line000115" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000115| &nbsp;&nbsp;let&nbsp;to_list&nbsp;ia&nbsp;=&nbsp;(*[0]*)Xstring.explode&nbsp;(to_string&nbsp;ia)</div>
+      <div id="fold000116">
+      <div id="line000116" class="lineNone"><a href="javascript:fold('fold000116');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000116| &nbsp;</div>
+      <div id="line000117" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000117| &nbsp;&nbsp;let&nbsp;create&nbsp;()&nbsp;=&nbsp;(</div>
+      <div id="line000118" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000118| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)let&nbsp;arr&nbsp;=&nbsp;A.create&nbsp;Bigarray.char&nbsp;Bigarray.c_layout&nbsp;4096&nbsp;in</div>
+      <div id="line000119" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000119| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)let&nbsp;_&nbsp;=&nbsp;A.fill&nbsp;arr&nbsp;'\x00'&nbsp;in</div>
+      <div id="line000120" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000120| &nbsp;&nbsp;&nbsp;&nbsp;((*[908]*)0,&nbsp;arr))</div>
+      <div id="line000121" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000121| &nbsp;</div>
+      </div>
+      <div id="line000122" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000122| &nbsp;&nbsp;let&nbsp;get&nbsp;(i,arr)&nbsp;j&nbsp;=&nbsp;((*[0]*)if&nbsp;j&lt;i&nbsp;then&nbsp;(*[0]*)A.get&nbsp;arr&nbsp;j&nbsp;else&nbsp;(*[0]*)raise&nbsp;(Invalid_argument&nbsp;&quot;MyDynArray2:&nbsp;get,&nbsp;index&nbsp;out&nbsp;of&nbsp;bounds&quot;))</div>
+      <div id="fold000123">
+      <div id="line000123" class="lineNone"><a href="javascript:fold('fold000123');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000123| &nbsp;</div>
+      <div id="line000124" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000124| &nbsp;&nbsp;let&nbsp;set&nbsp;(i,arr)&nbsp;j&nbsp;c&nbsp;=&nbsp;(</div>
+      </div>
+      <div id="line000125" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000125| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)let&nbsp;arr&nbsp;=&nbsp;(if&nbsp;j&nbsp;&gt;&nbsp;A.dim&nbsp;arr&nbsp;then&nbsp;((*[0]*)MyDynArray1.resize&nbsp;arr&nbsp;j)&nbsp;else&nbsp;((*[0]*)arr))&nbsp;in</div>
+      <div id="line000126" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000126| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)let&nbsp;i&nbsp;=&nbsp;(if&nbsp;j&nbsp;&gt;=&nbsp;i&nbsp;then&nbsp;(*[0]*)j+1&nbsp;else&nbsp;(*[0]*)i)&nbsp;in</div>
+      <div id="line000127" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000127| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)let&nbsp;_&nbsp;=&nbsp;A.set&nbsp;arr&nbsp;j&nbsp;c&nbsp;in</div>
+      <div id="line000128" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000128| &nbsp;&nbsp;&nbsp;&nbsp;((*[0]*)i,arr))</div>
+      <div id="fold000129">
+      <div id="line000129" class="lineNone"><a href="javascript:fold('fold000129');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000129| &nbsp;</div>
+      <div id="line000130" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000130| &nbsp;&nbsp;(*&nbsp;assumes&nbsp;ofs1+len1&lt;i&nbsp;(sim&nbsp;with&nbsp;the&nbsp;other&nbsp;ops)&nbsp;;&nbsp;resizes&nbsp;if&nbsp;necessary,&nbsp;ie&nbsp;may&nbsp;not&nbsp;mutate&nbsp;in&nbsp;place!&nbsp;*)</div>
+      <div id="line000131" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000131| &nbsp;&nbsp;let&nbsp;blit&nbsp;((i1,arr1),ofs1,len1)&nbsp;((i2,arr2),ofs2)&nbsp;=&nbsp;(</div>
+      <div id="line000132" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000132| &nbsp;&nbsp;&nbsp;&nbsp;(*[1850838]*)let&nbsp;size2&nbsp;=&nbsp;ofs2+len1&nbsp;in</div>
+      <div id="line000133" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000133| &nbsp;&nbsp;&nbsp;&nbsp;(*[1850838]*)let&nbsp;(i2,arr2)&nbsp;=&nbsp;(</div>
+      <div id="line000134" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000134| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(i2&nbsp;&lt;&nbsp;size2)&nbsp;then&nbsp;((*[1824376]*)size2,MyDynArray1.resize&nbsp;arr2&nbsp;size2)&nbsp;else&nbsp;((*[26462]*)i2,arr2))</div>
+      <div id="line000135" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000135| &nbsp;&nbsp;&nbsp;&nbsp;in</div>
+      <div id="line000136" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000136| &nbsp;&nbsp;&nbsp;&nbsp;(*[1850838]*)let&nbsp;_&nbsp;=&nbsp;A.blit&nbsp;(A.sub&nbsp;arr1&nbsp;ofs1&nbsp;len1)&nbsp;(A.sub&nbsp;arr2&nbsp;ofs2&nbsp;len1)&nbsp;in</div>
+      <div id="line000137" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000137| &nbsp;&nbsp;&nbsp;&nbsp;((*[1850838]*)i2,arr2))</div>
+      <div id="line000138" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000138| &nbsp;</div>
+      <div id="line000139" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000139| &nbsp;&nbsp;(*&nbsp;arr2&nbsp;is&nbsp;a&nbsp;buffer&nbsp;eg&nbsp;that&nbsp;we&nbsp;are&nbsp;reading&nbsp;to;&nbsp;we&nbsp;return&nbsp;the&nbsp;number&nbsp;of&nbsp;bytes&nbsp;copied&nbsp;*)</div>
+      <div id="line000140" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000140| &nbsp;&nbsp;(*&nbsp;assumes&nbsp;ofs1+len1&nbsp;&lt;&nbsp;i1&nbsp;*)</div>
+      <div id="line000141" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000141| &nbsp;&nbsp;(*</div>
+      <div id="line000142" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000142| &nbsp;&nbsp;let&nbsp;blit_array1&nbsp;((i1,arr1),ofs1,len1)&nbsp;(arr2,ofs2)&nbsp;=&nbsp;(</div>
+      <div id="line000143" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000143| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;len&nbsp;=&nbsp;min&nbsp;len1&nbsp;(A.dim&nbsp;arr2&nbsp;-&nbsp;ofs2)&nbsp;in</div>
+      <div id="line000144" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000144| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;_&nbsp;=&nbsp;A.blit&nbsp;(A.sub&nbsp;arr1&nbsp;ofs1&nbsp;len)&nbsp;(A.sub&nbsp;arr2&nbsp;ofs2&nbsp;len)&nbsp;in</div>
+      <div id="line000145" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000145| &nbsp;&nbsp;&nbsp;&nbsp;len)</div>
+      <div id="line000146" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000146| &nbsp;&nbsp;*)</div>
+      <div id="line000147" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000147| &nbsp;</div>
+      <div id="line000148" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000148| &nbsp;&nbsp;(*&nbsp;FIXME&nbsp;we&nbsp;need&nbsp;a&nbsp;module&nbsp;representing&nbsp;arrays,&nbsp;but&nbsp;where&nbsp;the&nbsp;ops&nbsp;act&nbsp;functionally&nbsp;ie&nbsp;they&nbsp;return&nbsp;a&nbsp;new&nbsp;array&nbsp;every&nbsp;time&nbsp;*)</div>
+      <div id="line000149" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000149| &nbsp;&nbsp;(*&nbsp;FIXME&nbsp;decide&nbsp;what&nbsp;the&nbsp;functional&nbsp;interface&nbsp;to&nbsp;arrays&nbsp;should&nbsp;be;&nbsp;maybe&nbsp;we&nbsp;should&nbsp;mutate&nbsp;and&nbsp;assume&nbsp;arrays&nbsp;are&nbsp;used&nbsp;linearly?&nbsp;*)</div>
+      <div id="line000150" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000150| &nbsp;&nbsp;(*&nbsp;behaves&nbsp;as&nbsp;functional&nbsp;call&nbsp;*)</div>
+      <div id="line000151" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000151| &nbsp;&nbsp;let&nbsp;sub&nbsp;(i,arr)&nbsp;ofs&nbsp;len&nbsp;=&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;</div>
+      <div id="line000152" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000152| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)let&nbsp;ofs'&nbsp;=&nbsp;min&nbsp;ofs&nbsp;i&nbsp;in</div>
+      <div id="line000153" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000153| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)let&nbsp;len'&nbsp;=&nbsp;min&nbsp;len&nbsp;(i&nbsp;-&nbsp;ofs')&nbsp;in</div>
+      <div id="line000154" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000154| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)let&nbsp;arr2&nbsp;=&nbsp;A.sub&nbsp;arr&nbsp;ofs'&nbsp;len'&nbsp;in</div>
+      <div id="line000155" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000155| &nbsp;&nbsp;&nbsp;&nbsp;((*[908]*)A.dim&nbsp;arr2,arr2))</div>
+      <div id="line000156" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000156| &nbsp;</div>
+      <div id="line000157" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000157| &nbsp;&nbsp;let&nbsp;copy&nbsp;(i,arr)&nbsp;=&nbsp;(</div>
+      <div id="line000158" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000158| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)let&nbsp;arr'&nbsp;=&nbsp;create&nbsp;()&nbsp;in</div>
+      <div id="line000159" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000159| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)let&nbsp;arr''&nbsp;=&nbsp;blit&nbsp;((i,arr),0,i)&nbsp;(arr',0)&nbsp;in</div>
+      <div id="line000160" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000160| &nbsp;&nbsp;&nbsp;&nbsp;(*[908]*)arr'')</div>
+      <div id="line000161" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000161| &nbsp;</div>
+      <div id="line000162" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000162| &nbsp;&nbsp;let&nbsp;subCopy&nbsp;(i,arr)&nbsp;ofs&nbsp;len&nbsp;=&nbsp;(*[908]*)copy&nbsp;(sub&nbsp;(i,arr)&nbsp;ofs&nbsp;len)</div>
+      <div id="line000163" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000163| &nbsp;</div>
+      <div id="line000164" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000164| &nbsp;&nbsp;(*&nbsp;behaves&nbsp;as&nbsp;functional&nbsp;call&nbsp;*)</div>
+      <div id="line000165" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000165| &nbsp;&nbsp;let&nbsp;write&nbsp;((i2,arr2),ofs2,len2)&nbsp;(arr1,ofs1)&nbsp;&nbsp;=&nbsp;(</div>
+      <div id="line000166" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000166| &nbsp;&nbsp;&nbsp;&nbsp;(*[1849930]*)let&nbsp;arr2&nbsp;=&nbsp;blit&nbsp;((i2,arr2),ofs2,len2)&nbsp;(arr1,ofs1)&nbsp;in</div>
+      <div id="line000167" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000167| &nbsp;&nbsp;&nbsp;&nbsp;(*[1849930]*)arr2)</div>
+      <div id="line000168" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000168| &nbsp;&nbsp;&nbsp;</div>
+      <div id="line000169" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000169| end</div>
+      <div id="line000170" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000170| &nbsp;</div>
+      <div id="line000171" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000171| module&nbsp;MyDynArray&nbsp;=&nbsp;(MyDynArray2&nbsp;:&nbsp;MYDYNARRAY)</div>
+      <div id="line000172" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000172| &nbsp;</div>
+      <div id="line000173" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000173| &nbsp;</div>
+      <div id="line000174" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000174| &nbsp;&nbsp;module&nbsp;type&nbsp;My_array&nbsp;=&nbsp;sig</div>
+      <div id="line000175" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000175| &nbsp;&nbsp;&nbsp;&nbsp;type&nbsp;t</div>
+      <div id="line000176" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000176| &nbsp;&nbsp;</div>
+      <div id="line000177" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000177| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;of_string&nbsp;:&nbsp;string&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000178" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000178| &nbsp;&nbsp;</div>
+      <div id="line000179" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000179| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;to_string:&nbsp;t&nbsp;-&gt;&nbsp;string</div>
+      <div id="line000180" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000180| &nbsp;&nbsp;</div>
+      <div id="line000181" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000181| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;dim&nbsp;:&nbsp;t&nbsp;-&gt;&nbsp;int</div>
+      <div id="line000182" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000182| &nbsp;</div>
+      <div id="line000183" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000183| &nbsp;&nbsp;&nbsp;&nbsp;(*&nbsp;offset&nbsp;length&nbsp;*)</div>
+      <div id="line000184" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000184| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;sub:&nbsp;t&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000185" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000185| &nbsp;&nbsp;</div>
+      <div id="line000186" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000186| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;resize&nbsp;:&nbsp;t&nbsp;-&gt;&nbsp;int&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000187" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000187| &nbsp;&nbsp;</div>
+      <div id="line000188" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000188| &nbsp;&nbsp;&nbsp;&nbsp;(*&nbsp;copy&nbsp;bytes&nbsp;from&nbsp;arr1&nbsp;to&nbsp;arr2,&nbsp;giving&nbsp;a&nbsp;new&nbsp;array;&nbsp;ofs&nbsp;len;&nbsp;ofs&nbsp;*)</div>
+      <div id="line000189" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000189| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;write:&nbsp;(t*int*int)&nbsp;-&gt;&nbsp;(t*int)&nbsp;-&gt;&nbsp;t</div>
+      <div id="line000190" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000190| &nbsp;</div>
+      <div id="line000191" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000191| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;of_array&nbsp;:&nbsp;myfusebuffer&nbsp;-&gt;&nbsp;t&nbsp;(*&nbsp;not&nbsp;used&nbsp;in&nbsp;the&nbsp;spec,&nbsp;but&nbsp;unix_impl&nbsp;needs&nbsp;it&nbsp;*)</div>
+      <div id="line000192" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000192| &nbsp;</div>
+      <div id="line000193" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000193| &nbsp;&nbsp;&nbsp;&nbsp;val&nbsp;to_array:&nbsp;t&nbsp;-&gt;&nbsp;myfusebuffer&nbsp;(*&nbsp;not&nbsp;used&nbsp;in&nbsp;spec,&nbsp;but&nbsp;unix_impl&nbsp;needs&nbsp;it&nbsp;*)</div>
+      <div id="line000194" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000194| &nbsp;</div>
+      <div id="line000195" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000195| &nbsp;&nbsp;end</div>
+      <div id="line000196" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000196| &nbsp;</div>
+      <div id="line000197" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000197| &nbsp;&nbsp;(*&nbsp;module&nbsp;Fs_dyn_array&nbsp;=&nbsp;(Dynarray.MyDynArray&nbsp;:&nbsp;My_array)&nbsp;*)</div>
+      <div id="line000198" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000198| &nbsp;</div>
+      <div id="line000199" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000199| (*&nbsp;&nbsp;module&nbsp;Fs_dyn_array&nbsp;=&nbsp;(List_array&nbsp;:&nbsp;My_array)&nbsp;*)</div>
+      <div id="line000200" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000200| &nbsp;</div>
+      </div>
+    </code>
+    <br/>
+    <div id="navigator" style="border: solid black 1px; position: fixed; z-index:100; right: 10px; top: 10px; bottom: 10px; width: 16px;">
+      <table width="100%" height="100%" border="0" cellspacing="0">
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000082');" title="jump to line 82"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000095');" title="jump to line 95"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000098');" title="jump to line 98"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000102');" title="jump to line 102"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000103');" title="jump to line 103"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000104');" title="jump to line 104"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000115');" title="jump to line 115"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000122');" title="jump to line 122"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000125');" title="jump to line 125"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000126');" title="jump to line 126"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000127');" title="jump to line 127"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000128');" title="jump to line 128"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+      </table>
+    </div>
+    <div class="section">Legend:</div>
+    &nbsp;&nbsp;&nbsp;<span class="lineNone">some code</span>&nbsp;-&nbsp;line containing no point<br/>
+    &nbsp;&nbsp;&nbsp;<span class="lineAllVisited">some code</span>&nbsp;-&nbsp;line containing only visited points<br/>
+    &nbsp;&nbsp;&nbsp;<span class="lineAllUnvisited">some code</span>&nbsp;-&nbsp;line containing only unvisited points<br/>
+    &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
+    <br/>
+    <hr class="codeSep"/>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.3</a> on 2014-08-30 10:48:24</p>
+  </body>
+</html>
