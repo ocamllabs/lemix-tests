@@ -1,0 +1,108 @@
+
+Warning:     13: RV_num(6)
+   more than one possible result value
+
+Warning:     37: RV_num(6)
+   more than one possible result value
+# processing file 'exec_adhoc_pwrite_neg_offset-int.trace' ...
+        # processing file 'adhoc_pwrite_neg_offset-int.trace' ...
+        @type trace
+
+        # testing pwrite with negative offsets
+        # OS X will send the thread a SIGXFSZ so we sequester these tests here
+
+        # pwrite with negative index
+     8: open "f1.txt" [O_CREAT;O_RDWR] 0o666
+     9: Tau
+    10: RV_num(3)
+    11: write (FD 3) "ABCDEF" 6
+    12: Tau
+    13: RV_num(6)
+    14: pwrite (FD 3) "XXX" 3 -2
+    15: Tau
+    16: EINVAL
+    17: close (FD 3)
+    18: Tau
+    19: RV_none
+
+    21: open "f1.txt" [O_RDONLY]
+    22: Tau
+    23: RV_num(3)
+    24: read! (FD 3) 100
+    25: Tau
+    26: RV_bytes("ABCDEF")
+    27: close (FD 3)
+    28: Tau
+    29: RV_none
+
+        # pwrite with negative index and O_APPEND
+    32: open "f1.txt" [O_TRUNC;O_APPEND;O_RDWR] 0o666
+    33: Tau
+    34: RV_num(3)
+    35: write (FD 3) "ABCDEF" 6
+    36: Tau
+    37: RV_num(6)
+    38: pwrite (FD 3) "XXX" 3 -2
+    39: Tau
+    40: EINVAL
+    41: close (FD 3)
+    42: Tau
+    43: RV_none
+
+    45: open "f1.txt" [O_RDONLY]
+    46: Tau
+    47: RV_num(3)
+    48: read! (FD 3) 100
+    49: Tau
+    50: RV_bytes("ABCDEF")
+    51: close (FD 3)
+    52: Tau
+    53: RV_none
+
+
+        # pwrite with large negative index
+    57: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+    58: Tau
+    59: RV_num(3)
+    60: pwrite (FD 3) "XXX" 3 -100
+    61: Tau
+    62: EINVAL
+    63: close (FD 3)
+    64: Tau
+    65: RV_none
+
+    67: open "f1.txt" [O_RDONLY]
+    68: Tau
+    69: RV_num(3)
+    70: read! (FD 3) 100
+    71: Tau
+    72: RV_bytes("")
+    73: close (FD 3)
+    74: Tau
+    75: RV_none
+
+        # deterministic
+
+    79: open "/f1.txt" [O_APPEND;O_RDWR]
+    80: Tau
+    81: RV_num(3)
+    82: pwrite! (FD 3) "ABCDF" 5 -1
+    83: Tau
+    84: EINVAL
+    85: close (FD 3)
+    86: Tau
+    87: RV_none
+
+    89: open "f1.txt" [O_RDONLY]
+    90: Tau
+    91: RV_num(3)
+    92: read! (FD 3) 100
+    93: Tau
+    94: RV_bytes("")
+    95: close (FD 3)
+    96: Tau
+    97: RV_none
+
+
+
+# trace accepted

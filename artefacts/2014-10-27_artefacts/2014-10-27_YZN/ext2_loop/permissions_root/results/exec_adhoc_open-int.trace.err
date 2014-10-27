@@ -1,0 +1,62 @@
+< id -u -n
+< id -g -n
+< uname -s
++ mkdir "-p" "/tmp/fs_test"
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_0"
+useradd: user 'fs_user_0' already exists
+? useradd "-s" "/bin/false" "fs_user_1"
+useradd: user 'fs_user_1' already exists
+? useradd "-s" "/bin/false" "fs_user_2"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_0"
+groupadd: group 'fs_group_0' already exists
+? groupadd "fs_group_1"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_2" "fs_group_1"
+Adding user `fs_user_2' to group `fs_group_1' ...
+Adding user fs_user_2 to group fs_group_1
+Done.
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_3"
+useradd: user 'fs_user_3' already exists
+? useradd "-s" "/bin/false" "fs_user_4"
+useradd: user 'fs_user_4' already exists
+? useradd "-s" "/bin/false" "fs_user_5"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_2"
+groupadd: group 'fs_group_2' already exists
+? groupadd "fs_group_3"
+groupadd: group 'fs_group_3' already exists
+? groupadd "fs_group_4"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_5" "fs_group_1"
+Adding user `fs_user_5' to group `fs_group_1' ...
+Adding user fs_user_5 to group fs_group_1
+Done.
++ adduser "fs_user_5" "fs_group_4"
+Adding user `fs_user_5' to group `fs_group_4' ...
+Adding user fs_user_5 to group fs_group_4
+Done.
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_6"
+useradd: user 'fs_user_6' already exists
+? useradd "-s" "/bin/false" "fs_user_7"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_5"
+groupadd: group 'fs_group_5' already exists
+? groupadd "fs_group_6"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_7" "fs_group_6"
+Adding user `fs_user_7' to group `fs_group_6' ...
+Adding user fs_user_7 to group fs_group_6
+Done.
++ groupdel "fs_group_1"
++ groupdel "fs_group_4"
++ groupdel "fs_group_6"
++ userdel "fs_user_2"
++ userdel "fs_user_5"
++ userdel "fs_user_7"

@@ -1,0 +1,486 @@
+# processing file 'adhoc_open-int.trace' ...
+        @type trace
+        ##################################################
+        # Testing open with various flags and permissions
+        #
+        # This tests user and other permissions and 
+        # therefore needs root access
+        ##################################################
+
+        ###################################
+        # Initialising processes and users
+        ###################################
+
+        # Pid 1 runs as root, we need 3 more processes that run 
+        # as non-superusers. The idea is to have 
+        #
+        # - Pid 2 : creates and owns the files
+        # - Pid 3 : tries to access the files while 
+        #           being in the right group but not the owner
+        # - Pid 4 : tries to access the files while 
+        #           not being a group member and not the owner
+
+    22: Pid 2 -> create (User_id 1) (Group_id 1)
+    23: add_user_to_group (User_id 1) (Group_id 1)
+        Tau
+        RV_none
+
+        # Pid 3 runs as different user in the group of User 1
+    26: Pid 3 -> create (User_id 2) (Group_id 2)
+    27: add_user_to_group (User_id 2) (Group_id 1)
+        Tau
+        RV_none
+    28: add_user_to_group (User_id 2) (Group_id 2)
+        Tau
+        RV_none
+
+        # Pid 4 runs as a different user not in the group of User 1
+    31: Pid 4 -> create (User_id 3) (Group_id 3)
+    32: add_user_to_group (User_id 3) (Group_id 3)
+        Tau
+        RV_none
+
+        # make sure the permissions below get not modified by umask
+    35: Pid 2 -> umask 0o000
+        Tau
+        Pid 2 <- RV_file_perm(0o022)
+
+
+        ###################################
+        # Owner tests
+        ###################################
+
+    42: Pid 2 -> mkdir "/dir_u/" 0o755
+        Tau
+        Pid 2 <- EACCES
+
+    44: Pid 2 -> open "/dir_u/f-nonexist.txt" [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+
+        # rwx
+    47: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_CREAT;O_RDWR] 0o700
+        Tau
+        Pid 2 <- EACCES
+
+    49: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+    50: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    51: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDWR]
+        Tau
+        Pid 2 <- EACCES
+    52: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 2 <- EACCES
+    53: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    54: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+    55: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+
+        # r--
+    58: Pid 2 -> open_close "/dir_u/f_r.txt" [O_CREAT;O_RDWR] 0o400
+        Tau
+        Pid 2 <- EACCES
+    59: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+    60: Pid 2 -> open_close "/dir_u/f_r.txt" [O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    61: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDWR]
+        Tau
+        Pid 2 <- EACCES
+    62: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 2 <- EACCES
+    63: Pid 2 -> open_close "/dir_u/f_r.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    64: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+    65: Pid 2 -> open_close "/dir_u/f_r.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+
+        # -w-
+    68: Pid 2 -> open_close "/dir_u/f_w.txt" [O_CREAT;O_RDWR] 0o200
+        Tau
+        Pid 2 <- EACCES
+    69: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+    70: Pid 2 -> open_close "/dir_u/f_w.txt" [O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    71: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDWR]
+        Tau
+        Pid 2 <- EACCES
+    72: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 2 <- EACCES
+    73: Pid 2 -> open_close "/dir_u/f_w.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    74: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+    75: Pid 2 -> open_close "/dir_u/f_w.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+
+        # --x
+    78: Pid 2 -> open_close "/dir_u/f_x.txt" [O_CREAT;O_RDWR] 0o100
+        Tau
+        Pid 2 <- EACCES
+    79: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+    80: Pid 2 -> open_close "/dir_u/f_x.txt" [O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    81: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDWR]
+        Tau
+        Pid 2 <- EACCES
+    82: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 2 <- EACCES
+    83: Pid 2 -> open_close "/dir_u/f_x.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    84: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+    85: Pid 2 -> open_close "/dir_u/f_x.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+
+        # rw-
+    88: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_CREAT;O_RDWR] 0o600
+        Tau
+        Pid 2 <- EACCES
+    89: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDONLY]
+        Tau
+        Pid 2 <- EACCES
+    90: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    91: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDWR]
+        Tau
+        Pid 2 <- EACCES
+    92: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 2 <- EACCES
+    93: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+    94: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 2 <- EACCES
+    95: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 2 <- EACCES
+
+
+        ###################################
+        # Group tests
+        ###################################
+
+   102: Pid 2 -> mkdir "/dir_g/" 0o755
+        Tau
+        Pid 2 <- EACCES
+
+   104: Pid 3 -> open "/dir_g/f-nonexist.txt" [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+
+        # rwx
+   107: Pid 2 -> open_close "/dir_g/f_rwx.txt" [O_CREAT;O_RDWR] 0o070
+        Tau
+        Pid 2 <- EACCES
+
+   109: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+   110: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   111: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDWR]
+        Tau
+        Pid 3 <- EACCES
+   112: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 3 <- EACCES
+   113: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   114: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+   115: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+
+        # r--
+   118: Pid 2 -> open_close "/dir_g/f_r.txt" [O_CREAT;O_RDWR] 0o040
+        Tau
+        Pid 2 <- EACCES
+   119: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+   120: Pid 3 -> open_close "/dir_g/f_r.txt" [O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   121: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDWR]
+        Tau
+        Pid 3 <- EACCES
+   122: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 3 <- EACCES
+   123: Pid 3 -> open_close "/dir_g/f_r.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   124: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+   125: Pid 3 -> open_close "/dir_g/f_r.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+
+        # -w-
+   128: Pid 2 -> open_close "/dir_g/f_w.txt" [O_CREAT;O_RDWR] 0o020
+        Tau
+        Pid 2 <- EACCES
+   129: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+   130: Pid 3 -> open_close "/dir_g/f_w.txt" [O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   131: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDWR]
+        Tau
+        Pid 3 <- EACCES
+   132: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 3 <- EACCES
+   133: Pid 3 -> open_close "/dir_g/f_w.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   134: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+   135: Pid 3 -> open_close "/dir_g/f_w.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+
+        # --x
+   138: Pid 2 -> open_close "/dir_g/f_x.txt" [O_CREAT;O_RDWR] 0o010
+        Tau
+        Pid 2 <- EACCES
+   139: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+   140: Pid 3 -> open_close "/dir_g/f_x.txt" [O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   141: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDWR]
+        Tau
+        Pid 3 <- EACCES
+   142: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 3 <- EACCES
+   143: Pid 3 -> open_close "/dir_g/f_x.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   144: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+   145: Pid 3 -> open_close "/dir_g/f_x.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+
+        # rw-
+   148: Pid 2 -> open_close "/dir_g/f_rw.txt" [O_CREAT;O_RDWR] 0o060
+        Tau
+        Pid 2 <- EACCES
+   149: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDONLY]
+        Tau
+        Pid 3 <- EACCES
+   150: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   151: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDWR]
+        Tau
+        Pid 3 <- EACCES
+   152: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 3 <- EACCES
+   153: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+   154: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 3 <- EACCES
+   155: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 3 <- EACCES
+
+
+
+        ###################################
+        # Other tests
+        ###################################
+
+   163: Pid 2 -> mkdir "/dir_o/" 0o755
+        Tau
+        Pid 2 <- EACCES
+   164: Pid 4 -> open "/dir_o/f-nonexist.txt" [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+
+        # rwx
+   167: Pid 2 -> open_close "/dir_o/f_rwx.txt" [O_CREAT;O_RDWR] 0o007
+        Tau
+        Pid 2 <- EACCES
+
+   169: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+   170: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   171: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDWR]
+        Tau
+        Pid 4 <- EACCES
+   172: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 4 <- EACCES
+   173: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   174: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+   175: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+
+        # r--
+   178: Pid 2 -> open_close "/dir_o/f_r.txt" [O_CREAT;O_RDWR] 0o004
+        Tau
+        Pid 2 <- EACCES
+   179: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+   180: Pid 4 -> open_close "/dir_o/f_r.txt" [O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   181: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDWR]
+        Tau
+        Pid 4 <- EACCES
+   182: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 4 <- EACCES
+   183: Pid 4 -> open_close "/dir_o/f_r.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   184: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+   185: Pid 4 -> open_close "/dir_o/f_r.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+
+        # -w-
+   188: Pid 2 -> open_close "/dir_o/f_w.txt" [O_CREAT;O_RDWR] 0o002
+        Tau
+        Pid 2 <- EACCES
+   189: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+   190: Pid 4 -> open_close "/dir_o/f_w.txt" [O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   191: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDWR]
+        Tau
+        Pid 4 <- EACCES
+   192: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 4 <- EACCES
+   193: Pid 4 -> open_close "/dir_o/f_w.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   194: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+   195: Pid 4 -> open_close "/dir_o/f_w.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+
+        # --x
+   198: Pid 2 -> open_close "/dir_o/f_x.txt" [O_CREAT;O_RDWR] 0o001
+        Tau
+        Pid 2 <- EACCES
+   199: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+   200: Pid 4 -> open_close "/dir_o/f_x.txt" [O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   201: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDWR]
+        Tau
+        Pid 4 <- EACCES
+   202: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 4 <- EACCES
+   203: Pid 4 -> open_close "/dir_o/f_x.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   204: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+   205: Pid 4 -> open_close "/dir_o/f_x.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+
+        # rw-
+   208: Pid 2 -> open_close "/dir_o/f_rw.txt" [O_CREAT;O_RDWR] 0o006
+        Tau
+        Pid 2 <- EACCES
+   209: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDONLY]
+        Tau
+        Pid 4 <- EACCES
+   210: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   211: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDWR]
+        Tau
+        Pid 4 <- EACCES
+   212: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDONLY;O_TRUNC]
+        Tau
+        Pid 4 <- EACCES
+   213: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+   214: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDONLY;O_APPEND]
+        Tau
+        Pid 4 <- EACCES
+   215: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_APPEND;O_WRONLY]
+        Tau
+        Pid 4 <- EACCES
+
+
+   218: dump-result "/"
+           "/"|D|65366
+        end dump-result
+
+
+

@@ -1,0 +1,127 @@
+# processing file 'exec_adhoc_chown-int.trace' ...
+        # processing file 'adhoc_chown-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing chown
+        ###########################################x
+
+        # Initialisation
+
+     9: mkdir "/dir" 0o777
+    10: Tau
+    11: RV_none
+    12: open "/file.txt" [O_CREAT;O_RDWR] 0o777
+    13: Tau
+    14: RV_num(3)
+    15: close (FD 3)
+    16: Tau
+    17: RV_none
+    18: symlink "/file.txt" "/sl"
+    19: Tau
+    20: RV_none
+    21: umask 0o777
+    22: Tau
+    23: RV_file_perm(0o022)
+
+        # test initial permissions
+
+    27: stat "/dir"
+    28: Tau
+    29: RV_stat { st_dev=1792; st_ino=97922; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+    30: stat "/file.txt"
+    31: Tau
+    32: RV_stat { st_dev=1792; st_ino=97923; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+    33: stat "/sl"
+    34: Tau
+    35: RV_stat { st_dev=1792; st_ino=97923; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 1 - change the ownership to the one the directory already has
+
+    39: chown "/dir" (User_id 0) (Group_id 0)
+    40: Tau
+    41: RV_none
+
+        # Test 2 - change the ownership to the one the file already has
+
+    45: chown "/file.txt" (User_id 0) (Group_id 0)
+    46: Tau
+    47: RV_none
+
+        # Test 3 - erroneous path
+
+    51: chown "" (User_id 0) (Group_id 0)
+    52: Tau
+    53: ENOENT
+
+        # Test 4 - not existing path
+
+    57: chown "/ciaociao" (User_id 0) (Group_id 0)
+    58: Tau
+    59: ENOENT
+
+        # Test 5 - change the ownership of the directory
+
+    63: chown "/dir" (User_id 1) (Group_id 0)
+    64: Tau
+    65: RV_none
+
+    67: chown "/dir" (User_id 0) (Group_id 1)
+    68: Tau
+    69: RV_none
+
+    71: chown "/dir" (User_id 1) (Group_id 1)
+    72: Tau
+    73: RV_none
+
+        # Test 6 - change the ownership of the file
+
+    77: chown "/file.txt" (User_id 1) (Group_id 0)
+    78: Tau
+    79: RV_none
+
+    81: chown "/file.txt" (User_id 0) (Group_id 1)
+    82: Tau
+    83: RV_none
+
+    85: chown "/file.txt" (User_id 1) (Group_id 1)
+    86: Tau
+    87: RV_none
+
+        # Test 7 - using chown on a symlink
+
+    91: symlink "/file.txt" "/my_symlink"
+    92: Tau
+    93: RV_none
+    94: chown "/my_symlink" (User_id 1) (Group_id 0)
+    95: Tau
+    96: RV_none
+
+
+
+# trace not accepted
+# processing file 'exec_adhoc_chown-int.trace' failed
+
+Error:     69: RV_none
+   unexpected results: RV_none
+   allowed are only: EPERM
+   continuing execution with EPERM
+
+Error:     73: RV_none
+   unexpected results: RV_none
+   allowed are only: EPERM
+   continuing execution with EPERM
+
+Error:     83: RV_none
+   unexpected results: RV_none
+   allowed are only: EPERM
+   continuing execution with EPERM
+
+Error:     87: RV_none
+   unexpected results: RV_none
+   allowed are only: EPERM
+   continuing execution with EPERM
+
+Error:     96: RV_none
+   unexpected results: RV_none
+   allowed are only: EPERM
+   continuing execution with EPERM

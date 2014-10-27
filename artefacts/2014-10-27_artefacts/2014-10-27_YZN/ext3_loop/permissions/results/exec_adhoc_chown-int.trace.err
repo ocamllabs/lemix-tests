@@ -1,0 +1,18 @@
+< id -u -n
+< id -g -n
+< uname -s
++ mkdir "-p" "/tmp/fs_test"
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_0"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_0"
+groupadd: group 'fs_group_0' already exists
+? groupadd "fs_group_1"
+groupadd: group 'fs_group_1' already exists
+? groupadd "fs_group_2"
+groupadd: group 'fs_group_2' already exists
+? groupadd "fs_group_3"
+$ Released lock /tmp/fs_test/pw.lock
++ groupdel "fs_group_3"
++ userdel "fs_user_0"

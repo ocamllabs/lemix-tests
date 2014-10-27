@@ -1,0 +1,927 @@
+
+Error:     55: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     59: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:     64: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     68: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     71: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     74: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     77: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     80: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     83: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     86: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     91: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:     94: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    109: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    117: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    123: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    132: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    138: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+# processing file 'exec_adhoc_open-int.trace' ...
+        # processing file 'adhoc_open-int.trace' ...
+        @type trace
+        ##################################################
+        # Testing open with various flags and permissions
+        #
+        # This tests user and other permissions and 
+        # therefore needs root access
+        ##################################################
+
+        ###################################
+        # Initialising processes and users
+        ###################################
+
+        # Pid 1 runs as root, we need 3 more processes that run 
+        # as non-superusers. The idea is to have 
+        #
+        # - Pid 2 : creates and owns the files
+        # - Pid 3 : tries to access the files while 
+        #           being in the right group but not the owner
+        # - Pid 4 : tries to access the files while 
+        #           not being a group member and not the owner
+
+    23: Pid 2 -> create (User_id 1) (Group_id 1)
+    24: add_user_to_group (User_id 1) (Group_id 1)
+    25: Tau
+    26: RV_none
+
+        # Pid 3 runs as different user in the group of User 1
+    29: Pid 3 -> create (User_id 2) (Group_id 2)
+    30: add_user_to_group (User_id 2) (Group_id 1)
+    31: Tau
+    32: RV_none
+    33: add_user_to_group (User_id 2) (Group_id 2)
+    34: Tau
+    35: RV_none
+
+        # Pid 4 runs as a different user not in the group of User 1
+    38: Pid 4 -> create (User_id 3) (Group_id 3)
+    39: add_user_to_group (User_id 3) (Group_id 3)
+    40: Tau
+    41: RV_none
+
+        # make sure the permissions below get not modified by umask
+    44: Pid 2 -> umask 0o000
+    45: Tau
+    46: Pid 2 <- RV_file_perm(0o022)
+
+
+        ###################################
+        # Owner tests
+        ###################################
+
+    53: Pid 2 -> mkdir "/dir_u/" 0o755
+    54: Tau
+    55: Pid 2 <- EACCES
+
+    57: Pid 2 -> open "/dir_u/f-nonexist.txt" [O_RDONLY]
+    58: Tau
+    59: Pid 2 <- EACCES
+
+        # rwx
+    62: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_CREAT;O_RDWR] 0o700
+    63: Tau
+    64: Pid 2 <- EACCES
+
+    66: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDONLY]
+    67: Tau
+    68: Pid 2 <- EACCES
+    69: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_WRONLY]
+    70: Tau
+    71: Pid 2 <- EACCES
+    72: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDWR]
+    73: Tau
+    74: Pid 2 <- EACCES
+    75: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDONLY;O_TRUNC]
+    76: Tau
+    77: Pid 2 <- EACCES
+    78: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_TRUNC;O_WRONLY]
+    79: Tau
+    80: Pid 2 <- EACCES
+    81: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDONLY;O_APPEND]
+    82: Tau
+    83: Pid 2 <- EACCES
+    84: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_APPEND;O_WRONLY]
+    85: Tau
+    86: Pid 2 <- EACCES
+
+        # r--
+    89: Pid 2 -> open_close "/dir_u/f_r.txt" [O_CREAT;O_RDWR] 0o400
+    90: Tau
+    91: Pid 2 <- EACCES
+    92: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDONLY]
+    93: Tau
+    94: Pid 2 <- EACCES
+    95: Pid 2 -> open_close "/dir_u/f_r.txt" [O_WRONLY]
+    96: Tau
+    97: Pid 2 <- EACCES
+    98: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDWR]
+    99: Tau
+   100: Pid 2 <- EACCES
+   101: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDONLY;O_TRUNC]
+   102: Tau
+   103: Pid 2 <- EACCES
+   104: Pid 2 -> open_close "/dir_u/f_r.txt" [O_TRUNC;O_WRONLY]
+   105: Tau
+   106: Pid 2 <- EACCES
+   107: Pid 2 -> open_close "/dir_u/f_r.txt" [O_RDONLY;O_APPEND]
+   108: Tau
+   109: Pid 2 <- EACCES
+   110: Pid 2 -> open_close "/dir_u/f_r.txt" [O_APPEND;O_WRONLY]
+   111: Tau
+   112: Pid 2 <- EACCES
+
+        # -w-
+   115: Pid 2 -> open_close "/dir_u/f_w.txt" [O_CREAT;O_RDWR] 0o200
+   116: Tau
+   117: Pid 2 <- EACCES
+   118: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDONLY]
+   119: Tau
+   120: Pid 2 <- EACCES
+   121: Pid 2 -> open_close "/dir_u/f_w.txt" [O_WRONLY]
+   122: Tau
+   123: Pid 2 <- EACCES
+   124: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDWR]
+   125: Tau
+   126: Pid 2 <- EACCES
+   127: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDONLY;O_TRUNC]
+   128: Tau
+   129: Pid 2 <- EACCES
+   130: Pid 2 -> open_close "/dir_u/f_w.txt" [O_TRUNC;O_WRONLY]
+   131: Tau
+   132: Pid 2 <- EACCES
+   133: Pid 2 -> open_close "/dir_u/f_w.txt" [O_RDONLY;O_APPEND]
+   134: Tau
+   135: Pid 2 <- EACCES
+   136: Pid 2 -> open_close "/dir_u/f_w.txt" [O_APPEND;O_WRONLY]
+   137: Tau
+   138: Pid 2 <- EACCES
+
+        # --x
+   141: Pid 2 -> open_close "/dir_u/f_x.txt" [O_CREAT;O_RDWR] 0o100
+   142: Tau
+   143: Pid 2 <- EACCES
+   144: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDONLY]
+   145: Tau
+
+Error:    143: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    169: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    172: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    175: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    178: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    181: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    184: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    187: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    190: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    199: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    203: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    208: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    212: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    215: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    218: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    221: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    224: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    227: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    230: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    235: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    238: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    253: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    261: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    267: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    276: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+   146: Pid 2 <- EACCES
+   147: Pid 2 -> open_close "/dir_u/f_x.txt" [O_WRONLY]
+   148: Tau
+   149: Pid 2 <- EACCES
+   150: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDWR]
+   151: Tau
+   152: Pid 2 <- EACCES
+   153: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDONLY;O_TRUNC]
+   154: Tau
+   155: Pid 2 <- EACCES
+   156: Pid 2 -> open_close "/dir_u/f_x.txt" [O_TRUNC;O_WRONLY]
+   157: Tau
+   158: Pid 2 <- EACCES
+   159: Pid 2 -> open_close "/dir_u/f_x.txt" [O_RDONLY;O_APPEND]
+   160: Tau
+   161: Pid 2 <- EACCES
+   162: Pid 2 -> open_close "/dir_u/f_x.txt" [O_APPEND;O_WRONLY]
+   163: Tau
+   164: Pid 2 <- EACCES
+
+        # rw-
+   167: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_CREAT;O_RDWR] 0o600
+   168: Tau
+   169: Pid 2 <- EACCES
+   170: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDONLY]
+   171: Tau
+   172: Pid 2 <- EACCES
+   173: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_WRONLY]
+   174: Tau
+   175: Pid 2 <- EACCES
+   176: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDWR]
+   177: Tau
+   178: Pid 2 <- EACCES
+   179: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDONLY;O_TRUNC]
+   180: Tau
+   181: Pid 2 <- EACCES
+   182: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_TRUNC;O_WRONLY]
+   183: Tau
+   184: Pid 2 <- EACCES
+   185: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_RDONLY;O_APPEND]
+   186: Tau
+   187: Pid 2 <- EACCES
+   188: Pid 2 -> open_close "/dir_u/f_rw.txt" [O_APPEND;O_WRONLY]
+   189: Tau
+   190: Pid 2 <- EACCES
+
+
+        ###################################
+        # Group tests
+        ###################################
+
+   197: Pid 2 -> mkdir "/dir_g/" 0o755
+   198: Tau
+   199: Pid 2 <- EACCES
+
+   201: Pid 3 -> open "/dir_g/f-nonexist.txt" [O_RDONLY]
+   202: Tau
+   203: Pid 3 <- EACCES
+
+        # rwx
+   206: Pid 2 -> open_close "/dir_g/f_rwx.txt" [O_CREAT;O_RDWR] 0o070
+   207: Tau
+   208: Pid 2 <- EACCES
+
+   210: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDONLY]
+   211: Tau
+   212: Pid 3 <- EACCES
+   213: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_WRONLY]
+   214: Tau
+   215: Pid 3 <- EACCES
+   216: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDWR]
+   217: Tau
+   218: Pid 3 <- EACCES
+   219: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDONLY;O_TRUNC]
+   220: Tau
+   221: Pid 3 <- EACCES
+   222: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_TRUNC;O_WRONLY]
+   223: Tau
+   224: Pid 3 <- EACCES
+   225: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_RDONLY;O_APPEND]
+   226: Tau
+   227: Pid 3 <- EACCES
+   228: Pid 3 -> open_close "/dir_g/f_rwx.txt" [O_APPEND;O_WRONLY]
+   229: Tau
+   230: Pid 3 <- EACCES
+
+        # r--
+   233: Pid 2 -> open_close "/dir_g/f_r.txt" [O_CREAT;O_RDWR] 0o040
+   234: Tau
+   235: Pid 2 <- EACCES
+   236: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDONLY]
+   237: Tau
+   238: Pid 3 <- EACCES
+   239: Pid 3 -> open_close "/dir_g/f_r.txt" [O_WRONLY]
+   240: Tau
+   241: Pid 3 <- EACCES
+   242: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDWR]
+   243: Tau
+   244: Pid 3 <- EACCES
+   245: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDONLY;O_TRUNC]
+   246: Tau
+   247: Pid 3 <- EACCES
+   248: Pid 3 -> open_close "/dir_g/f_r.txt" [O_TRUNC;O_WRONLY]
+   249: Tau
+   250: Pid 3 <- EACCES
+   251: Pid 3 -> open_close "/dir_g/f_r.txt" [O_RDONLY;O_APPEND]
+   252: Tau
+   253: Pid 3 <- EACCES
+   254: Pid 3 -> open_close "/dir_g/f_r.txt" [O_APPEND;O_WRONLY]
+   255: Tau
+   256: Pid 3 <- EACCES
+
+        # -w-
+   259: Pid 2 -> open_close "/dir_g/f_w.txt" [O_CREAT;O_RDWR] 0o020
+   260: Tau
+   261: Pid 2 <- EACCES
+   262: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDONLY]
+   263: Tau
+   264: Pid 3 <- EACCES
+   265: Pid 3 -> open_close "/dir_g/f_w.txt" [O_WRONLY]
+   266: Tau
+   267: Pid 3 <- EACCES
+   268: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDWR]
+   269: Tau
+   270: Pid 3 <- EACCES
+   271: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDONLY;O_TRUNC]
+   272: Tau
+   273: Pid 3 <- EACCES
+   274: Pid 3 -> open_close "/dir_g/f_w.txt" [O_TRUNC;O_WRONLY]
+   275: Tau
+   276: Pid 3 <- EACCES
+   277: Pid 3 -> open_close "/dir_g/f_w.txt" [O_RDONLY;O_APPEND]
+   278: Tau
+   279: Pid 3 <- EACCES
+   280: Pid 3 -> open_close "/dir_g/f_w.txt" [O_APPEND;O_WRONLY]
+   281: Tau
+   282: Pid 3 <- EACCES
+
+        # --x
+   285: Pid 2 -> open_close "/dir_g/f_x.txt" [O_CREAT;O_RDWR] 0o010
+   286: Tau
+
+Error:    282: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    287: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    313: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    316: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    319: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    322: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    325: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    328: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    331: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    334: Pid 3 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    344: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    347: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: ENOENT
+   continuing execution with ENOENT
+
+Error:    352: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    356: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    359: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    362: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    365: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    368: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    371: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    374: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    379: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    382: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    397: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    405: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    411: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    420: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    426: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    431: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    457: Pid 2 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    460: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    463: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+   287: Pid 2 <- EACCES
+   288: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDONLY]
+   289: Tau
+   290: Pid 3 <- EACCES
+   291: Pid 3 -> open_close "/dir_g/f_x.txt" [O_WRONLY]
+   292: Tau
+   293: Pid 3 <- EACCES
+   294: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDWR]
+   295: Tau
+   296: Pid 3 <- EACCES
+   297: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDONLY;O_TRUNC]
+   298: Tau
+   299: Pid 3 <- EACCES
+   300: Pid 3 -> open_close "/dir_g/f_x.txt" [O_TRUNC;O_WRONLY]
+   301: Tau
+   302: Pid 3 <- EACCES
+   303: Pid 3 -> open_close "/dir_g/f_x.txt" [O_RDONLY;O_APPEND]
+   304: Tau
+   305: Pid 3 <- EACCES
+   306: Pid 3 -> open_close "/dir_g/f_x.txt" [O_APPEND;O_WRONLY]
+   307: Tau
+   308: Pid 3 <- EACCES
+
+        # rw-
+   311: Pid 2 -> open_close "/dir_g/f_rw.txt" [O_CREAT;O_RDWR] 0o060
+   312: Tau
+   313: Pid 2 <- EACCES
+   314: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDONLY]
+   315: Tau
+   316: Pid 3 <- EACCES
+   317: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_WRONLY]
+   318: Tau
+   319: Pid 3 <- EACCES
+   320: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDWR]
+   321: Tau
+   322: Pid 3 <- EACCES
+   323: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDONLY;O_TRUNC]
+   324: Tau
+   325: Pid 3 <- EACCES
+   326: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_TRUNC;O_WRONLY]
+   327: Tau
+   328: Pid 3 <- EACCES
+   329: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_RDONLY;O_APPEND]
+   330: Tau
+   331: Pid 3 <- EACCES
+   332: Pid 3 -> open_close "/dir_g/f_rw.txt" [O_APPEND;O_WRONLY]
+   333: Tau
+   334: Pid 3 <- EACCES
+
+
+
+        ###################################
+        # Other tests
+        ###################################
+
+   342: Pid 2 -> mkdir "/dir_o/" 0o755
+   343: Tau
+   344: Pid 2 <- EACCES
+   345: Pid 4 -> open "/dir_o/f-nonexist.txt" [O_RDONLY]
+   346: Tau
+   347: Pid 4 <- EACCES
+
+        # rwx
+   350: Pid 2 -> open_close "/dir_o/f_rwx.txt" [O_CREAT;O_RDWR] 0o007
+   351: Tau
+   352: Pid 2 <- EACCES
+
+   354: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDONLY]
+   355: Tau
+   356: Pid 4 <- EACCES
+   357: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_WRONLY]
+   358: Tau
+   359: Pid 4 <- EACCES
+   360: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDWR]
+   361: Tau
+   362: Pid 4 <- EACCES
+   363: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDONLY;O_TRUNC]
+   364: Tau
+   365: Pid 4 <- EACCES
+   366: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_TRUNC;O_WRONLY]
+   367: Tau
+   368: Pid 4 <- EACCES
+   369: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_RDONLY;O_APPEND]
+   370: Tau
+   371: Pid 4 <- EACCES
+   372: Pid 4 -> open_close "/dir_o/f_rwx.txt" [O_APPEND;O_WRONLY]
+   373: Tau
+   374: Pid 4 <- EACCES
+
+        # r--
+   377: Pid 2 -> open_close "/dir_o/f_r.txt" [O_CREAT;O_RDWR] 0o004
+   378: Tau
+   379: Pid 2 <- EACCES
+   380: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDONLY]
+   381: Tau
+   382: Pid 4 <- EACCES
+   383: Pid 4 -> open_close "/dir_o/f_r.txt" [O_WRONLY]
+   384: Tau
+   385: Pid 4 <- EACCES
+   386: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDWR]
+   387: Tau
+   388: Pid 4 <- EACCES
+   389: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDONLY;O_TRUNC]
+   390: Tau
+   391: Pid 4 <- EACCES
+   392: Pid 4 -> open_close "/dir_o/f_r.txt" [O_TRUNC;O_WRONLY]
+   393: Tau
+   394: Pid 4 <- EACCES
+   395: Pid 4 -> open_close "/dir_o/f_r.txt" [O_RDONLY;O_APPEND]
+   396: Tau
+   397: Pid 4 <- EACCES
+   398: Pid 4 -> open_close "/dir_o/f_r.txt" [O_APPEND;O_WRONLY]
+   399: Tau
+   400: Pid 4 <- EACCES
+
+        # -w-
+   403: Pid 2 -> open_close "/dir_o/f_w.txt" [O_CREAT;O_RDWR] 0o002
+   404: Tau
+   405: Pid 2 <- EACCES
+   406: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDONLY]
+   407: Tau
+   408: Pid 4 <- EACCES
+   409: Pid 4 -> open_close "/dir_o/f_w.txt" [O_WRONLY]
+   410: Tau
+   411: Pid 4 <- EACCES
+   412: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDWR]
+   413: Tau
+   414: Pid 4 <- EACCES
+   415: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDONLY;O_TRUNC]
+   416: Tau
+   417: Pid 4 <- EACCES
+   418: Pid 4 -> open_close "/dir_o/f_w.txt" [O_TRUNC;O_WRONLY]
+   419: Tau
+   420: Pid 4 <- EACCES
+   421: Pid 4 -> open_close "/dir_o/f_w.txt" [O_RDONLY;O_APPEND]
+   422: Tau
+   423: Pid 4 <- EACCES
+   424: Pid 4 -> open_close "/dir_o/f_w.txt" [O_APPEND;O_WRONLY]
+   425: Tau
+   426: Pid 4 <- EACCES
+
+        # --x
+   429: Pid 2 -> open_close "/dir_o/f_x.txt" [O_CREAT;O_RDWR] 0o001
+   430: Tau
+   431: Pid 2 <- EACCES
+   432: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDONLY]
+   433: Tau
+   434: Pid 4 <- EACCES
+   435: Pid 4 -> open_close "/dir_o/f_x.txt" [O_WRONLY]
+   436: Tau
+   437: Pid 4 <- EACCES
+   438: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDWR]
+   439: Tau
+   440: Pid 4 <- EACCES
+   441: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDONLY;O_TRUNC]
+   442: Tau
+   443: Pid 4 <- EACCES
+   444: Pid 4 -> open_close "/dir_o/f_x.txt" [O_TRUNC;O_WRONLY]
+   445: Tau
+   446: Pid 4 <- EACCES
+   447: Pid 4 -> open_close "/dir_o/f_x.txt" [O_RDONLY;O_APPEND]
+   448: Tau
+   449: Pid 4 <- EACCES
+   450: Pid 4 -> open_close "/dir_o/f_x.txt" [O_APPEND;O_WRONLY]
+   451: Tau
+   452: Pid 4 <- EACCES
+
+        # rw-
+   455: Pid 2 -> open_close "/dir_o/f_rw.txt" [O_CREAT;O_RDWR] 0o006
+   456: Tau
+   457: Pid 2 <- EACCES
+   458: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDONLY]
+   459: Tau
+   460: Pid 4 <- EACCES
+   461: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_WRONLY]
+   462: Tau
+   463: Pid 4 <- EACCES
+   464: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDWR]
+   465: Tau
+   466: Pid 4 <- EACCES
+   467: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDONLY;O_TRUNC]
+
+Error:    466: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+   468: Tau
+
+Error:    469: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    472: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    475: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+Error:    478: Pid 4 <- EACCES
+   unexpected results: EACCES
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+        "/"|D|0
+        "/dir_g"|D|7
+        "/dir_g/f_r.txt"|F|9|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_g/f_rw.txt"|F|12|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_g/f_rwx.txt"|F|8|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_g/f_w.txt"|F|10|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_g/f_x.txt"|F|11|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_o"|D|13
+        "/dir_o/f_r.txt"|F|15|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_o/f_rw.txt"|F|18|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_o/f_rwx.txt"|F|14|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_o/f_w.txt"|F|16|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_o/f_x.txt"|F|17|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_u"|D|1
+        "/dir_u/f_r.txt"|F|3|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_u/f_rw.txt"|F|6|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_u/f_rwx.txt"|F|2|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_u/f_w.txt"|F|4|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_u/f_x.txt"|F|5|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+
+
+Error:    481: dump-result "/"
+           "/"|D|65366
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_u/f_x.txt
+      missing entry: /dir_u/f_w.txt
+      missing entry: /dir_u/f_rwx.txt
+      missing entry: /dir_u/f_rw.txt
+      missing entry: /dir_u/f_r.txt
+      missing entry: /dir_u
+      missing entry: /dir_o/f_x.txt
+      missing entry: /dir_o/f_w.txt
+      missing entry: /dir_o/f_rwx.txt
+      missing entry: /dir_o/f_rw.txt
+      missing entry: /dir_o/f_r.txt
+      missing entry: /dir_o
+      missing entry: /dir_g/f_x.txt
+      missing entry: /dir_g/f_w.txt
+      missing entry: /dir_g/f_rwx.txt
+      missing entry: /dir_g/f_rw.txt
+      missing entry: /dir_g/f_r.txt
+      missing entry: /dir_g
+
+
+   469: Pid 4 <- EACCES
+   470: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_TRUNC;O_WRONLY]
+   471: Tau
+   472: Pid 4 <- EACCES
+   473: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_RDONLY;O_APPEND]
+   474: Tau
+   475: Pid 4 <- EACCES
+   476: Pid 4 -> open_close "/dir_o/f_rw.txt" [O_APPEND;O_WRONLY]
+   477: Tau
+   478: Pid 4 <- EACCES
+
+
+   481: dump-result "/"
+           "/"|D|65366
+        end dump-result
+
+
+
+
+# trace not accepted
+# processing file 'exec_adhoc_open-int.trace' failed

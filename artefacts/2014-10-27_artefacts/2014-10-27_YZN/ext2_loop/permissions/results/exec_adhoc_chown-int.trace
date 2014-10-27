@@ -1,0 +1,98 @@
+# processing file 'adhoc_chown-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing chown
+        ###########################################x
+
+        # Initialisation
+
+     8: mkdir "/dir" 0o777
+        Tau
+        RV_none
+     9: open "/file.txt" [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+    10: close (FD 3)
+        Tau
+        RV_none
+    11: symlink "/file.txt" "/sl"
+        Tau
+        RV_none
+    12: umask 0o777
+        Tau
+        RV_file_perm(0o022)
+
+        # test initial permissions
+
+    16: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32704; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+    17: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32706; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+    18: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32706; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 1 - change the ownership to the one the directory already has
+
+    22: chown "/dir" (User_id 0) (Group_id 0)
+        Tau
+        RV_none
+
+        # Test 2 - change the ownership to the one the file already has
+
+    26: chown "/file.txt" (User_id 0) (Group_id 0)
+        Tau
+        RV_none
+
+        # Test 3 - erroneous path
+
+    30: chown "" (User_id 0) (Group_id 0)
+        Tau
+        ENOENT
+
+        # Test 4 - not existing path
+
+    34: chown "/ciaociao" (User_id 0) (Group_id 0)
+        Tau
+        ENOENT
+
+        # Test 5 - change the ownership of the directory
+
+    38: chown "/dir" (User_id 1) (Group_id 0)
+        Tau
+        RV_none
+
+    40: chown "/dir" (User_id 0) (Group_id 1)
+        Tau
+        RV_none
+
+    42: chown "/dir" (User_id 1) (Group_id 1)
+        Tau
+        RV_none
+
+        # Test 6 - change the ownership of the file
+
+    46: chown "/file.txt" (User_id 1) (Group_id 0)
+        Tau
+        RV_none
+
+    48: chown "/file.txt" (User_id 0) (Group_id 1)
+        Tau
+        RV_none
+
+    50: chown "/file.txt" (User_id 1) (Group_id 1)
+        Tau
+        RV_none
+
+        # Test 7 - using chown on a symlink
+
+    54: symlink "/file.txt" "/my_symlink"
+        Tau
+        RV_none
+    55: chown "/my_symlink" (User_id 1) (Group_id 0)
+        Tau
+        RV_none
+
+
