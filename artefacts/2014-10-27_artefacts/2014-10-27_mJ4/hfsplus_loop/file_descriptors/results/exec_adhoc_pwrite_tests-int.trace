@@ -1,0 +1,517 @@
+# processing file 'adhoc_pwrite_tests-int.trace' ...
+        @type trace
+        # testing pwrite and write
+
+
+        ##############################################
+        # initialization
+        ##############################################
+
+        # empty and non-empty directories to write to
+    10: mkdir "/empty_dir" 0o777
+        Tau
+        RV_none
+    11: mkdir "/non_empty_dir" 0o777
+        Tau
+        RV_none
+
+    13: chdir "/non_empty_dir"
+        Tau
+        RV_none
+
+
+        ##############################################
+        # simple writes
+        ##############################################
+
+        # start on empty file and write something
+    21: open "f1.txt" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    22: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    23: close (FD 3)
+        Tau
+        RV_none
+
+    25: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    26: read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+    27: close (FD 3)
+        Tau
+        RV_none
+
+        # write even more stuff at the end
+    30: open "f1.txt" [O_APPEND;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    31: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    32: close (FD 3)
+        Tau
+        RV_none
+
+    34: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    35: read! (FD 3) 100
+        Tau
+        RV_bytes("01234567890123456789")
+    36: close (FD 3)
+        Tau
+        RV_none
+
+        # overwrite at begining
+    39: open "f1.txt" [O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    40: write (FD 3) "XXX" 3
+        Tau
+        RV_num(3)
+    41: close (FD 3)
+        Tau
+        RV_none
+
+    43: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    44: read! (FD 3) 100
+        Tau
+        RV_bytes("XXX34567890123456789")
+    45: close (FD 3)
+        Tau
+        RV_none
+
+        # truncate file
+    48: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    49: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    50: close (FD 3)
+        Tau
+        RV_none
+
+    52: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    53: read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+    54: close (FD 3)
+        Tau
+        RV_none
+
+        # shorter size
+    57: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    58: write (FD 3) "0123456789" 5
+        Tau
+        RV_num(5)
+    59: close (FD 3)
+        Tau
+        RV_none
+
+    61: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    62: read! (FD 3) 100
+        Tau
+        RV_bytes("01234")
+    63: close (FD 3)
+        Tau
+        RV_none
+
+        # write 0
+    66: open "f1.txt" [O_RDWR]
+        Tau
+        RV_num(3)
+    67: write (FD 3) "9876543210" 0
+        Tau
+        RV_num(0)
+    68: close (FD 3)
+        Tau
+        RV_none
+
+    70: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    71: read! (FD 3) 100
+        Tau
+        RV_bytes("01234")
+    72: close (FD 3)
+        Tau
+        RV_none
+
+        ##############################################
+        # pwrite
+        ##############################################
+
+        # write with pwrite at arbitrary positions
+    79: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    80: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    81: pwrite (FD 3) "X" 1 4
+        Tau
+        RV_num(1)
+    82: pwrite (FD 3) "X" 1 6
+        Tau
+        RV_num(1)
+    83: pwrite (FD 3) "X" 1 8
+        Tau
+        RV_num(1)
+    84: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    85: close (FD 3)
+        Tau
+        RV_none
+
+    87: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    88: read! (FD 3) 100
+        Tau
+        RV_bytes("0123X5X7X90123456789")
+    89: close (FD 3)
+        Tau
+        RV_none
+
+
+        # pwrite after end of file
+    93: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    94: pwrite (FD 3) "XXX" 3 10
+        Tau
+        RV_num(3)
+    95: close (FD 3)
+        Tau
+        RV_none
+
+    97: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    98: read! (FD 3) 100
+        Tau
+        RV_bytes("\000\000\000\000\000\000\000\000\000\000XXX")
+    99: close (FD 3)
+        Tau
+        RV_none
+
+
+        # pwrite then write
+   103: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+   104: pwrite (FD 3) "XXX" 3 10
+        Tau
+        RV_num(3)
+   105: write (FD 3) "01234" 5
+        Tau
+        RV_num(5)
+   106: close (FD 3)
+        Tau
+        RV_none
+
+   108: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+   109: read! (FD 3) 100
+        Tau
+        RV_bytes("01234\000\000\000\000\000XXX")
+   110: close (FD 3)
+        Tau
+        RV_none
+
+
+
+        ##############################################
+        # lseek 
+        ##############################################
+
+   118: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+   119: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+   120: lseek (FD 3) -3 SEEK_CUR
+        Tau
+        RV_num(7)
+   121: write (FD 3) "ABC" 3
+        Tau
+        RV_num(3)
+   122: pwrite (FD 3) "X" 1 4
+        Tau
+        RV_num(1)
+   123: lseek (FD 3) 2 SEEK_SET
+        Tau
+        RV_num(2)
+   124: write (FD 3) "Y" 1
+        Tau
+        RV_num(1)
+   125: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+   126: read! (FD 3) 100
+        Tau
+        RV_bytes("01Y3X56ABC")
+   127: close (FD 3)
+        Tau
+        RV_none
+
+        #write after end adds 0s
+   130: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+   131: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+   132: lseek (FD 3) 5 SEEK_CUR
+        Tau
+        RV_num(15)
+   133: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+   134: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+   135: read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789\000\000\000\000\000ABCDE")
+   136: close (FD 3)
+        Tau
+        RV_none
+
+        ##############################################
+        # writes with different file-descriptors
+        ##############################################
+
+        # read/write is fine
+   143: open "f1.txt" [O_TRUNC;O_RDWR]
+        Tau
+        RV_num(3)
+   144: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+   145: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+   146: read! (FD 3) 100
+        Tau
+        RV_bytes("0123456789")
+   147: close (FD 3)
+        Tau
+        RV_none
+
+        # write_only is fine / truncate works
+   150: open "f1.txt" [O_TRUNC;O_WRONLY]
+        Tau
+        RV_num(3)
+   151: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+   152: close (FD 3)
+        Tau
+        RV_none
+   153: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+   154: read! (FD 3) 100
+        Tau
+        RV_bytes("ABCDE")
+   155: close (FD 3)
+        Tau
+        RV_none
+
+        # write_only without truncate keeps old content, but overwrites it 
+   158: open "f1.txt" [O_WRONLY]
+        Tau
+        RV_num(3)
+   159: write (FD 3) "012" 3
+        Tau
+        RV_num(3)
+   160: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+   161: read (FD 3) 100
+        Tau
+        EBADF
+   162: close (FD 3)
+        Tau
+        RV_none
+
+   164: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+   165: read! (FD 3) 100
+        Tau
+        RV_bytes("012DE")
+   166: close (FD 3)
+        Tau
+        RV_none
+
+        # append is adding at end
+   169: open "f1.txt" [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+   170: write (FD 3) "ABCDE" 5
+        Tau
+        RV_num(5)
+   171: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+   172: read! (FD 3) 100
+        Tau
+        RV_bytes("012DEABCDE")
+   173: close (FD 3)
+        Tau
+        RV_none
+
+        # writing a read-only file fails
+   176: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+   177: write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+   178: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+   179: read (FD 3) 100
+        Tau
+        RV_bytes("012DEABCDE")
+   180: close (FD 3)
+        Tau
+        RV_none
+
+        # closed FD cannot be written to
+   183: write (FD 3) "ABCDE" 5
+        Tau
+        EBADF
+
+        # non existing FD can't be used
+   186: write (FD 300) "ABCDE" 5
+        Tau
+        EBADF
+
+
+        ##############################################
+        # writing to directories
+        # this is already prohibited 
+        # by the open command
+        ##############################################
+
+   195: open "/non_empty_dir" [O_RDWR]
+        Tau
+        EISDIR
+   196: write (FD 3) "ABC" 3
+        Tau
+        EBADF
+   197: close (FD 3)
+        Tau
+        EBADF
+
+   199: open "/non_empty_dir" [O_RDWR]
+        Tau
+        EISDIR
+        # unspecified <http://pubs.opengroup.org/onlinepubs/7908799/xsh/write.html>
+   201: write (FD 3) "ABC" 0
+        Tau
+        RV_num(0)
+   202: close (FD 3)
+        Tau
+        EBADF
+
+   204: open "/non_empty_dir" [O_WRONLY]
+        Tau
+        EISDIR
+   205: write (FD 3) "ABC" 3
+        Tau
+        EBADF
+   206: close (FD 3)
+        Tau
+        EBADF
+
+   208: open "/non_empty_dir" [O_RDONLY]
+        Tau
+        RV_num(3)
+   209: write (FD 3) "ABC" 3
+        Tau
+        EBADF
+   210: close (FD 3)
+        Tau
+        RV_none
+
+        ##############################################
+        # writing to symlinks
+        ##############################################
+   215: symlink "/non_empty_dir/target" "/non_empty_dir/symlink"
+        Tau
+        RV_none
+
+   217: open "/non_empty_dir/symlink" [O_WRONLY]
+        Tau
+        ENOENT
+   218: write (FD 3) "ABC" 1
+        Tau
+        EBADF
+   219: close (FD 3)
+        Tau
+        EBADF
+
+   221: readlink "/non_empty_dir/symlink"
+        Tau
+        RV_bytes("/non_empty_dir/target")
+
+   223: open "/non_empty_dir/symlink" [O_WRONLY]
+        Tau
+        ENOENT
+        # unspecified <http://pubs.opengroup.org/onlinepubs/7908799/xsh/write.html>
+   225: write (FD 3) "" 0
+        Tau
+        RV_num(0)
+   226: close (FD 3)
+        Tau
+        EBADF
+
+   228: readlink "/non_empty_dir/symlink"
+        Tau
+        RV_bytes("/non_empty_dir/target")
+
+        ##############################################
+        # pwriting deterministically
+        ##############################################
+
+   234: open "/file1" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+   235: pwrite! (FD 3) "ABC" 3 0
+        Tau
+        RV_num(3)
+   236: close (FD 3)
+        Tau
+        RV_none
+
+   238: open "/file1" [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+   239: pwrite! (FD 3) "ABCDF" 5 0
+        Tau
+        RV_num(5)
+   240: close (FD 3)
+        Tau
+        RV_none
+
+

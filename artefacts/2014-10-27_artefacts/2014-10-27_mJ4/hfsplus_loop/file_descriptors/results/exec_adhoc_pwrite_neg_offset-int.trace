@@ -1,0 +1,16 @@
+# processing file 'adhoc_pwrite_neg_offset-int.trace' ...
+        @type trace
+
+        # testing pwrite with negative offsets
+        # OS X will send the thread a SIGXFSZ so we sequester these tests here
+
+        # pwrite with negative index
+     7: open "f1.txt" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+     8: write (FD 3) "ABCDEF" 6
+        Tau
+        RV_num(6)
+     9: pwrite (FD 3) "XXX" 3 -2
+
+# Fatal error: Worker process signalled SIG25

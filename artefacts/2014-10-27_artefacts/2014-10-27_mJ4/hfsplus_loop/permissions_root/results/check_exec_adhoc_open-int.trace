@@ -1,0 +1,85 @@
+# processing file 'exec_adhoc_open-int.trace' ...
+        # processing file 'adhoc_open-int.trace' ...
+        @type trace
+        ##################################################
+        # Testing open with various flags and permissions
+        #
+        # This tests user and other permissions and 
+        # therefore needs root access
+        ##################################################
+
+        ###################################
+        # Initialising processes and users
+        ###################################
+
+        # Pid 1 runs as root, we need 3 more processes that run 
+        # as non-superusers. The idea is to have 
+        #
+        # - Pid 2 : creates and owns the files
+        # - Pid 3 : tries to access the files while 
+        #           being in the right group but not the owner
+        # - Pid 4 : tries to access the files while 
+        #           not being a group member and not the owner
+
+    23: Pid 2 -> create (User_id 1) (Group_id 1)
+    24: add_user_to_group (User_id 1) (Group_id 1)
+    25: Tau
+    26: RV_none
+
+        # Pid 3 runs as different user in the group of User 1
+    29: Pid 3 -> create (User_id 2) (Group_id 2)
+    30: add_user_to_group (User_id 2) (Group_id 1)
+    31: Tau
+    32: RV_none
+    33: add_user_to_group (User_id 2) (Group_id 2)
+    34: Tau
+    35: RV_none
+
+        # Pid 4 runs as a different user not in the group of User 1
+    38: Pid 4 -> create (User_id 3) (Group_id 3)
+    39: add_user_to_group (User_id 3) (Group_id 3)
+    40: Tau
+    41: RV_none
+
+        # make sure the permissions below get not modified by umask
+    44: Pid 2 -> umask 0o000
+    45: Tau
+    46: Pid 2 <- RV_file_perm(0o022)
+
+
+        ###################################
+        # Owner tests
+        ###################################
+
+    53: Pid 2 -> mkdir "/dir_u/" 0o755
+    54: Tau
+    55: Pid 2 <- RV_none
+
+    57: Pid 2 -> open "/dir_u/f-nonexist.txt" [O_RDONLY]
+    58: Tau
+    59: Pid 2 <- ENOENT
+
+        # rwx
+    62: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_CREAT;O_RDWR] 0o700
+    63: Tau
+    64: Pid 2 <- RV_none
+
+    66: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDONLY]
+    67: Tau
+    68: Pid 2 <- RV_none
+    69: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_WRONLY]
+    70: Tau
+    71: Pid 2 <- RV_none
+    72: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_RDWR]
+    73: Tau
+    74: Pid 2 <- RV_none
+    75: Pid 2 -> open_close "/dir_u/f_rwx.txt" [O_TRUNC;O_RDONLY]
+    76: Tau
+
+Fatal error:     76: Tau
+   special states found:
+     - OS_special (Undefined, "open: O_TRUNC, no O_RDWR or O_WRONLY, posix/open.md O_TRUNC:4")
+   no normal result states
+
+# trace not accepted
+# processing file 'exec_adhoc_open-int.trace' failed

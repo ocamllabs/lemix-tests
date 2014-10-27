@@ -1,0 +1,903 @@
+# processing file 'exec_adhoc_symlink_tests-int.trace' ...
+        # processing file 'adhoc_symlink_tests-int.trace' ...
+        @type trace
+        # adhoc_link_tests
+
+        # initialization
+
+     7: mkdir "/dir_1" 0o777
+     8: Tau
+     9: RV_none
+    10: mkdir "/dir_1/dir_11" 0o777
+    11: Tau
+    12: RV_none
+    13: mkdir "/dir_2" 0o777
+    14: Tau
+    15: RV_none
+
+    17: open "/dir_1/f1.txt" [O_CREAT;O_RDWR] 0o666
+    18: Tau
+    19: RV_num(3)
+    20: write! (FD 3) "content of /dir_1/f1.txt" 24
+    21: Tau
+    22: RV_num(24)
+    23: close (FD 3)
+    24: Tau
+    25: RV_none
+
+    27: open "/dir_1/f2.txt" [O_CREAT;O_RDWR] 0o666
+    28: Tau
+    29: RV_num(3)
+    30: write! (FD 3) "content of /dir_1/f2.txt" 24
+    31: Tau
+    32: RV_num(24)
+    33: close (FD 3)
+    34: Tau
+    35: RV_none
+
+    37: open "/dir_2/f1.txt" [O_CREAT;O_RDWR] 0o666
+    38: Tau
+    39: RV_num(3)
+    40: write! (FD 3) "content of /dir_2/f1.txt" 24
+    41: Tau
+    42: RV_num(24)
+    43: close (FD 3)
+    44: Tau
+    45: RV_none
+
+
+        ###################################################
+        # simple tests, that mimic common use-cases
+        ###################################################
+
+        # create a symlink to an existing file an read the file
+        # through the symlink
+
+    55: symlink "/dir_1/f1.txt" "/symlink_1"
+    56: Tau
+    57: RV_none
+    58: open "/symlink_1" [O_RDONLY]
+    59: Tau
+    60: RV_num(3)
+    61: pread! (FD 3) 1000 0
+    62: Tau
+    63: RV_bytes("content of /dir_1/f1.txt")
+    64: close (FD 3)
+    65: Tau
+    66: RV_none
+
+        # try two indirections
+    69: symlink "/symlink_1" "/symlink_2"
+    70: Tau
+    71: RV_none
+    72: open "/symlink_2" [O_RDONLY]
+    73: Tau
+    74: RV_num(3)
+    75: pread! (FD 3) 1000 0
+    76: Tau
+    77: RV_bytes("content of /dir_1/f1.txt")
+    78: close (FD 3)
+    79: Tau
+    80: RV_none
+    81: dump-result "/"
+           "/"|D|254675
+           "/symlink_1"|L|"/dir_1/f1.txt"
+           "/symlink_2"|L|"/symlink_1"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        end dump-result
+
+        # remove symlink 1 and read symlink 2
+    84: unlink "/symlink_1"
+    85: Tau
+    86: RV_none
+    87: open "/symlink_2" [O_RDONLY]
+    88: Tau
+    89: ENOENT
+    90: pread! (FD 3) 1000 0
+    91: Tau
+    92: EBADF
+    93: close (FD 3)
+    94: Tau
+    95: EBADF
+    96: dump-result "/"
+           "/"|D|254675
+           "/symlink_2"|L|"/symlink_1"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        end dump-result
+
+        # now try symbolic links to a directory
+    99: symlink "/dir_1" "/symlink_1"
+   100: Tau
+   101: RV_none
+
+   103: open "/symlink_1/f1.txt" [O_RDONLY]
+   104: Tau
+   105: RV_num(3)
+   106: pread! (FD 3) 1000 0
+   107: Tau
+   108: RV_bytes("content of /dir_1/f1.txt")
+   109: close (FD 3)
+   110: Tau
+   111: RV_none
+
+   113: open "/symlink_2/f1.txt" [O_RDONLY]
+   114: Tau
+   115: RV_num(3)
+   116: pread! (FD 3) 1000 0
+   117: Tau
+   118: RV_bytes("content of /dir_1/f1.txt")
+   119: close (FD 3)
+   120: Tau
+   121: RV_none
+
+        # renaming of symbolic links renames links not pointed to files
+   124: rename "/symlink_2" "/symlink_2b"
+   125: Tau
+   126: RV_none
+   127: dump-result "/"
+           "/"|D|254675
+           "/symlink_1"|L|"/dir_1"
+           "/symlink_2b"|L|"/symlink_1"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        end dump-result
+   128: open "/symlink_2b/f1.txt" [O_RDONLY]
+   129: Tau
+   130: RV_num(3)
+   131: pread! (FD 3) 1000 0
+   132: Tau
+   133: RV_bytes("content of /dir_1/f1.txt")
+   134: close (FD 3)
+   135: Tau
+   136: RV_none
+
+   138: open "/dir_1/f1.txt" [O_RDONLY]
+   139: Tau
+   140: RV_num(3)
+   141: pread! (FD 3) 1000 0
+   142: Tau
+   143: RV_bytes("content of /dir_1/f1.txt")
+   144: close (FD 3)
+   145: Tau
+   146: RV_none
+
+   148: open "/symlink_2/f1.txt" [O_RDONLY]
+   149: Tau
+   150: ENOENT
+   151: pread! (FD 3) 1000 0
+   152: Tau
+   153: EBADF
+   154: close (FD 3)
+   155: Tau
+   156: EBADF
+
+   158: dump-result "/"
+           "/"|D|254675
+           "/symlink_1"|L|"/dir_1"
+           "/symlink_2b"|L|"/symlink_1"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        end dump-result
+
+
+        # try relative symbolic links
+   162: symlink "f2.txt" "/dir_1/symlink_f2.txt"
+   163: Tau
+   164: RV_none
+   165: open "/dir_1/symlink_f2.txt" [O_RDONLY]
+   166: Tau
+   167: RV_num(3)
+   168: pread! (FD 3) 1000 0
+   169: Tau
+   170: RV_bytes("content of /dir_1/f2.txt")
+   171: close (FD 3)
+   172: Tau
+   173: RV_none
+
+   175: symlink "../dir_2/f1.txt" "/dir_1/symlink_d2_f1.txt"
+   176: Tau
+   177: RV_none
+   178: open "/dir_1/symlink_d2_f1.txt" [O_RDONLY]
+   179: Tau
+   180: RV_num(3)
+   181: pread! (FD 3) 1000 0
+   182: Tau
+   183: RV_bytes("content of /dir_2/f1.txt")
+   184: close (FD 3)
+   185: Tau
+   186: RV_none
+
+        # read the content of symbolic links
+   189: readlink "/symlink_1"
+   190: Tau
+   191: RV_bytes("/dir_1")
+   192: readlink "/symlink_1/"
+   193: Tau
+   194: EINVAL
+   195: readlink "/no_such_link"
+   196: Tau
+   197: ENOENT
+   198: readlink "/symlink_1b"
+   199: Tau
+   200: ENOENT
+   201: readlink "/symlink_1b/"
+   202: Tau
+   203: ENOENT
+   204: readlink "/dir_1/symlink_f2.txt"
+   205: Tau
+   206: RV_bytes("f2.txt")
+   207: readlink "/dir_1/symlink_d2_f1.txt"
+   208: Tau
+   209: RV_bytes("../dir_2/f1.txt")
+
+        # cleanup
+   212: dump-result "/"
+           "/"|D|254675
+           "/symlink_1"|L|"/dir_1"
+           "/symlink_2b"|L|"/symlink_1"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/symlink_d2_f1.txt"|L|"../dir_2/f1.txt"
+           "/dir_1/symlink_f2.txt"|L|"f2.txt"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        end dump-result
+   213: unlink "/symlink_1"
+   214: Tau
+   215: RV_none
+   216: unlink "/symlink_2b"
+   217: Tau
+   218: RV_none
+   219: unlink "/dir_1/symlink_f2.txt"
+   220: Tau
+   221: RV_none
+   222: unlink "/dir_1/symlink_d2_f1.txt"
+   223: Tau
+   224: RV_none
+   225: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        end dump-result
+
+
+        ###################################################
+        # testing for corners
+        ###################################################
+
+        # linking to non-existing is OK
+   233: symlink "/no_such_dir/" "/slink_no_such1"
+   234: Tau
+   235: RV_none
+   236: symlink "/no_such_file" "/slink_no_such2"
+   237: Tau
+   238: RV_none
+   239: chdir "/slink_no_such1"
+   240: Tau
+   241: ENOENT
+   242: chdir "/slink_no_such1/"
+   243: Tau
+   244: ENOENT
+   245: chdir "/slink_no_such2"
+   246: Tau
+   247: ENOENT
+   248: chdir "/slink_no_such2/"
+   249: Tau
+   250: ENOENT
+   251: chdir "/slink_no_such1/something_else"
+   252: Tau
+   253: ENOENT
+   254: chdir "/slink_no_such1/something_else/"
+   255: Tau
+   256: ENOENT
+   257: mkdir "/slink_no_such1/" 0o777
+   258: Tau
+   259: RV_none
+   260: mkdir "/slink_no_such1/ss" 0o777
+   261: Tau
+   262: RV_none
+   263: mkdir "/slink_no_such1" 0o777
+   264: Tau
+   265: EEXIST
+   266: mkdir "/slink_no_such2/" 0o777
+   267: Tau
+   268: RV_none
+   269: mkdir "/slink_no_such2/ss" 0o777
+   270: Tau
+   271: RV_none
+   272: mkdir "/slink_no_such2" 0o777
+   273: Tau
+   274: EEXIST
+   275: unlink "/slink_no_such1"
+   276: Tau
+   277: RV_none
+   278: unlink "/slink_no_such2"
+   279: Tau
+   280: RV_none
+   281: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        # existing files and dirs canot be overriden by symlink
+   284: symlink "/dir_1" "/dir_2"
+   285: Tau
+   286: EEXIST
+   287: symlink "/dir_1" "/dir_1/f1.txt"
+   288: Tau
+   289: EEXIST
+   290: symlink "/dir_1" "/dir_1/symlink.txt"
+   291: Tau
+
+Error:    307: ENOENT
+   unexpected results: ENOENT
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+        "/"|D|0
+        "/slink_2"|L|"xyz"
+        "/dir_1"|D|1
+        "/dir_1/f1.txt"|F|4|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+        "/dir_1/f2.txt"|F|5|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+        "/dir_1/dir_11"|D|2
+        "/dir_2"|D|3
+        "/dir_2/f1.txt"|F|6|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        "/no_such_dir"|D|14
+        "/no_such_dir/ss"|D|15
+        "/no_such_file"|D|16
+        "/no_such_file/ss"|D|17
+
+
+Error:    311: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /slink_2
+
+
+   292: RV_none
+   293: symlink "/dir_2" "/dir_1/symlink.txt"
+   294: Tau
+   295: EEXIST
+   296: unlink "/dir_1/symlink.txt"
+   297: Tau
+   298: RV_none
+   299: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        # the new link name must not end with a slash
+   302: symlink "xyz" "/slink_1"
+   303: Tau
+   304: RV_none
+   305: symlink "xyz" "/slink_2/"
+   306: Tau
+   307: ENOENT
+   308: unlink "/slink_1"
+   309: Tau
+   310: RV_none
+   311: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        # cyclic links can be created, but raise ELOOP when followed
+   314: symlink "/cyclic_link1" "/cyclic_link2"
+   315: Tau
+   316: RV_none
+   317: symlink "/cyclic_link2" "/cyclic_link1"
+   318: Tau
+   319: RV_none
+   320: chdir "/cyclic_link1"
+   321: Tau
+   322: ELOOP
+   323: unlink "/cyclic_link1"
+   324: Tau
+   325: RV_none
+   326: unlink "/cyclic_link2"
+   327: Tau
+   328: RV_none
+   329: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        "/"|D|0
+        "/slink_2"|L|"xyz"
+        "/dir_1"|D|1
+        "/dir_1/f1.txt"|F|4|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+        "/dir_1/f2.txt"|F|5|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+        "/dir_1/dir_11"|D|2
+        "/dir_2"|D|3
+        "/dir_2/f1.txt"|F|6|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        "/no_such_dir"|D|14
+        "/no_such_dir/ss"|D|15
+        "/no_such_file"|D|16
+        "/no_such_file/ss"|D|17
+
+
+Error:    329: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /slink_2
+
+
+
+        # playing around with trailing slashes
+   332: symlink "/dir_1/f1.txt" "/filelink"
+   333: Tau
+   334: RV_none
+   335: symlink "/dir_1" "/dirlink"
+   336: Tau
+   337: RV_none
+   338: dump-result "/"
+           "/"|D|254675
+           "/dirlink"|L|"/dir_1"
+           "/filelink"|L|"/dir_1/f1.txt"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        "/"|D|0
+        "/dirlink"|L|"/dir_1"
+        "/filelink"|L|"/dir_1/f1.txt"
+        "/slink_2"|L|"xyz"
+        "/dir_1"|D|1
+        "/dir_1/f1.txt"|F|4|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+        "/dir_1/f2.txt"|F|5|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+        "/dir_1/dir_11"|D|2
+        "/dir_2"|D|3
+        "/dir_2/f1.txt"|F|6|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        "/no_such_dir"|D|14
+        "/no_such_dir/ss"|D|15
+        "/no_such_file"|D|16
+        "/no_such_file/ss"|D|17
+
+
+Error:    338: dump-result "/"
+           "/"|D|254675
+           "/dirlink"|L|"/dir_1"
+           "/filelink"|L|"/dir_1/f1.txt"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /slink_2
+
+
+
+   340: open_close "/filelink" [O_RDONLY]
+   341: Tau
+   342: RV_none
+   343: open_close "/filelink" [O_RDONLY]
+   344: Tau
+   345: RV_none
+
+   347: chdir "/dirlink"
+   348: Tau
+   349: RV_none
+   350: chdir "/dirlink/"
+   351: Tau
+   352: RV_none
+   353: open_close "f1.txt" [O_RDONLY]
+   354: Tau
+   355: RV_none
+   356: unlink "/dirlink"
+   357: Tau
+   358: RV_none
+   359: unlink "/filelink"
+   360: Tau
+   361: RV_none
+   362: chdir "/"
+   363: Tau
+   364: RV_none
+   365: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        "/"|D|0
+        "/slink_2"|L|"xyz"
+        "/dir_1"|D|1
+        "/dir_1/f1.txt"|F|4|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+        "/dir_1/f2.txt"|F|5|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+        "/dir_1/dir_11"|D|2
+        "/dir_2"|D|3
+        "/dir_2/f1.txt"|F|6|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        "/no_such_dir"|D|14
+        "/no_such_dir/ss"|D|15
+        "/no_such_file"|D|16
+        "/no_such_file/ss"|D|17
+
+
+Error:    365: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /slink_2
+
+
+
+        # follow a symlink to a dir and then go to parent dir
+   368: symlink "/dir_1/dir_11" "/dirlink"
+   369: Tau
+   370: RV_none
+   371: chdir "/dirlink"
+   372: Tau
+   373: RV_none
+   374: chdir ".."
+   375: Tau
+   376: RV_none
+        # we should be in /dir_1 now, not /, so we can read f1.txt
+   378: open_close "f1.txt" [O_RDONLY]
+   379: Tau
+   380: RV_none
+   381: open_close "dir_1/f1.txt" [O_RDONLY]
+   382: Tau
+   383: ENOENT
+   384: unlink "/dirlink"
+   385: Tau
+   386: RV_none
+   387: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        "/"|D|0
+        "/slink_2"|L|"xyz"
+        "/dir_1"|D|1
+        "/dir_1/f1.txt"|F|4|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+        "/dir_1/f2.txt"|F|5|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+        "/dir_1/dir_11"|D|2
+        "/dir_2"|D|3
+        "/dir_2/f1.txt"|F|6|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        "/no_such_dir"|D|14
+        "/no_such_dir/ss"|D|15
+        "/no_such_file"|D|16
+        "/no_such_file/ss"|D|17
+
+
+Error:    387: dump-result "/"
+           "/"|D|254675
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|24|"3f8cf820bb3ad6f52314a560e757adf6c0548d42"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /slink_2
+
+
+
+
+        ###################################################
+        # whether a symbolic link that occurs as the last
+        # component of a resolved path is followed depends
+        # on the command, so test it for all commands
+        ###################################################
+
+   396: symlink "/dir_1" "/dir_link"
+   397: Tau
+   398: RV_none
+   399: symlink "/dir_1/f1.txt" "/file_link"
+   400: Tau
+   401: RV_none
+
+   403: link "/dir_1" "/dir_3"
+   404: Tau
+   405: EPERM
+   406: link "/dir_link" "/dir_4"
+   407: Tau
+   408: EPERM
+
+Error:    408: EPERM
+   unexpected results: EPERM
+   allowed are only: RV_none
+   continuing execution with RV_none
+   409: link "/dir_1/f1.txt" "/f1.txt"
+   410: Tau
+   411: RV_none
+   412: link "/file_link" "/f2.txt"
+   413: Tau
+   414: RV_none
+
+   416: mkdir "/dir_link" 0o777
+   417: Tau
+   418: EEXIST
+   419: mkdir "/file_link" 0o777
+   420: Tau
+   421: EEXIST
+   422: mkdir "/dir_1" 0o777
+   423: Tau
+   424: EEXIST
+   425: mkdir "/dir_1/f1.txt" 0o777
+   426: Tau
+   427: EEXIST
+
+   429: symlink "/dir_5" "/new_dir_link"
+   430: Tau
+   431: RV_none
+   432: mkdir "/new_dir_link" 0o777
+   433: Tau
+   434: EEXIST
+
+   436: symlink "/f_5" "/new_file_link_1"
+   437: Tau
+   438: RV_none
+   439: symlink "/f_6" "/new_file_link_2"
+   440: Tau
+   441: RV_none
+   442: open_close "/new_file_link_1" [O_CREAT;O_RDWR] 0o666
+   443: Tau
+   444: RV_none
+   445: symlink "xyz" "/new_file_link_2"
+   446: Tau
+   447: EEXIST
+
+   449: stat "/dir_link"
+   450: Tau
+   451: RV_stat { st_dev=16777220; st_ino=254676; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+
+Error:    451: RV_stat { st_dev=16777220; st_ino=254676; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+   unexpected results: RV_stat { st_dev=16777220; st_ino=254676; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=170; }
+   allowed are only: RV_stat { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   continuing execution with RV_stat { st_dev=2049; st_ino=1; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+   452: stat "/file_link"
+   453: Tau
+   454: RV_stat { st_dev=16777220; st_ino=254679; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=24; }
+
+Error:    454: RV_stat { st_dev=16777220; st_ino=254679; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=24; }
+   unexpected results: RV_stat { st_dev=16777220; st_ino=254679; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=24; }
+   allowed are only: RV_stat { st_dev=2049; st_ino=4; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=24; }
+   continuing execution with RV_stat { st_dev=2049; st_ino=4; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=24; }
+
+   456: truncate "/file_link" 0
+   457: Tau
+   458: RV_none
+   459: stat "/file_link"
+   460: Tau
+   461: RV_stat { st_dev=16777220; st_ino=254679; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+
+Error:    461: RV_stat { st_dev=16777220; st_ino=254679; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   unexpected results: RV_stat { st_dev=16777220; st_ino=254679; st_kind=S_IFREG; st_perm=0o644; st_nlink=3; st_uid=-1; st_gid=-1; st_rdev=0; st_size=0; }
+   allowed are only: RV_stat { st_dev=2049; st_ino=4; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+   continuing execution with RV_stat { st_dev=2049; st_ino=4; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+   462: dump-result "/"
+           "/"|D|254675
+           "/dir_link"|L|"/dir_1"
+           "/f1.txt"|F|254679|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/f2.txt"|F|254679|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/f_5"|F|254708|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/file_link"|L|"/dir_1/f1.txt"
+           "/new_dir_link"|L|"/dir_5"
+           "/new_file_link_1"|L|"/f_5"
+           "/new_file_link_2"|L|"/f_6"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+
+        "/"|D|0
+        "/dir_4"|L|"/dir_1"
+        "/dir_link"|L|"/dir_1"
+        "/f1.txt"|F|4|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/f2.txt"|L|"/dir_1/f1.txt"
+        "/f_5"|F|31|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/file_link"|L|"/dir_1/f1.txt"
+        "/new_dir_link"|L|"/dir_5"
+        "/new_file_link_1"|L|"/f_5"
+        "/new_file_link_2"|L|"/f_6"
+        "/slink_2"|L|"xyz"
+        "/dir_1"|D|1
+        "/dir_1/f1.txt"|F|4|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        "/dir_1/f2.txt"|F|5|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+        "/dir_1/dir_11"|D|2
+        "/dir_2"|D|3
+        "/dir_2/f1.txt"|F|6|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+        "/no_such_dir"|D|14
+        "/no_such_dir/ss"|D|15
+        "/no_such_file"|D|16
+        "/no_such_file/ss"|D|17
+
+
+Error:    462: dump-result "/"
+           "/"|D|254675
+           "/dir_link"|L|"/dir_1"
+           "/f1.txt"|F|254679|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/f2.txt"|F|254679|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/f_5"|F|254708|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/file_link"|L|"/dir_1/f1.txt"
+           "/new_dir_link"|L|"/dir_5"
+           "/new_file_link_1"|L|"/f_5"
+           "/new_file_link_2"|L|"/f_6"
+           "/dir_1"|D|254676
+           "/dir_1/f1.txt"|F|254679|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/dir_1/f2.txt"|F|254680|24|"643494cc13ad08ccb3f11680caf2f3a8b294b994"
+           "/dir_1/dir_11"|D|254677
+           "/dir_2"|D|254678
+           "/dir_2/f1.txt"|F|254681|24|"727703159e2b79582d71e169cf66473ba9f4ee5c"
+           "/no_such_dir"|D|254689
+           "/no_such_dir/ss"|D|254690
+           "/no_such_file"|D|254691
+           "/no_such_file/ss"|D|254692
+        end dump-result
+   
+   comparison of dump-results failed:
+      missing entry: /dir_4
+      missing entry: /slink_2
+      differing entry: /f2.txt
+
+
+
+        ###################################################
+        # testing symlink called on an erroneous dst path
+        ###################################################
+
+   468: symlink "/dir_1" ""
+   469: Tau
+   470: ENOENT
+
+        ###################################################
+        # testing readlink called on an erroneous path
+        ###################################################
+
+   476: readlink ""
+   477: Tau
+   478: ENOENT
+
+        ###################################################
+        # testing symlink resolution
+        ###################################################
+
+   484: symlink "../dir_2/f1.txt" "/dir_1/../../symlink_d2_f1.txt"
+   485: Tau
+   486: RV_none
+
+
+
+# trace not accepted
+# processing file 'exec_adhoc_symlink_tests-int.trace' failed

@@ -1,0 +1,54 @@
+# processing file 'exec_open___open_nonempty_dir___O_APPEND__O_CREAT__O_RDONLY__O_TRUNC___0666___close_3-int.trace' ...
+        # processing file 'open___open_nonempty_dir___O_APPEND__O_CREAT__O_RDONLY__O_TRUNC___0666___close_3-int.trace' ...
+        @type trace
+        #####################################
+        # Test open___open_nonempty_dir___O_APPEND__O_CREAT__O_RDONLY__O_TRUNC___0666___close_3
+        #####################################
+     6: mkdir "/test_dir_open___open_nonempty_dir___O_APPEND__O_CREAT__O_RDONLY__O_TRUNC___0666___close_3" 0o777
+     7: Tau
+     8: RV_none
+     9: chdir "/test_dir_open___open_nonempty_dir___O_APPEND__O_CREAT__O_RDONLY__O_TRUNC___0666___close_3"
+    10: Tau
+    11: RV_none
+    12: mkdir "empty_dir" 0o777
+    13: Tau
+    14: RV_none
+    15: mkdir "nonempty_dir" 0o777
+    16: Tau
+    17: RV_none
+    18: open_close "nonempty_dir/f1.txt" [O_CREAT;O_WRONLY] 0o666
+    19: Tau
+    20: RV_none
+    21: open "nonempty_dir/f2.txt" [O_CREAT;O_WRONLY] 0o666
+    22: Tau
+    23: RV_num(3)
+    24: write! (FD 3) "Lorem ipsum dolor sit amet, co" 30
+    25: Tau
+    26: RV_num(30)
+    27: close (FD 3)
+    28: Tau
+    29: RV_none
+    30: symlink "nonempty_dir/f2.txt" "f3_sl.txt"
+    31: Tau
+    32: RV_none
+    33: symlink "broken" "broken_sl"
+    34: Tau
+    35: RV_none
+    36: link "nonempty_dir/f4.txt" "f4_link.txt"
+    37: Tau
+    38: ENOENT
+    39: link "nonempty_dir" "dir_link"
+    40: Tau
+    41: EPERM
+
+    43: open "nonempty_dir" [O_TRUNC;O_CREAT;O_APPEND;O_RDONLY] 0o666
+    44: Tau
+
+# trace not accepted
+# processing file 'exec_open___open_nonempty_dir___O_APPEND__O_CREAT__O_RDONLY__O_TRUNC___0666___close_3-int.trace' failed
+
+Fatal error:     44: Tau
+   special states found:
+     - OS_special (Undefined, "open: O_TRUNC, no O_RDWR or O_WRONLY, posix/open.md O_TRUNC:4")
+     - OS_special (Implementation_defined, "open: O_TRUNC, directory, posix/open.md O_TRUNC:3")
+   no normal result states

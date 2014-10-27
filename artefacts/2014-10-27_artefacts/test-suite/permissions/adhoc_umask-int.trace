@@ -1,0 +1,117 @@
+@type script
+###########################################
+# Testing umask
+###########################################
+
+# for testing umask 
+# files and dirs are created with different
+# permission given as arguments.
+
+# in directory d_xxx 
+# a f_yyy.txt or 
+# a directory dir_yyy
+# are created with umask 0oxxx and
+# permission argument 0oyyy
+# after creating stat is used to get
+# the actual permission of the newly
+# created file or directory
+
+
+###########################################
+# Initialisation
+###########################################
+
+umask 0o000
+mkdir /d_022 0o777
+mkdir /d_000 0o777
+mkdir /d_444 0o777
+
+
+###########################################
+# umask 0o022
+###########################################
+
+umask 0o022
+chdir /d_022
+
+open "f_777.txt" [O_RDWR;O_CREAT] 0o777
+close (FD 3)
+stat "f_777.txt"
+
+open "f_444.txt" [O_RDWR;O_CREAT] 0o444
+close (FD 3)
+stat "f_444.txt"
+
+open "f_322.txt" [O_RDWR;O_CREAT] 0o322
+close (FD 3)
+stat "f_322.txt"
+
+mkdir "dir_777" 0o777
+stat "dir_777"
+
+mkdir "dir_444" 0o444
+stat "dir_444"
+
+mkdir "dir_322" 0o322
+stat "dir_322"
+
+
+
+###########################################
+# umask 0o000
+###########################################
+
+umask 0o000
+chdir /d_000
+
+open "f_777.txt" [O_RDWR;O_CREAT] 0o777
+close (FD 3)
+stat "f_777.txt"
+
+open "f_444.txt" [O_RDWR;O_CREAT] 0o444
+close (FD 3)
+stat "f_444.txt"
+
+open "f_322.txt" [O_RDWR;O_CREAT] 0o322
+close (FD 3)
+stat "f_322.txt"
+
+mkdir "dir_777" 0o777
+stat "dir_777"
+
+mkdir "dir_444" 0o444
+stat "dir_444"
+
+mkdir "dir_322" 0o322
+stat "dir_322"
+
+
+
+
+###########################################
+# umask 0o444
+###########################################
+
+umask 0o444
+chdir /d_444
+
+open "f_777.txt" [O_RDWR;O_CREAT] 0o777
+close (FD 3)
+stat "f_777.txt"
+
+open "f_444.txt" [O_RDWR;O_CREAT] 0o444
+close (FD 3)
+stat "f_444.txt"
+
+open "f_322.txt" [O_RDWR;O_CREAT] 0o322
+close (FD 3)
+stat "f_322.txt"
+
+mkdir "dir_777" 0o777
+stat "dir_777"
+
+mkdir "dir_444" 0o444
+stat "dir_444"
+
+mkdir "dir_322" 0o322
+stat "dir_322"

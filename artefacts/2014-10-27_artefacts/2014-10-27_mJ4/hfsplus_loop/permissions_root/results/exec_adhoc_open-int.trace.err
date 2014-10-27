@@ -1,0 +1,88 @@
+< id -u -n
+< id -g -n
+< uname -s
++ mkdir "-p" "/tmp/fs_test"
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_0"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_1"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_2"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_3"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_4"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_5"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_5"
+< dscl localhost -list /Local/Default/Users UniqueID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_5" "UniqueID" "514"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_5" "UserShell" "/usr/bin/false"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_5" "RealName" "fs_user_5"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_5" "PrimaryGroupID" "20"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_0"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_1"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_1"
+< dscl localhost -list /Local/Default/Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_1" "PrimaryGroupID" "412"
+$ Released lock /tmp/fs_test/pw.lock
++ dseditgroup "-o" "edit" "-a" "fs_user_5" "-t" "user" "fs_group_1"
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_6"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_7"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_8"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_9"
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_10"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_10"
+< dscl localhost -list /Local/Default/Users UniqueID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_10" "UniqueID" "517"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_10" "UserShell" "/usr/bin/false"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_10" "RealName" "fs_user_10"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_10" "PrimaryGroupID" "20"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_2"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_3"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_4"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_5"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_5"
+< dscl localhost -list /Local/Default/Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_5" "PrimaryGroupID" "413"
+$ Released lock /tmp/fs_test/pw.lock
++ dseditgroup "-o" "edit" "-a" "fs_user_10" "-t" "user" "fs_group_1"
++ dseditgroup "-o" "edit" "-a" "fs_user_10" "-t" "user" "fs_group_5"
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Users/fs_user_11"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_11"
+< dscl localhost -list /Local/Default/Users UniqueID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_11" "UniqueID" "518"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_11" "UserShell" "/usr/bin/false"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_11" "RealName" "fs_user_11"
++ dscl "localhost" "-create" "/Local/Default/Users/fs_user_11" "PrimaryGroupID" "20"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_6"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_7"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_8"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_9"
+? dscl "localhost" "-list" "/Local/Default/Groups/fs_group_10"
+<dscl_cmd> DS Error: -14009 (eDSUnknownNodeName)
+list: Invalid Path
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_10"
+< dscl localhost -list /Local/Default/Groups PrimaryGroupID | awk '{print $2}' | sort -ug | tail -1
++ dscl "localhost" "-create" "/Local/Default/Groups/fs_group_10" "PrimaryGroupID" "416"
+$ Released lock /tmp/fs_test/pw.lock
++ dseditgroup "-o" "edit" "-a" "fs_user_11" "-t" "user" "fs_group_10"
+? dscl "localhost" "-delete" "/Local/Default/Groups/fs_group_1"
+? dscl "localhost" "-delete" "/Local/Default/Groups/fs_group_5"
+? dscl "localhost" "-delete" "/Local/Default/Groups/fs_group_10"
+? dscl "localhost" "-delete" "/Local/Default/Users/fs_user_5"
+? dscl "localhost" "-delete" "/Local/Default/Users/fs_user_10"
+? dscl "localhost" "-delete" "/Local/Default/Users/fs_user_11"

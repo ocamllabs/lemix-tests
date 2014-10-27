@@ -1,0 +1,145 @@
+# processing file 'exec_adhoc_open_multiple_tests-check-int.trace' ...
+        # processing file 'adhoc_open_multiple_tests-check-int.trace' ...
+        @type trace
+        # Tests for open and close with multiple
+        # file descriptors opened by multiple processes
+        # essentially just check we get the right ids back
+
+        # WARNING: these tests won't work with posix,
+        # because its implementation maps everything to
+        # just one process
+
+    11: Pid 2 -> create (User_id 0) (Group_id 0)
+
+        ##############################################
+        # basic cases that should work
+        ##############################################
+
+        # create a file 
+    18: open "f1.txt" [O_CREAT;O_WRONLY] 0o644
+    19: Tau
+    20: RV_num(3)
+    21: close (FD 3)
+    22: Tau
+    23: RV_none
+
+        # and another file
+    26: open "f2.txt" [O_CREAT;O_WRONLY] 0o644
+    27: Tau
+    28: RV_num(3)
+    29: close (FD 3)
+    30: Tau
+    31: RV_none
+
+
+        # open both files in the same process
+    35: open "f1.txt" [O_RDONLY]
+    36: Tau
+    37: RV_num(3)
+    38: open "f2.txt" [O_RDONLY]
+    39: Tau
+    40: RV_num(4)
+    41: close (FD 3)
+    42: Tau
+    43: RV_none
+    44: close (FD 4)
+    45: Tau
+    46: RV_none
+
+
+        # open both files in the same process 
+        # and close and open again
+    51: open "f1.txt" [O_RDONLY]
+    52: Tau
+    53: RV_num(3)
+    54: open "f2.txt" [O_RDONLY]
+    55: Tau
+    56: RV_num(4)
+    57: close (FD 4)
+    58: Tau
+    59: RV_none
+    60: open "f2.txt" [O_RDONLY]
+    61: Tau
+    62: RV_num(4)
+    63: close (FD 3)
+    64: Tau
+    65: RV_none
+    66: close (FD 4)
+    67: Tau
+    68: RV_none
+
+
+        # open both files in the same process 
+        # and close and open again
+    73: Pid 1 -> open "f1.txt" [O_RDONLY]
+    74: Tau
+    75: Pid 1 <- RV_num(3)
+    76: Pid 1 -> open "f2.txt" [O_RDONLY]
+    77: Tau
+    78: Pid 1 <- RV_num(4)
+    79: Pid 1 -> close (FD 3)
+    80: Tau
+    81: Pid 1 <- RV_none
+    82: Pid 1 -> open "f1.txt" [O_RDONLY]
+    83: Tau
+    84: Pid 1 <- RV_num(3)
+    85: Pid 1 -> close (FD 4)
+    86: Tau
+    87: Pid 1 <- RV_none
+    88: Pid 1 -> close (FD 3)
+    89: Tau
+    90: Pid 1 <- RV_none
+
+
+        # open both files in the same process 
+        # and close and open again
+    95: open "f1.txt" [O_RDONLY]
+    96: Tau
+    97: RV_num(3)
+    98: open "f2.txt" [O_RDONLY]
+    99: Tau
+   100: RV_num(4)
+   101: close (FD 3)
+   102: Tau
+   103: RV_none
+   104: open "f1.txt" [O_RDONLY]
+   105: Tau
+   106: RV_num(3)
+   107: close (FD 4)
+   108: Tau
+   109: RV_none
+   110: close (FD 3)
+   111: Tau
+   112: RV_none
+
+
+
+
+        # open both files in the different processes
+   118: Pid 1 -> open "f1.txt" [O_RDONLY]
+   119: Tau
+   120: Pid 1 <- RV_num(3)
+   121: Pid 2 -> open "f2.txt" [O_RDONLY]
+   122: Tau
+   123: Pid 2 <- RV_num(4)
+
+Error:    123: Pid 2 <- RV_num(4)
+   unexpected results: RV_num(4)
+   allowed are only: RV_num(3)
+   continuing execution with RV_num(3)
+   124: Pid 1 -> close (FD 3)
+   125: Tau
+   126: Pid 1 <- RV_none
+   127: Pid 2 -> close (FD 3)
+   128: Tau
+   129: Pid 2 <- EBADF
+
+Error:    129: Pid 2 <- EBADF
+   unexpected results: EBADF
+   allowed are only: RV_none
+   continuing execution with RV_none
+
+
+
+# trace not accepted
+# processing file 'exec_adhoc_open_multiple_tests-check-int.trace' failed
