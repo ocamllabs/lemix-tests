@@ -1,0 +1,60 @@
+< id -u -n
+< id -g -n
+< uname -s
++ mkdir "-p" "/tmp/fs_test"
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_0"
+useradd: user 'fs_user_0' already exists
+? useradd "-s" "/bin/false" "fs_user_1"
+useradd: user 'fs_user_1' already exists
+? useradd "-s" "/bin/false" "fs_user_2"
+useradd: user 'fs_user_2' already exists
+? useradd "-s" "/bin/false" "fs_user_3"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_0"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_3" "fs_group_0"
+Adding user `fs_user_3' to group `fs_group_0' ...
+Adding user fs_user_3 to group fs_group_0
+Done.
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_4"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_1"
+groupadd: group 'fs_group_1' already exists
+? groupadd "fs_group_2"
+groupadd: group 'fs_group_2' already exists
+? groupadd "fs_group_3"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_4" "fs_group_0"
+Adding user `fs_user_4' to group `fs_group_0' ...
+Adding user fs_user_4 to group fs_group_0
+Done.
++ adduser "fs_user_4" "fs_group_3"
+Adding user `fs_user_4' to group `fs_group_3' ...
+Adding user fs_user_4 to group fs_group_3
+Done.
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_5"
+useradd: user 'fs_user_5' already exists
+? useradd "-s" "/bin/false" "fs_user_6"
+useradd: user 'fs_user_6' already exists
+? useradd "-s" "/bin/false" "fs_user_7"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_4"
+groupadd: group 'fs_group_4' already exists
+? groupadd "fs_group_5"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_7" "fs_group_5"
+Adding user `fs_user_7' to group `fs_group_5' ...
+Adding user fs_user_7 to group fs_group_5
+Done.
++ groupdel "fs_group_0"
++ groupdel "fs_group_3"
++ groupdel "fs_group_5"
++ userdel "fs_user_3"
++ userdel "fs_user_4"
++ userdel "fs_user_7"

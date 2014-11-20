@@ -1,0 +1,528 @@
+# processing file 'exec_adhoc_pread_tests-int.trace' ...
+        # processing file 'adhoc_pread_tests-int.trace' ...
+        @type trace
+        # adhoc_pread_tests2: adhoc tests to check behaviour of read in various situations
+
+
+        ##############################################
+        # initialization
+        ##############################################
+
+        # empty and non-empty directories to read from
+    11: mkdir "/empty_dir" 0o777
+    12: Tau
+    13: RV_none
+    14: mkdir "/non_empty_dir" 0o777
+    15: Tau
+    16: RV_none
+
+        # create files with different contents in the non-empty directory
+    19: chdir "/non_empty_dir"
+    20: Tau
+    21: RV_none
+
+        # "f1.txt" is empty
+    24: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+    25: Tau
+    26: RV_none
+
+        # "f2.txt" contains some short text
+    29: open "f2.txt" [O_CREAT;O_RDWR] 0o666
+    30: Tau
+    31: RV_num(3)
+    32: write! (FD 3) "Lorem ipsum dolor sit a" 23
+    33: Tau
+    34: RV_num(23)
+    35: close (FD 3)
+    36: Tau
+    37: RV_none
+
+        # "f3.txt" contains all kinds of strange characters
+    40: open "f3.txt" [O_CREAT;O_RDWR] 0o666
+    41: Tau
+    42: RV_num(3)
+    43: write! (FD 3) "\"-#@/\000\001\001\243\b" 10
+    44: Tau
+    45: RV_num(10)
+    46: close (FD 3)
+    47: Tau
+    48: RV_none
+
+
+        ##############################################
+        # read on an empty file
+        ##############################################
+
+        # read nothing 
+    56: open "f1.txt" [O_RDONLY]
+    57: Tau
+    58: RV_num(3)
+    59: pread (FD 3) 0 0
+    60: Tau
+    61: RV_bytes("")
+    62: close (FD 3)
+    63: Tau
+    64: RV_none
+
+        # read 1 char beyond end
+    67: open "f1.txt" [O_RDONLY]
+    68: Tau
+    69: RV_num(3)
+    70: pread (FD 3) 1 0
+    71: Tau
+    72: RV_bytes("")
+    73: close (FD 3)
+    74: Tau
+    75: RV_none
+
+        # read 1 char after seeking beyond end
+    78: open "f1.txt" [O_RDONLY]
+    79: Tau
+    80: RV_num(3)
+    81: pread (FD 3) 1 100
+    82: Tau
+    83: RV_bytes("")
+    84: close (FD 3)
+    85: Tau
+    86: RV_none
+
+        # read with negative offset 
+    89: open "f1.txt" [O_RDONLY]
+    90: Tau
+    91: RV_num(3)
+    92: pread (FD 3) 1 -100
+    93: Tau
+    94: EINVAL
+    95: close (FD 3)
+    96: Tau
+    97: RV_none
+
+
+
+        ##############################################
+        # read on a non-empty file
+        ##############################################
+
+        # "f2.txt" is 23 bytes long
+
+        # pread 0 chars
+   108: open "f2.txt" [O_RDONLY]
+   109: Tau
+   110: RV_num(3)
+   111: pread (FD 3) 0 0
+   112: Tau
+   113: RV_bytes("")
+   114: close (FD 3)
+   115: Tau
+   116: RV_none
+
+        # read 0 chars
+   119: open "f2.txt" [O_RDONLY]
+   120: Tau
+   121: RV_num(3)
+   122: read (FD 3) 0
+   123: Tau
+   124: RV_bytes("")
+   125: close (FD 3)
+   126: Tau
+   127: RV_none
+
+        # pread 2 chars
+   130: open "f2.txt" [O_RDONLY]
+   131: Tau
+   132: RV_num(3)
+   133: pread (FD 3) 2 0
+   134: Tau
+   135: RV_bytes("Lo")
+# 
+# Warning:    135: RV_bytes("Lo")
+#    more than one possible result value
+   136: close (FD 3)
+   137: Tau
+   138: RV_none
+
+        # read 2 chars
+   141: open "f2.txt" [O_RDONLY]
+   142: Tau
+   143: RV_num(3)
+   144: read (FD 3) 2
+   145: Tau
+   146: RV_bytes("Lo")
+# 
+# Warning:    146: RV_bytes("Lo")
+#    more than one possible result value
+   147: close (FD 3)
+   148: Tau
+   149: RV_none
+
+        # pread 2 chars with offset 5
+   152: open "f2.txt" [O_RDONLY]
+   153: Tau
+   154: RV_num(3)
+   155: pread (FD 3) 2 5
+   156: Tau
+   157: RV_bytes(" i")
+# 
+# Warning:    157: RV_bytes(" i")
+#    more than one possible result value
+   158: close (FD 3)
+   159: Tau
+   160: RV_none
+
+        # read 2 chars and then 3, preads don't influence each other
+   163: open "f2.txt" [O_RDONLY]
+   164: Tau
+   165: RV_num(3)
+   166: pread (FD 3) 2 0
+   167: Tau
+   168: RV_bytes("Lo")
+# 
+# Warning:    168: RV_bytes("Lo")
+#    more than one possible result value
+   169: pread (FD 3) 3 0
+   170: Tau
+   171: RV_bytes("Lor")
+# 
+# Warning:    171: RV_bytes("Lor")
+#    more than one possible result value
+   172: close (FD 3)
+   173: Tau
+   174: RV_none
+
+        # read 2 chars and then 3, reads influence each other
+   177: open "f2.txt" [O_RDONLY]
+   178: Tau
+   179: RV_num(3)
+   180: read (FD 3) 2
+   181: Tau
+   182: RV_bytes("Lo")
+# 
+# Warning:    182: RV_bytes("Lo")
+#    more than one possible result value
+   183: read (FD 3) 3
+   184: Tau
+   185: RV_bytes("rem")
+# 
+# Warning:    185: RV_bytes("rem")
+#    more than one possible result value
+   186: close (FD 3)
+   187: Tau
+   188: RV_none
+
+        # pread over end of file
+   191: open "f2.txt" [O_RDONLY]
+   192: Tau
+   193: RV_num(3)
+   194: pread (FD 3) 100 0
+   195: Tau
+   196: RV_bytes("Lorem ipsum dolor sit a")
+# 
+# Warning:    196: RV_bytes("Lorem ipsum dolor sit a")
+#    more than one possible result value
+   197: close (FD 3)
+   198: Tau
+   199: RV_none
+
+        # read over end of file
+   202: open "f2.txt" [O_RDONLY]
+   203: Tau
+   204: RV_num(3)
+   205: read (FD 3) 100
+   206: Tau
+   207: RV_bytes("Lorem ipsum dolor sit a")
+# 
+# Warning:    207: RV_bytes("Lorem ipsum dolor sit a")
+#    more than one possible result value
+   208: close (FD 3)
+   209: Tau
+   210: RV_none
+
+        # pread just after end
+   213: open "f2.txt" [O_RDONLY]
+   214: Tau
+   215: RV_num(3)
+   216: pread (FD 3) 1 23
+   217: Tau
+   218: RV_bytes("")
+   219: close (FD 3)
+   220: Tau
+   221: RV_none
+
+        # pread far beyond end
+   224: open "f2.txt" [O_RDONLY]
+   225: Tau
+   226: RV_num(3)
+   227: pread (FD 3) 1 100
+   228: Tau
+   229: RV_bytes("")
+   230: close (FD 3)
+   231: Tau
+   232: RV_none
+
+        # pread over end
+   235: open "f2.txt" [O_RDONLY]
+   236: Tau
+   237: RV_num(3)
+   238: pread (FD 3) 5 20
+   239: Tau
+   240: RV_bytes("t a")
+# 
+# Warning:    240: RV_bytes("t a")
+#    more than one possible result value
+   241: close (FD 3)
+   242: Tau
+   243: RV_none
+
+        # pread with negative offset
+   246: open "f2.txt" [O_RDONLY]
+   247: Tau
+   248: RV_num(3)
+   249: pread (FD 3) 1 -100
+   250: Tau
+   251: EINVAL
+   252: close (FD 3)
+   253: Tau
+   254: RV_none
+
+        # multiple preads don't influence each other or reads
+   257: open "f2.txt" [O_RDONLY]
+   258: Tau
+   259: RV_num(3)
+   260: read (FD 3) 2
+   261: Tau
+   262: RV_bytes("Lo")
+# 
+# Warning:    262: RV_bytes("Lo")
+#    more than one possible result value
+   263: pread (FD 3) 5 10
+   264: Tau
+   265: RV_bytes("m dol")
+# 
+# Warning:    265: RV_bytes("m dol")
+#    more than one possible result value
+   266: read (FD 3) 3
+   267: Tau
+   268: RV_bytes("rem")
+# 
+# Warning:    268: RV_bytes("rem")
+#    more than one possible result value
+   269: pread (FD 3) 5 2
+   270: Tau
+   271: RV_bytes("rem i")
+# 
+# Warning:    271: RV_bytes("rem i")
+#    more than one possible result value
+   272: read (FD 3) 2
+   273: Tau
+   274: RV_bytes(" i")
+# 
+# Warning:    274: RV_bytes(" i")
+#    more than one possible result value
+   275: close (FD 3)
+   276: Tau
+   277: RV_none
+
+        # read is influenced by seek
+   280: open "f2.txt" [O_RDONLY]
+   281: Tau
+   282: RV_num(3)
+   283: lseek (FD 3) 6 SEEK_SET
+   284: Tau
+   285: RV_num(6)
+   286: read (FD 3) 5
+   287: Tau
+   288: RV_bytes("ipsum")
+# 
+# Warning:    288: RV_bytes("ipsum")
+#    more than one possible result value
+   289: close (FD 3)
+   290: Tau
+   291: RV_none
+
+        # pread is not influenced by seek
+   294: open "f2.txt" [O_RDONLY]
+   295: Tau
+   296: RV_num(3)
+   297: lseek (FD 3) 7 SEEK_SET
+   298: Tau
+   299: RV_num(7)
+   300: pread (FD 3) 5 6
+   301: Tau
+   302: RV_bytes("ipsum")
+# 
+# Warning:    302: RV_bytes("ipsum")
+#    more than one possible result value
+   303: close (FD 3)
+   304: Tau
+   305: RV_none
+
+        ##############################################
+        # test reading of special chars
+        ##############################################
+
+   311: open "f3.txt" [O_RDONLY]
+   312: Tau
+   313: RV_num(3)
+   314: read (FD 3) 100
+   315: Tau
+   316: RV_bytes("\"-#@/\000\001\001\243\b")
+# 
+# Warning:    316: RV_bytes("\"-#@/\000\001\001\243\b")
+#    more than one possible result value
+   317: close (FD 3)
+   318: Tau
+   319: RV_none
+
+
+        ##############################################
+        # reading from file-descriptors open for 
+        # different modes
+        ##############################################
+
+   327: open "f2.txt" [O_RDONLY]
+   328: Tau
+   329: RV_num(3)
+   330: read (FD 3) 100
+   331: Tau
+   332: RV_bytes("Lorem ipsum dolor sit a")
+# 
+# Warning:    332: RV_bytes("Lorem ipsum dolor sit a")
+#    more than one possible result value
+   333: close (FD 3)
+   334: Tau
+   335: RV_none
+
+   337: open "f2.txt" [O_WRONLY]
+   338: Tau
+   339: RV_num(3)
+   340: read (FD 3) 100
+   341: Tau
+   342: EBADF
+   343: close (FD 3)
+   344: Tau
+   345: RV_none
+
+   347: open "f2.txt" [O_RDWR]
+   348: Tau
+   349: RV_num(3)
+   350: read (FD 3) 100
+   351: Tau
+   352: RV_bytes("Lorem ipsum dolor sit a")
+# 
+# Warning:    352: RV_bytes("Lorem ipsum dolor sit a")
+#    more than one possible result value
+   353: close (FD 3)
+   354: Tau
+   355: RV_none
+
+        # open a descriptor, remove permission on file
+        # and then read. Since descriptor is open
+        # that should be fine, but opening again is not
+   360: open "f2.txt" [O_RDONLY]
+   361: Tau
+   362: RV_num(3)
+   363: chmod "f2.txt" 0o000
+   364: Tau
+   365: RV_none
+   366: read (FD 3) 100
+   367: Tau
+   368: RV_bytes("Lorem ipsum dolor sit a")
+# 
+# Warning:    368: RV_bytes("Lorem ipsum dolor sit a")
+#    more than one possible result value
+   369: close (FD 3)
+   370: Tau
+   371: RV_none
+
+   373: open "f2.txt" [O_RDONLY]
+   374: Tau
+   375: RV_num(3)
+   376: read (FD 3) 100
+   377: Tau
+   378: RV_bytes("Lorem ipsum dolor sit a")
+# 
+# Warning:    378: RV_bytes("Lorem ipsum dolor sit a")
+#    more than one possible result value
+   379: close (FD 3)
+   380: Tau
+   381: RV_none
+
+   383: chmod "f2.txt" 0o666
+   384: Tau
+   385: RV_none
+   386: open "f2.txt" [O_RDONLY]
+   387: Tau
+   388: RV_num(3)
+   389: read (FD 3) 100
+   390: Tau
+   391: RV_bytes("Lorem ipsum dolor sit a")
+# 
+# Warning:    391: RV_bytes("Lorem ipsum dolor sit a")
+#    more than one possible result value
+   392: close (FD 3)
+   393: Tau
+   394: RV_none
+
+        ##############################################
+        # read on directories
+        ##############################################
+
+   400: open "/empty_dir" [O_RDONLY]
+   401: Tau
+   402: RV_num(3)
+   403: pread (FD 3) 0 0
+   404: Tau
+   405: EISDIR
+   406: pread (FD 3) 1 0
+   407: Tau
+   408: EISDIR
+   409: pread (FD 3) 1 1
+   410: Tau
+   411: EISDIR
+   412: read (FD 3) 0
+   413: Tau
+   414: EISDIR
+   415: read (FD 3) 1
+   416: Tau
+   417: EISDIR
+   418: read (FD 3) 1
+   419: Tau
+   420: EISDIR
+   421: close (FD 3)
+   422: Tau
+   423: RV_none
+
+   425: open "/non_empty_dir" [O_RDONLY]
+   426: Tau
+   427: RV_num(3)
+   428: pread (FD 3) 0 0
+   429: Tau
+   430: EISDIR
+   431: pread (FD 3) 1 0
+   432: Tau
+   433: EISDIR
+   434: pread (FD 3) 1 1
+   435: Tau
+   436: EISDIR
+   437: read (FD 3) 0
+   438: Tau
+   439: EISDIR
+   440: read (FD 3) 1
+   441: Tau
+   442: EISDIR
+   443: read (FD 3) 1
+   444: Tau
+   445: EISDIR
+   446: close (FD 3)
+   447: Tau
+   448: RV_none
+
+
+        ##############################################
+        # finished :-)
+        ##############################################
+
+
+
+
+# trace accepted

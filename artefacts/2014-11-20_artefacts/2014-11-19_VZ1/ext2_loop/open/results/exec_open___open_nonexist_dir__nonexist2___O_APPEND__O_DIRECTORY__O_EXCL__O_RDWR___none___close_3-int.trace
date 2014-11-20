@@ -1,0 +1,62 @@
+# processing file 'open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3-int.trace' ...
+        @type trace
+        #####################################
+        # Test open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3
+        #####################################
+     5: mkdir "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3" 0o777
+        Tau
+        RV_none
+     6: chdir "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3"
+        Tau
+        RV_none
+     7: mkdir "empty_dir" 0o777
+        Tau
+        RV_none
+     8: mkdir "nonempty_dir" 0o777
+        Tau
+        RV_none
+     9: open_close "nonempty_dir/f1.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+    10: open "nonempty_dir/f2.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    11: write! (FD 3) "Lorem ipsum dolor sit amet, co" 30
+        Tau
+        RV_num(30)
+    12: close (FD 3)
+        Tau
+        RV_none
+    13: symlink "nonempty_dir/f2.txt" "f3_sl.txt"
+        Tau
+        RV_none
+    14: symlink "broken" "broken_sl"
+        Tau
+        RV_none
+    15: link "nonempty_dir/f4.txt" "f4_link.txt"
+        Tau
+        ENOENT
+    16: link "nonempty_dir" "dir_link"
+        Tau
+        EPERM
+
+    18: open "nonexist_dir/nonexist2" [O_EXCL;O_DIRECTORY;O_APPEND;O_RDWR]
+        Tau
+        ENOENT
+    19: close (FD 3)
+        Tau
+        EBADF
+
+    21: dump-result "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3"
+           "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3"|D|32720
+           "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3/broken_sl"|L|"broken"
+           "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3/f3_sl.txt"|L|"nonempty_dir/f2.txt"
+           "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3/empty_dir"|D|32721
+           "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3/nonempty_dir"|D|32722
+           "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3/nonempty_dir/f1.txt"|F|32723|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"
+           "/test_dir_open___open_nonexist_dir__nonexist2___O_APPEND__O_DIRECTORY__O_EXCL__O_RDWR___none___close_3/nonempty_dir/f2.txt"|F|32724|30|"e88ee12dedd1a9c6d9e9e5dea1a43e510dede7d5"
+        end dump-result
+
+
+
+

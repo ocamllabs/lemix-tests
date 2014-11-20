@@ -1,0 +1,200 @@
+# processing file 'exec_adhoc_chmod-int.trace' ...
+        # processing file 'adhoc_chmod-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing chmod
+        ###########################################
+
+        # try chmod with different values on an exiting file,
+        # an existing directory, something non-existing and
+        # a symbolic link. Also test that it is not affected
+        # by the current umask
+
+
+        # Initialisation
+
+    15: mkdir "/dir" 0o777
+    16: Tau
+    17: RV_none
+    18: open "/file.txt" [O_CREAT;O_RDWR] 0o777
+    19: Tau
+    20: RV_num(3)
+    21: close (FD 3)
+    22: Tau
+    23: RV_none
+    24: symlink "/file.txt" "/sl"
+    25: Tau
+    26: RV_none
+    27: umask 0o022
+    28: Tau
+    29: RV_file_perm(0o022)
+
+        # test initial permissions
+
+    33: stat "/dir"
+    34: Tau
+    35: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+    36: stat "/file.txt"
+    37: Tau
+    38: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+    39: stat "/sl"
+    40: Tau
+    41: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+
+        # Test 1
+    45: chmod "/dir" 0o000
+    46: Tau
+    47: RV_none
+    48: stat "/dir"
+    49: Tau
+    50: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        # Test 2
+    53: chmod "/dir" 0o777
+    54: Tau
+    55: RV_none
+    56: stat "/dir"
+    57: Tau
+    58: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        # Test 3
+    61: chmod "/dir" 0o755
+    62: Tau
+    63: RV_none
+    64: stat "/dir"
+    65: Tau
+    66: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        # Test 4
+    69: chmod "/file.txt" 0o000
+    70: Tau
+    71: RV_none
+    72: stat "/file.txt"
+    73: Tau
+    74: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+    75: stat "/sl"
+    76: Tau
+    77: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 5
+    80: chmod "/file.txt" 0o666
+    81: Tau
+    82: RV_none
+    83: stat "/file.txt"
+    84: Tau
+    85: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+    86: stat "/sl"
+    87: Tau
+    88: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 6
+    91: chmod "/file.txt" 0o644
+    92: Tau
+    93: RV_none
+    94: stat "/file.txt"
+    95: Tau
+    96: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+    97: stat "/sl"
+    98: Tau
+    99: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 7
+   102: chmod "/no_such_dir/" 0o755
+   103: Tau
+   104: ENOENT
+
+        # Test 8
+   107: chmod "/no_such_file" 0o755
+   108: Tau
+   109: ENOENT
+
+
+        # try again with different umask
+   113: umask 0o000
+   114: Tau
+   115: RV_file_perm(0o022)
+
+        # Test 1
+   118: chmod "/dir" 0o000
+   119: Tau
+   120: RV_none
+   121: stat "/dir"
+   122: Tau
+   123: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        # Test 2
+   126: chmod "/dir" 0o777
+   127: Tau
+   128: RV_none
+   129: stat "/dir"
+   130: Tau
+   131: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        # Test 3
+   134: chmod "/dir" 0o755
+   135: Tau
+   136: RV_none
+   137: stat "/dir"
+   138: Tau
+   139: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; }
+
+        # Test 4
+   142: chmod "/file.txt" 0o000
+   143: Tau
+   144: RV_none
+   145: stat "/file.txt"
+   146: Tau
+   147: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+   148: stat "/sl"
+   149: Tau
+   150: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 5
+   153: chmod "/file.txt" 0o666
+   154: Tau
+   155: RV_none
+   156: stat "/file.txt"
+   157: Tau
+   158: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+   159: stat "/sl"
+   160: Tau
+   161: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 6
+   164: chmod "/file.txt" 0o644
+   165: Tau
+   166: RV_none
+   167: stat "/file.txt"
+   168: Tau
+   169: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+   170: stat "/sl"
+   171: Tau
+   172: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; }
+
+        # Test 7
+   175: chmod "/no_such_dir/" 0o755
+   176: Tau
+   177: ENOENT
+
+        # Test 8
+   180: chmod "/no_such_file" 0o755
+   181: Tau
+   182: ENOENT
+
+        # Test 9
+   185: chmod "" 0o755
+   186: Tau
+   187: ENOENT
+
+        # Test 10
+   190: symlink "/file.txt" "/my_symlink"
+   191: Tau
+   192: RV_none
+   193: chmod "/my_symlink" 0o644
+   194: Tau
+   195: RV_none
+
+
+
+# trace accepted

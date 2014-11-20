@@ -1,0 +1,473 @@
+# processing file 'adhoc_create-group-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing mkdir and creating files
+        # with group permissions
+        ###########################################
+
+        # these tests create parent-directories with various permissions and
+        # then try to create files and directories inside these parent
+        # directories while being not the owner of the dir, but in the group
+        # of it.  
+        # This should only work, if one has search and 
+        # write permission to the parent dir. However, the search permission
+        # is also needed needed for path resolution. The tests therefore also
+        # try to create the files in the current working directory. 
+        # before removing x permission.
+
+        ###################################
+        # Initialising processes and users
+        ###################################
+
+        # Pid 1 runs as root, we need 3 more processes that run 
+        # as non-superusers. The idea is to have 
+        #
+        # - Pid 2 : creates and owns the directories
+        # - Pid 3 : tries to create the files while 
+        #           being in the right group but not the owner
+
+    28: Pid 2 -> create (User_id 1) (Group_id 1)
+    29: add_user_to_group (User_id 1) (Group_id 1)
+        Tau
+        RV_none
+
+        # Pid 3 runs as different user in the group of User 1
+    32: Pid 3 -> create (User_id 2) (Group_id 2)
+    33: add_user_to_group (User_id 2) (Group_id 1)
+        Tau
+        RV_none
+    34: add_user_to_group (User_id 2) (Group_id 2)
+        Tau
+        RV_none
+
+        # make sure the permissions below get not modified by umask
+    37: Pid 2 -> umask 0o000
+        Tau
+        Pid 2 <- RV_file_perm(0o022)
+    38: Pid 3 -> umask 0o000
+        Tau
+        Pid 3 <- RV_file_perm(0o022)
+
+
+        ###################################
+        # The tests
+        ###################################
+
+        # rwx
+    46: Pid 2 -> mkdir "/dir_rwx/" 0o777
+        Tau
+        Pid 2 <- EACCES
+    47: Pid 2 -> chdir "/dir_rwx"
+        Tau
+        Pid 2 <- EACCES
+    48: Pid 3 -> chdir "/dir_rwx"
+        Tau
+        Pid 3 <- EACCES
+    49: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+    50: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+    51: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+    52: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+    53: Pid 2 -> chmod "/dir_rwx/" 0o070
+        Tau
+        Pid 2 <- EACCES
+
+    55: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+    56: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+    57: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    58: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    59: Pid 3 -> mkdir "/dir_rwx/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+    60: Pid 3 -> mkdir "/dir_rwx/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+    61: Pid 3 -> open_close "/dir_rwx/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    62: Pid 3 -> open_close "/dir_rwx/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+
+        # rw_
+    66: Pid 2 -> mkdir "/dir_rw_/" 0o777
+        Tau
+        Pid 2 <- EACCES
+    67: Pid 2 -> chdir "/dir_rw_"
+        Tau
+        Pid 2 <- EACCES
+    68: Pid 3 -> chdir "/dir_rw_"
+        Tau
+        Pid 3 <- EACCES
+    69: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+    70: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+    71: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+    72: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+    73: Pid 2 -> chmod "/dir_rw_/" 0o060
+        Tau
+        Pid 2 <- EACCES
+
+    75: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+    76: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+    77: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    78: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    79: Pid 3 -> mkdir "/dir_rw_/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+    80: Pid 3 -> mkdir "/dir_rw_/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+    81: Pid 3 -> open_close "/dir_rw_/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    82: Pid 3 -> open_close "/dir_rw_/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+
+        # r_x
+    86: Pid 2 -> mkdir "/dir_r_x/" 0o777
+        Tau
+        Pid 2 <- EACCES
+    87: Pid 2 -> chdir "/dir_r_x"
+        Tau
+        Pid 2 <- EACCES
+    88: Pid 3 -> chdir "/dir_r_x"
+        Tau
+        Pid 3 <- EACCES
+    89: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+    90: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+    91: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+    92: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+    93: Pid 2 -> chmod "/dir_r_x/" 0o050
+        Tau
+        Pid 2 <- EACCES
+
+    95: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+    96: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+    97: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    98: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+    99: Pid 3 -> mkdir "/dir_r_x/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+   100: Pid 3 -> mkdir "/dir_r_x/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+   101: Pid 3 -> open_close "/dir_r_x/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   102: Pid 3 -> open_close "/dir_r_x/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+
+        # r__
+   106: Pid 2 -> mkdir "/dir_r__/" 0o777
+        Tau
+        Pid 2 <- EACCES
+   107: Pid 2 -> chdir "/dir_r__"
+        Tau
+        Pid 2 <- EACCES
+   108: Pid 3 -> chdir "/dir_r__"
+        Tau
+        Pid 3 <- EACCES
+   109: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   110: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   111: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+   112: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+   113: Pid 2 -> chmod "/dir_r__/" 0o040
+        Tau
+        Pid 2 <- EACCES
+
+   115: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+   116: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+   117: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   118: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   119: Pid 3 -> mkdir "/dir_r__/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+   120: Pid 3 -> mkdir "/dir_r__/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+   121: Pid 3 -> open_close "/dir_r__/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   122: Pid 3 -> open_close "/dir_r__/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+
+
+        # _wx
+   127: Pid 2 -> mkdir "/dir__wx/" 0o777
+        Tau
+        Pid 2 <- EACCES
+   128: Pid 2 -> chdir "/dir__wx"
+        Tau
+        Pid 2 <- EACCES
+   129: Pid 3 -> chdir "/dir__wx"
+        Tau
+        Pid 3 <- EACCES
+   130: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   131: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   132: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+   133: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+   134: Pid 2 -> chmod "/dir__wx/" 0o030
+        Tau
+        Pid 2 <- EACCES
+
+   136: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+   137: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+   138: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   139: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   140: Pid 3 -> mkdir "/dir__wx/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+   141: Pid 3 -> mkdir "/dir__wx/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+   142: Pid 3 -> open_close "/dir__wx/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   143: Pid 3 -> open_close "/dir__wx/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+
+
+        # _w_
+   148: Pid 2 -> mkdir "/dir__w_/" 0o777
+        Tau
+        Pid 2 <- EACCES
+   149: Pid 2 -> chdir "/dir__w_"
+        Tau
+        Pid 2 <- EACCES
+   150: Pid 3 -> chdir "/dir__w_"
+        Tau
+        Pid 3 <- EACCES
+   151: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   152: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   153: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+   154: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+   155: Pid 2 -> chmod "/dir__w_/" 0o020
+        Tau
+        Pid 2 <- EACCES
+
+   157: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+   158: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+   159: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   160: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   161: Pid 3 -> mkdir "/dir__w_/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+   162: Pid 3 -> mkdir "/dir__w_/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+   163: Pid 3 -> open_close "/dir__w_/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   164: Pid 3 -> open_close "/dir__w_/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+
+        # __x
+   168: Pid 2 -> mkdir "/dir___x/" 0o777
+        Tau
+        Pid 2 <- EACCES
+   169: Pid 2 -> chdir "/dir___x"
+        Tau
+        Pid 2 <- EACCES
+   170: Pid 3 -> chdir "/dir___x"
+        Tau
+        Pid 3 <- EACCES
+   171: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   172: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   173: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+   174: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+   175: Pid 2 -> chmod "/dir___x/" 0o010
+        Tau
+        Pid 2 <- EACCES
+
+   177: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+   178: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+   179: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   180: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   181: Pid 3 -> mkdir "/dir___x/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+   182: Pid 3 -> mkdir "/dir___x/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+   183: Pid 3 -> open_close "/dir___x/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   184: Pid 3 -> open_close "/dir___x/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+
+        # ___
+   188: Pid 2 -> mkdir "/dir____/" 0o777
+        Tau
+        Pid 2 <- EACCES
+   189: Pid 2 -> chdir "/dir____"
+        Tau
+        Pid 2 <- EACCES
+   190: Pid 3 -> chdir "/dir____"
+        Tau
+        Pid 3 <- EACCES
+   191: Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   192: Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 2 <- EACCES
+   193: Pid 2 -> mkdir "d2" 0o777
+        Tau
+        Pid 2 <- EACCES
+   194: Pid 2 -> mkdir "d4" 0o777
+        Tau
+        Pid 2 <- EACCES
+   195: Pid 2 -> chmod "/dir____/" 0o000
+        Tau
+        Pid 2 <- EACCES
+
+   197: Pid 3 -> mkdir "d1" 0o777
+        Tau
+        Pid 3 <- EACCES
+   198: Pid 3 -> mkdir "d2" 0o777
+        Tau
+        Pid 3 <- EACCES
+   199: Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   200: Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   201: Pid 3 -> mkdir "/dir____/d3" 0o777
+        Tau
+        Pid 3 <- EACCES
+   202: Pid 3 -> mkdir "/dir____/d4" 0o777
+        Tau
+        Pid 3 <- EACCES
+   203: Pid 3 -> open_close "/dir____/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+   204: Pid 3 -> open_close "/dir____/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+        Tau
+        Pid 3 <- EACCES
+
+

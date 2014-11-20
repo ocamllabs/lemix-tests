@@ -1,0 +1,18 @@
+### Starting build.
+# Target: run_trace.ml.depends, tags: { debug, extension:ml, file:run_trace.ml, ocaml, ocamldep, package(unix), quiet }
+ocamlfind ocamldep -package unix -modules run_trace.ml > run_trace.ml.depends
+# Target: lib/fs_test_system.mli.depends, tags: { debug, extension:mli, file:lib/fs_test_system.mli, ocaml, ocamldep, package(unix), quiet }
+ocamlfind ocamldep -package unix -modules lib/fs_test_system.mli > lib/fs_test_system.mli.depends
+# Target: lib/fs_test_system.cmi, tags: { byte, compile, debug, extension:mli, file:lib/fs_test_system.mli, interf, ocaml, package(unix), quiet }
+ocamlfind ocamlc -c -g -package unix -I lib -o lib/fs_test_system.cmi lib/fs_test_system.mli
+# Target: run_trace.cmo, tags: { byte, compile, debug, extension:cmo, extension:ml, file:run_trace.cmo, file:run_trace.ml, implem, ocaml, package(unix), quiet }
+ocamlfind ocamlc -c -g -package unix -I lib -o run_trace.cmo run_trace.ml
+# Target: lib/fs_test_system.ml.depends, tags: { debug, extension:ml, file:lib/fs_test_system.ml, ocaml, ocamldep, package(unix), quiet }
+ocamlfind ocamldep -package unix -modules lib/fs_test_system.ml > lib/fs_test_system.ml.depends
+# Target: lib/fs_test_system.cmx, tags: { compile, debug, extension:cmx, extension:ml, file:lib/fs_test_system.cmx, file:lib/fs_test_system.ml, implem, native, ocaml, package(unix), quiet }
+ocamlfind ocamlopt -c -g -package unix -I lib -o lib/fs_test_system.cmx lib/fs_test_system.ml
+# Target: run_trace.cmx, tags: { compile, debug, extension:cmx, extension:ml, file:run_trace.cmx, file:run_trace.ml, implem, native, ocaml, package(unix), quiet }
+ocamlfind ocamlopt -c -g -package unix -I lib -o run_trace.cmx run_trace.ml
+# Target: run_trace.native, tags: { debug, dont_link_with, extension:native, file:run_trace.native, link, native, ocaml, package(unix), program, quiet }
+ocamlfind ocamlopt -linkpkg -g -package unix lib/fs_test_system.cmx run_trace.cmx -o run_trace.native
+# Compilation successful.
