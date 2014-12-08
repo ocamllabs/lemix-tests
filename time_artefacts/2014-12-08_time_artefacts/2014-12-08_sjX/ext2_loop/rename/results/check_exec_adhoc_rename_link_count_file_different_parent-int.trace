@@ -1,0 +1,67 @@
+# processing file 'exec_adhoc_rename_link_count_file_different_parent-int.trace' ...
+        # processing file 'adhoc_rename_link_count_file_different_parent-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after rename
+        ###########################################
+
+        # test that renaming a file with a link in another existing file does not effect the link count
+
+    10: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+    11: Tau
+    12: RV_none
+
+    14: open_close "/f2.txt" [O_RDONLY;O_CREAT] 0o666
+    15: Tau
+    16: RV_none
+
+    18: link "/f1.txt" "/f1_hl.txt"
+    19: Tau
+    20: RV_none
+
+    22: stat "f1.txt"
+    23: Tau
+    24: RV_stat { st_dev=1792; st_ino=33020; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046625;tv_nsec=0;}; st_mtim={tv_sec=1418046625;tv_nsec=0;}; st_ctim={tv_sec=1418046625;tv_nsec=0;}; }
+
+    26: stat "f2.txt"
+    27: Tau
+    28: RV_stat { st_dev=1792; st_ino=33021; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046625;tv_nsec=0;}; st_mtim={tv_sec=1418046625;tv_nsec=0;}; st_ctim={tv_sec=1418046625;tv_nsec=0;}; }
+
+    30: stat "f1_hl.txt"
+    31: Tau
+    32: RV_stat { st_dev=1792; st_ino=33020; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046625;tv_nsec=0;}; st_mtim={tv_sec=1418046625;tv_nsec=0;}; st_ctim={tv_sec=1418046625;tv_nsec=0;}; }
+
+    34: rename "f1.txt" "f2.txt"
+    35: Tau
+    36: RV_none
+
+    38: stat "f2.txt"
+    39: Tau
+    40: RV_stat { st_dev=1792; st_ino=33020; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046625;tv_nsec=0;}; st_mtim={tv_sec=1418046625;tv_nsec=0;}; st_ctim={tv_sec=1418046625;tv_nsec=0;}; }
+
+    42: stat "f1_hl.txt"
+    43: Tau
+    44: RV_stat { st_dev=1792; st_ino=33020; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046625;tv_nsec=0;}; st_mtim={tv_sec=1418046625;tv_nsec=0;}; st_ctim={tv_sec=1418046625;tv_nsec=0;}; }
+
+        # test that renaming a file in another existing file with a link affects the link count
+
+    48: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+    49: Tau
+    50: RV_none
+
+    52: rename "f1.txt" "f2.txt"
+    53: Tau
+    54: RV_none
+
+    56: stat "f2.txt"
+    57: Tau
+    58: RV_stat { st_dev=1792; st_ino=33021; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046625;tv_nsec=0;}; st_mtim={tv_sec=1418046625;tv_nsec=0;}; st_ctim={tv_sec=1418046625;tv_nsec=0;}; }
+
+    60: stat "f1_hl.txt"
+    61: Tau
+    62: RV_stat { st_dev=1792; st_ino=33020; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046625;tv_nsec=0;}; st_mtim={tv_sec=1418046625;tv_nsec=0;}; st_ctim={tv_sec=1418046625;tv_nsec=0;}; }
+
+
+
+# trace accepted

@@ -1,0 +1,48 @@
+# processing file 'adhoc_mkdir_link_count-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after mkdir
+        ###########################################
+
+        # root should have link count 1
+        # FIXME enable when the test infrastructure uses a "real" root dir
+        #stat "/"
+
+        # a new dir should have link count 2
+
+    13: mkdir "/dir1" 0o777
+        Tau
+        RV_none
+    14: stat "/dir1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046701;tv_nsec=0;}; st_mtim={tv_sec=1418046701;tv_nsec=0;}; st_ctim={tv_sec=1418046701;tv_nsec=0;}; }
+
+        # adding a subdir should increase the link count of the dir
+
+    18: mkdir "/dir1/subdir1" 0o777
+        Tau
+        RV_none
+    19: stat "/dir1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046701;tv_nsec=0;}; st_mtim={tv_sec=1418046701;tv_nsec=0;}; st_ctim={tv_sec=1418046701;tv_nsec=0;}; }
+    20: stat "/dir1/subdir1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046701;tv_nsec=0;}; st_mtim={tv_sec=1418046701;tv_nsec=0;}; st_ctim={tv_sec=1418046701;tv_nsec=0;}; }
+
+        # adding a subsubdir should leave the link count unaltered of the dir
+
+    24: mkdir "/dir1/subdir1/subsbudir1" 0o777
+        Tau
+        RV_none
+    25: stat "/dir1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046701;tv_nsec=0;}; st_mtim={tv_sec=1418046701;tv_nsec=0;}; st_ctim={tv_sec=1418046701;tv_nsec=0;}; }
+    26: stat "/dir1/subdir1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046701;tv_nsec=0;}; st_mtim={tv_sec=1418046701;tv_nsec=0;}; st_ctim={tv_sec=1418046701;tv_nsec=0;}; }
+    27: stat "/dir1/subdir1/subsbudir1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32644; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046701;tv_nsec=0;}; st_mtim={tv_sec=1418046701;tv_nsec=0;}; st_ctim={tv_sec=1418046701;tv_nsec=0;}; }
+
+

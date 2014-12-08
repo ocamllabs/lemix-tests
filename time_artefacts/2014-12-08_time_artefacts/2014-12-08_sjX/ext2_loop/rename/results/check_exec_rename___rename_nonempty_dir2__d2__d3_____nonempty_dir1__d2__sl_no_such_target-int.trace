@@ -1,0 +1,110 @@
+# processing file 'exec_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target-int.trace' ...
+        # processing file 'rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target-int.trace' ...
+        @type trace
+        #####################################
+        # Test rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target
+        #####################################
+     6: mkdir "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target" 0o777
+     7: Tau
+     8: RV_none
+     9: chdir "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target"
+    10: Tau
+    11: RV_none
+    12: mkdir "empty_dir1" 0o777
+    13: Tau
+    14: RV_none
+    15: mkdir "empty_dir2" 0o777
+    16: Tau
+    17: RV_none
+    18: mkdir "nonempty_dir1" 0o777
+    19: Tau
+    20: RV_none
+    21: mkdir "nonempty_dir1/d2" 0o777
+    22: Tau
+    23: RV_none
+    24: open "nonempty_dir1/d2/f3.txt" [O_CREAT;O_WRONLY] 0o666
+    25: Tau
+    26: RV_num(3)
+    27: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+    28: Tau
+    29: RV_num(83)
+    30: close (FD 3)
+    31: Tau
+    32: RV_none
+    33: mkdir "nonempty_dir1/d2/d3" 0o777
+    34: Tau
+    35: RV_none
+    36: symlink "../f1.txt" "nonempty_dir1/d2/sl_dotdot_f1.txt"
+    37: Tau
+    38: RV_none
+    39: symlink "no_such_target" "nonempty_dir1/d2/sl_no_such_target"
+    40: Tau
+    41: RV_none
+    42: symlink "../no_such_target" "nonempty_dir1/d2/sl_dotdot_no_such_target"
+    43: Tau
+    44: RV_none
+    45: symlink "../d2" "nonempty_dir1/d2/sl_dotdot_d2"
+    46: Tau
+    47: RV_none
+    48: open_close "nonempty_dir1/f1.txt" [O_CREAT;O_WRONLY] 0o666
+    49: Tau
+    50: RV_none
+    51: symlink "f1.txt" "nonempty_dir1/sl_f1.txt"
+    52: Tau
+    53: RV_none
+    54: mkdir "nonempty_dir2" 0o777
+    55: Tau
+    56: RV_none
+    57: open_close "nonempty_dir2/f1.txt" [O_CREAT;O_WRONLY] 0o666
+    58: Tau
+    59: RV_none
+    60: open "nonempty_dir2/f2.txt" [O_CREAT;O_WRONLY] 0o666
+    61: Tau
+    62: RV_num(3)
+    63: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+    64: Tau
+    65: RV_num(167)
+    66: close (FD 3)
+    67: Tau
+    68: RV_none
+    69: mkdir "nonempty_dir2/d2" 0o777
+    70: Tau
+    71: RV_none
+    72: mkdir "nonempty_dir2/d2/d3" 0o777
+    73: Tau
+    74: RV_none
+    75: symlink "../../nonempty_dir1/d2/f3.txt" "nonempty_dir2/d2/sl_f3.txt"
+    76: Tau
+    77: RV_none
+
+    79: rename "nonempty_dir2/d2/d3/" "nonempty_dir1/d2/sl_no_such_target"
+    80: Tau
+    81: ENOTDIR
+
+    83: dump-result "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target"
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target"|D|33100|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/empty_dir1"|D|33101|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/empty_dir2"|D|33102|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1"|D|33103|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/f1.txt"|F|33111|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/sl_f1.txt"|L|"f1.txt"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/d2"|D|33104|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/d2/f3.txt"|F|33105|83|"4b535f836f6006423fc132a59e78dfcc4fe6292f"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/d2/sl_dotdot_d2"|L|"../d2"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/d2/sl_dotdot_f1.txt"|L|"../f1.txt"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/d2/sl_dotdot_no_such_target"|L|"../no_such_target"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/d2/sl_no_such_target"|L|"no_such_target"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir1/d2/d3"|D|33106|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir2"|D|33113|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir2/f1.txt"|F|33114|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir2/f2.txt"|F|33115|167|"d09f4e47c22373e56c2369633ac3dcb71d598601"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir2/d2"|D|33116|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir2/d2/sl_f3.txt"|L|"../../nonempty_dir1/d2/f3.txt"|""|""|""
+           "/test_dir_rename___rename_nonempty_dir2__d2__d3_____nonempty_dir1__d2__sl_no_such_target/nonempty_dir2/d2/d3"|D|33117|""|""|""
+        end dump-result
+
+
+
+
+
+# trace accepted

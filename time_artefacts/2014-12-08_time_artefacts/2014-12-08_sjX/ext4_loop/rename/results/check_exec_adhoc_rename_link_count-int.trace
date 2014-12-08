@@ -1,0 +1,83 @@
+# processing file 'exec_adhoc_rename_link_count-int.trace' ...
+        # processing file 'adhoc_rename_link_count-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after rename
+        ###########################################
+
+        # test that renaming a file with a link does not effect the link count
+
+    10: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+    11: Tau
+    12: RV_none
+
+    14: link "/f1.txt" "/f1_hl.txt"
+    15: Tau
+    16: RV_none
+
+    18: stat "f1.txt"
+    19: Tau
+    20: RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    22: stat "f1_hl.txt"
+    23: Tau
+    24: RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    26: rename "f1.txt" "f2.txt"
+    27: Tau
+    28: RV_none
+
+    30: stat "f2.txt"
+    31: Tau
+    32: RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    34: stat "f1_hl.txt"
+    35: Tau
+    36: RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+        # test that renaming a directory changes the count of the parents
+
+    40: mkdir "/nonempty_dir1" 0o777
+    41: Tau
+    42: RV_none
+
+    44: stat "/nonempty_dir1"
+    45: Tau
+    46: RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    48: mkdir "/nonempty_dir2" 0o777
+    49: Tau
+    50: RV_none
+
+    52: stat "/nonempty_dir2"
+    53: Tau
+    54: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    56: mkdir "/nonempty_dir1/mydir" 0o777
+    57: Tau
+    58: RV_none
+
+    60: stat "/nonempty_dir1/mydir"
+    61: Tau
+    62: RV_stat { st_dev=1792; st_ino=32644; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    64: rename "/nonempty_dir1/mydir" "/nonempty_dir2/mydir"
+    65: Tau
+    66: RV_none
+
+    68: stat "/nonempty_dir1"
+    69: Tau
+    70: RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    72: stat "/nonempty_dir2"
+    73: Tau
+    74: RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+    76: stat "/nonempty_dir2/mydir"
+    77: Tau
+    78: RV_stat { st_dev=1792; st_ino=32644; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418046785;tv_nsec=0;}; st_mtim={tv_sec=1418046785;tv_nsec=0;}; st_ctim={tv_sec=1418046785;tv_nsec=0;}; }
+
+
+
+# trace accepted

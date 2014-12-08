@@ -1,0 +1,105 @@
+# processing file 'adhoc_file_descriptor_change_tests-int.trace' ...
+        @type trace
+        # Tests for a file underlying a file-descriptor
+        # being modified while the descriptor is open
+
+        # create a file with some content
+     6: open "f1.txt" [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+     7: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+
+     9: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(4)
+        # check we are at the beginning
+    11: read! (FD 4) 100
+        Tau
+        RV_bytes("0123456789")
+
+        # check lseek to FD 4 does not affect FD 3
+    14: lseek (FD 4) 0 SEEK_SET
+        Tau
+        RV_num(0)
+    15: write! (FD 3) "AB" 2
+        Tau
+        RV_num(2)
+
+        # but content is present in both
+    18: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+    19: pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+    21: close (FD 3)
+        Tau
+        RV_none
+    22: close (FD 4)
+        Tau
+        RV_none
+
+
+
+        # open f1, then delete it
+    27: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    28: unlink "f1.txt"
+        Tau
+        RV_none
+    29: pread (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789AB")
+
+    31: open_close "f1.txt" [O_RDONLY]
+        Tau
+        ENOENT
+
+    33: close (FD 3)
+        Tau
+        RV_none
+
+
+        # open f1, then rename it
+    37: open "f1.txt" [O_CREAT;O_RDWR] 0o644
+        Tau
+        RV_num(3)
+    38: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    39: close (FD 3)
+        Tau
+        RV_none
+
+    41: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    42: rename "f1.txt" "f2.txt"
+        Tau
+        RV_none
+    43: pread! (FD 3) 100 0
+        Tau
+        RV_bytes("0123456789")
+
+    45: open_close "f1.txt" [O_RDONLY]
+        Tau
+        ENOENT
+    46: open "f2.txt" [O_RDONLY]
+        Tau
+        RV_num(4)
+    47: pread! (FD 4) 100 0
+        Tau
+        RV_bytes("0123456789")
+    48: close (FD 4)
+        Tau
+        RV_none
+    49: close (FD 3)
+        Tau
+        RV_none
+
+
+
