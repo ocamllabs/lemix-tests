@@ -1,0 +1,30 @@
+# processing file 'adhoc_create-group-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing mkdir and creating files
+        # with group permissions
+        ###########################################
+
+        # these tests create parent-directories with various permissions and
+        # then try to create files and directories inside these parent
+        # directories while being not the owner of the dir, but in the group
+        # of it.  
+        # This should only work, if one has search and 
+        # write permission to the parent dir. However, the search permission
+        # is also needed needed for path resolution. The tests therefore also
+        # try to create the files in the current working directory. 
+        # before removing x permission.
+
+        ###################################
+        # Initialising processes and users
+        ###################################
+
+        # Pid 1 runs as root, we need 3 more processes that run 
+        # as non-superusers. The idea is to have 
+        #
+        # - Pid 2 : creates and owns the directories
+        # - Pid 3 : tries to create the files while 
+        #           being in the right group but not the owner
+
+    28: Pid 2 -> create (User_id 1) (Group_id 1)
+    29: add_user_to_group (User_id 1) (Group_id 1)

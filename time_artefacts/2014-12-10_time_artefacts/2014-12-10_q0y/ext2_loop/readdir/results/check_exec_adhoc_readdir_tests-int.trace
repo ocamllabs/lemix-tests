@@ -1,0 +1,890 @@
+# processing file 'exec_adhoc_readdir_tests-int.trace' ...
+        # processing file 'adhoc_readdir_tests-int.trace' ...
+        @type trace
+        # adhoc_readdir_tests
+        #
+
+        ####################################
+        # Test 1 
+        # reading empty dir
+        ####################################
+
+    11: mkdir "/d1" 0o777
+    12: Tau
+    13: RV_none
+
+    15: opendir "/d1"
+    16: Tau
+    17: RV_num(1)
+    18: readdir (DH 1)
+    19: Tau
+    20: RV_bytes(".")
+# 
+# Warning:     20: RV_bytes(".")
+#    more than one possible result value
+    21: readdir (DH 1)
+    22: Tau
+    23: RV_bytes("..")
+    24: readdir (DH 1)
+    25: Tau
+    26: RV_none
+    27: readdir (DH 1)
+    28: Tau
+    29: RV_none
+    30: closedir (DH 1)
+    31: Tau
+    32: RV_none
+
+
+        ####################################
+        # Test 2 
+        # reading non-empty dir without
+        # interference
+        ####################################
+
+    41: mkdir "/d2" 0o777
+    42: Tau
+    43: RV_none
+    44: chdir "/d2"
+    45: Tau
+    46: RV_none
+
+    48: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+    49: Tau
+    50: RV_none
+    51: open_close "f2.txt" [O_CREAT;O_RDWR] 0o666
+    52: Tau
+    53: RV_none
+    54: open_close "f3.txt" [O_CREAT;O_RDWR] 0o666
+    55: Tau
+    56: RV_none
+    57: open_close "f4.txt" [O_CREAT;O_RDWR] 0o666
+    58: Tau
+    59: RV_none
+    60: open_close "f5.txt" [O_CREAT;O_RDWR] 0o666
+    61: Tau
+    62: RV_none
+
+    64: opendir "/d2"
+    65: Tau
+    66: RV_num(1)
+    67: readdir (DH 1)
+    68: Tau
+    69: RV_bytes(".")
+# 
+# Warning:     69: RV_bytes(".")
+#    more than one possible result value
+    70: readdir (DH 1)
+    71: Tau
+    72: RV_bytes("..")
+# 
+# Warning:     72: RV_bytes("..")
+#    more than one possible result value
+    73: readdir (DH 1)
+    74: Tau
+    75: RV_bytes("f3.txt")
+# 
+# Warning:     75: RV_bytes("f3.txt")
+#    more than one possible result value
+    76: readdir (DH 1)
+    77: Tau
+    78: RV_bytes("f2.txt")
+# 
+# Warning:     78: RV_bytes("f2.txt")
+#    more than one possible result value
+    79: readdir (DH 1)
+    80: Tau
+    81: RV_bytes("f4.txt")
+# 
+# Warning:     81: RV_bytes("f4.txt")
+#    more than one possible result value
+    82: readdir (DH 1)
+    83: Tau
+    84: RV_bytes("f5.txt")
+# 
+# Warning:     84: RV_bytes("f5.txt")
+#    more than one possible result value
+    85: readdir (DH 1)
+    86: Tau
+    87: RV_bytes("f1.txt")
+    88: readdir (DH 1)
+    89: Tau
+    90: RV_none
+    91: readdir (DH 1)
+    92: Tau
+    93: RV_none
+    94: closedir (DH 1)
+    95: Tau
+    96: RV_none
+
+
+        ####################################
+        # Test 3
+        # reading non-empty dir with rewind
+        ####################################
+
+   104: mkdir "/d3" 0o777
+   105: Tau
+   106: RV_none
+   107: chdir "/d3"
+   108: Tau
+   109: RV_none
+
+   111: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+   112: Tau
+   113: RV_none
+   114: open_close "f2.txt" [O_CREAT;O_RDWR] 0o666
+   115: Tau
+   116: RV_none
+   117: open_close "f3.txt" [O_CREAT;O_RDWR] 0o666
+   118: Tau
+   119: RV_none
+   120: open_close "f4.txt" [O_CREAT;O_RDWR] 0o666
+   121: Tau
+   122: RV_none
+   123: open_close "f5.txt" [O_CREAT;O_RDWR] 0o666
+   124: Tau
+   125: RV_none
+
+   127: opendir "/d3"
+   128: Tau
+   129: RV_num(1)
+   130: readdir (DH 1)
+   131: Tau
+   132: RV_bytes(".")
+# 
+# Warning:    132: RV_bytes(".")
+#    more than one possible result value
+   133: readdir (DH 1)
+   134: Tau
+   135: RV_bytes("..")
+# 
+# Warning:    135: RV_bytes("..")
+#    more than one possible result value
+   136: readdir (DH 1)
+   137: Tau
+   138: RV_bytes("f3.txt")
+# 
+# Warning:    138: RV_bytes("f3.txt")
+#    more than one possible result value
+   139: readdir (DH 1)
+   140: Tau
+   141: RV_bytes("f2.txt")
+# 
+# Warning:    141: RV_bytes("f2.txt")
+#    more than one possible result value
+   142: readdir (DH 1)
+   143: Tau
+   144: RV_bytes("f4.txt")
+# 
+# Warning:    144: RV_bytes("f4.txt")
+#    more than one possible result value
+   145: readdir (DH 1)
+   146: Tau
+   147: RV_bytes("f5.txt")
+# 
+# Warning:    147: RV_bytes("f5.txt")
+#    more than one possible result value
+   148: readdir (DH 1)
+   149: Tau
+   150: RV_bytes("f1.txt")
+   151: readdir (DH 1)
+   152: Tau
+   153: RV_none
+   154: readdir (DH 1)
+   155: Tau
+   156: RV_none
+   157: rewinddir (DH 1)
+   158: Tau
+   159: RV_none
+   160: readdir (DH 1)
+   161: Tau
+   162: RV_bytes(".")
+# 
+# Warning:    162: RV_bytes(".")
+#    more than one possible result value
+   163: readdir (DH 1)
+   164: Tau
+   165: RV_bytes("..")
+# 
+# Warning:    165: RV_bytes("..")
+#    more than one possible result value
+   166: readdir (DH 1)
+   167: Tau
+   168: RV_bytes("f3.txt")
+# 
+# Warning:    168: RV_bytes("f3.txt")
+#    more than one possible result value
+   169: rewinddir (DH 1)
+   170: Tau
+   171: RV_none
+   172: readdir (DH 1)
+   173: Tau
+   174: RV_bytes(".")
+# 
+# Warning:    174: RV_bytes(".")
+#    more than one possible result value
+   175: readdir (DH 1)
+   176: Tau
+   177: RV_bytes("..")
+# 
+# Warning:    177: RV_bytes("..")
+#    more than one possible result value
+   178: readdir (DH 1)
+   179: Tau
+   180: RV_bytes("f3.txt")
+# 
+# Warning:    180: RV_bytes("f3.txt")
+#    more than one possible result value
+   181: readdir (DH 1)
+   182: Tau
+   183: RV_bytes("f2.txt")
+# 
+# Warning:    183: RV_bytes("f2.txt")
+#    more than one possible result value
+   184: readdir (DH 1)
+   185: Tau
+   186: RV_bytes("f4.txt")
+# 
+# Warning:    186: RV_bytes("f4.txt")
+#    more than one possible result value
+   187: readdir (DH 1)
+   188: Tau
+   189: RV_bytes("f5.txt")
+# 
+# Warning:    189: RV_bytes("f5.txt")
+#    more than one possible result value
+   190: readdir (DH 1)
+   191: Tau
+   192: RV_bytes("f1.txt")
+   193: readdir (DH 1)
+   194: Tau
+   195: RV_none
+   196: readdir (DH 1)
+   197: Tau
+   198: RV_none
+   199: readdir (DH 1)
+   200: Tau
+   201: RV_none
+   202: readdir (DH 1)
+   203: Tau
+   204: RV_none
+   205: readdir (DH 1)
+   206: Tau
+   207: RV_none
+   208: closedir (DH 1)
+   209: Tau
+   210: RV_none
+
+
+        ####################################
+        # Test 4
+        # reading a dir with two DHs
+        ####################################
+
+   218: mkdir "/d4" 0o777
+   219: Tau
+   220: RV_none
+   221: chdir "/d4"
+   222: Tau
+   223: RV_none
+
+   225: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+   226: Tau
+   227: RV_none
+   228: open_close "f2.txt" [O_CREAT;O_RDWR] 0o666
+   229: Tau
+   230: RV_none
+   231: open_close "f3.txt" [O_CREAT;O_RDWR] 0o666
+   232: Tau
+   233: RV_none
+   234: open_close "f4.txt" [O_CREAT;O_RDWR] 0o666
+   235: Tau
+   236: RV_none
+   237: open_close "f5.txt" [O_CREAT;O_RDWR] 0o666
+   238: Tau
+   239: RV_none
+
+   241: opendir "/d4"
+   242: Tau
+   243: RV_num(1)
+   244: opendir "/d4"
+   245: Tau
+   246: RV_num(2)
+   247: readdir (DH 1)
+   248: Tau
+   249: RV_bytes(".")
+# 
+# Warning:    249: RV_bytes(".")
+#    more than one possible result value
+   250: readdir (DH 2)
+   251: Tau
+   252: RV_bytes(".")
+# 
+# Warning:    252: RV_bytes(".")
+#    more than one possible result value
+   253: readdir (DH 1)
+   254: Tau
+   255: RV_bytes("..")
+# 
+# Warning:    255: RV_bytes("..")
+#    more than one possible result value
+   256: readdir (DH 2)
+   257: Tau
+   258: RV_bytes("..")
+# 
+# Warning:    258: RV_bytes("..")
+#    more than one possible result value
+   259: readdir (DH 1)
+   260: Tau
+   261: RV_bytes("f3.txt")
+# 
+# Warning:    261: RV_bytes("f3.txt")
+#    more than one possible result value
+   262: readdir (DH 2)
+   263: Tau
+   264: RV_bytes("f3.txt")
+# 
+# Warning:    264: RV_bytes("f3.txt")
+#    more than one possible result value
+   265: readdir (DH 1)
+   266: Tau
+   267: RV_bytes("f2.txt")
+# 
+# Warning:    267: RV_bytes("f2.txt")
+#    more than one possible result value
+   268: readdir (DH 2)
+   269: Tau
+   270: RV_bytes("f2.txt")
+# 
+# Warning:    270: RV_bytes("f2.txt")
+#    more than one possible result value
+   271: readdir (DH 1)
+   272: Tau
+   273: RV_bytes("f4.txt")
+# 
+# Warning:    273: RV_bytes("f4.txt")
+#    more than one possible result value
+   274: readdir (DH 2)
+   275: Tau
+   276: RV_bytes("f4.txt")
+# 
+# Warning:    276: RV_bytes("f4.txt")
+#    more than one possible result value
+   277: readdir (DH 1)
+   278: Tau
+   279: RV_bytes("f5.txt")
+# 
+# Warning:    279: RV_bytes("f5.txt")
+#    more than one possible result value
+   280: readdir (DH 1)
+   281: Tau
+   282: RV_bytes("f1.txt")
+   283: readdir (DH 1)
+   284: Tau
+   285: RV_none
+   286: readdir (DH 2)
+   287: Tau
+   288: RV_bytes("f5.txt")
+# 
+# Warning:    288: RV_bytes("f5.txt")
+#    more than one possible result value
+   289: readdir (DH 2)
+   290: Tau
+   291: RV_bytes("f1.txt")
+   292: readdir (DH 2)
+   293: Tau
+   294: RV_none
+   295: rewinddir (DH 1)
+   296: Tau
+   297: RV_none
+   298: readdir (DH 1)
+   299: Tau
+   300: RV_bytes(".")
+# 
+# Warning:    300: RV_bytes(".")
+#    more than one possible result value
+   301: readdir (DH 2)
+   302: Tau
+   303: RV_none
+   304: readdir (DH 1)
+   305: Tau
+   306: RV_bytes("..")
+# 
+# Warning:    306: RV_bytes("..")
+#    more than one possible result value
+   307: readdir (DH 2)
+   308: Tau
+   309: RV_none
+   310: readdir (DH 1)
+   311: Tau
+   312: RV_bytes("f3.txt")
+# 
+# Warning:    312: RV_bytes("f3.txt")
+#    more than one possible result value
+   313: readdir (DH 2)
+   314: Tau
+   315: RV_none
+   316: readdir (DH 1)
+   317: Tau
+   318: RV_bytes("f2.txt")
+# 
+# Warning:    318: RV_bytes("f2.txt")
+#    more than one possible result value
+   319: readdir (DH 2)
+   320: Tau
+   321: RV_none
+   322: readdir (DH 1)
+   323: Tau
+   324: RV_bytes("f4.txt")
+# 
+# Warning:    324: RV_bytes("f4.txt")
+#    more than one possible result value
+   325: readdir (DH 2)
+   326: Tau
+   327: RV_none
+   328: closedir (DH 2)
+   329: Tau
+   330: RV_none
+   331: closedir (DH 1)
+   332: Tau
+   333: RV_none
+
+
+        ####################################
+        # Test 5
+        # reading non-empty dir while
+        # changing its content
+        ####################################
+
+   342: mkdir "/d5" 0o777
+   343: Tau
+   344: RV_none
+   345: chdir "/d5"
+   346: Tau
+   347: RV_none
+
+   349: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+   350: Tau
+   351: RV_none
+   352: open_close "f2.txt" [O_CREAT;O_RDWR] 0o666
+   353: Tau
+   354: RV_none
+   355: open_close "f3.txt" [O_CREAT;O_RDWR] 0o666
+   356: Tau
+   357: RV_none
+   358: open_close "f4.txt" [O_CREAT;O_RDWR] 0o666
+   359: Tau
+   360: RV_none
+   361: open_close "f5.txt" [O_CREAT;O_RDWR] 0o666
+   362: Tau
+   363: RV_none
+
+   365: opendir "/d5"
+   366: Tau
+   367: RV_num(1)
+   368: readdir (DH 1)
+   369: Tau
+   370: RV_bytes(".")
+# 
+# Warning:    370: RV_bytes(".")
+#    more than one possible result value
+   371: unlink "f1.txt"
+   372: Tau
+   373: RV_none
+   374: readdir (DH 1)
+   375: Tau
+   376: RV_bytes("..")
+# 
+# Warning:    376: RV_bytes("..")
+#    more than one possible result value
+   377: open_close "f6.txt" [O_CREAT;O_RDWR] 0o666
+   378: Tau
+   379: RV_none
+   380: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+   381: Tau
+   382: RV_none
+   383: readdir (DH 1)
+   384: Tau
+   385: RV_bytes("f3.txt")
+# 
+# Warning:    385: RV_bytes("f3.txt")
+#    more than one possible result value
+   386: readdir (DH 1)
+   387: Tau
+   388: RV_bytes("f2.txt")
+# 
+# Warning:    388: RV_bytes("f2.txt")
+#    more than one possible result value
+   389: readdir (DH 1)
+   390: Tau
+   391: RV_bytes("f4.txt")
+# 
+# Warning:    391: RV_bytes("f4.txt")
+#    more than one possible result value
+   392: unlink "f6.txt"
+   393: Tau
+   394: RV_none
+   395: rename "f2.txt" "f2-changed.txt"
+   396: Tau
+   397: RV_none
+   398: readdir (DH 1)
+   399: Tau
+   400: RV_bytes("f5.txt")
+# 
+# Warning:    400: RV_bytes("f5.txt")
+#    more than one possible result value
+   401: readdir (DH 1)
+   402: Tau
+   403: RV_bytes("f1.txt")
+# 
+# Warning:    403: RV_bytes("f1.txt")
+#    more than one possible result value
+   404: readdir (DH 1)
+   405: Tau
+   406: RV_none
+# 
+# Warning:    406: RV_none
+#    more than one possible result value
+   407: readdir (DH 1)
+   408: Tau
+   409: RV_none
+# 
+# Warning:    409: RV_none
+#    more than one possible result value
+   410: rewinddir (DH 1)
+   411: Tau
+   412: RV_none
+   413: readdir (DH 1)
+   414: Tau
+   415: RV_bytes(".")
+# 
+# Warning:    415: RV_bytes(".")
+#    more than one possible result value
+   416: readdir (DH 1)
+   417: Tau
+   418: RV_bytes("..")
+# 
+# Warning:    418: RV_bytes("..")
+#    more than one possible result value
+   419: readdir (DH 1)
+   420: Tau
+   421: RV_bytes("f3.txt")
+# 
+# Warning:    421: RV_bytes("f3.txt")
+#    more than one possible result value
+   422: readdir (DH 1)
+   423: Tau
+   424: RV_bytes("f2-changed.txt")
+# 
+# Warning:    424: RV_bytes("f2-changed.txt")
+#    more than one possible result value
+   425: readdir (DH 1)
+   426: Tau
+   427: RV_bytes("f4.txt")
+# 
+# Warning:    427: RV_bytes("f4.txt")
+#    more than one possible result value
+   428: readdir (DH 1)
+   429: Tau
+   430: RV_bytes("f5.txt")
+# 
+# Warning:    430: RV_bytes("f5.txt")
+#    more than one possible result value
+   431: readdir (DH 1)
+   432: Tau
+   433: RV_bytes("f1.txt")
+   434: readdir (DH 1)
+   435: Tau
+   436: RV_none
+   437: readdir (DH 1)
+   438: Tau
+   439: RV_none
+   440: readdir (DH 1)
+   441: Tau
+   442: RV_none
+   443: readdir (DH 1)
+   444: Tau
+   445: RV_none
+   446: readdir (DH 1)
+   447: Tau
+   448: RV_none
+   449: readdir (DH 1)
+   450: Tau
+   451: RV_none
+   452: closedir (DH 1)
+   453: Tau
+   454: RV_none
+
+
+        ####################################
+        # Test 6
+        # reading a dir with with to DHs
+        ####################################
+
+   462: mkdir "/d6" 0o777
+   463: Tau
+   464: RV_none
+   465: chdir "/d6"
+   466: Tau
+   467: RV_none
+
+   469: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+   470: Tau
+   471: RV_none
+   472: open_close "f2.txt" [O_CREAT;O_RDWR] 0o666
+   473: Tau
+   474: RV_none
+   475: open_close "f3.txt" [O_CREAT;O_RDWR] 0o666
+   476: Tau
+   477: RV_none
+   478: open_close "f4.txt" [O_CREAT;O_RDWR] 0o666
+   479: Tau
+   480: RV_none
+   481: open_close "f5.txt" [O_CREAT;O_RDWR] 0o666
+   482: Tau
+   483: RV_none
+
+   485: opendir "/d6"
+   486: Tau
+   487: RV_num(1)
+   488: opendir "/d6"
+   489: Tau
+   490: RV_num(2)
+   491: readdir (DH 1)
+   492: Tau
+   493: RV_bytes(".")
+# 
+# Warning:    493: RV_bytes(".")
+#    more than one possible result value
+   494: readdir (DH 2)
+   495: Tau
+   496: RV_bytes(".")
+# 
+# Warning:    496: RV_bytes(".")
+#    more than one possible result value
+   497: unlink "f1.txt"
+   498: Tau
+   499: RV_none
+   500: readdir (DH 1)
+   501: Tau
+   502: RV_bytes("..")
+# 
+# Warning:    502: RV_bytes("..")
+#    more than one possible result value
+   503: readdir (DH 2)
+   504: Tau
+   505: RV_bytes("..")
+# 
+# Warning:    505: RV_bytes("..")
+#    more than one possible result value
+   506: readdir (DH 1)
+   507: Tau
+   508: RV_bytes("f3.txt")
+# 
+# Warning:    508: RV_bytes("f3.txt")
+#    more than one possible result value
+   509: readdir (DH 2)
+   510: Tau
+   511: RV_bytes("f3.txt")
+# 
+# Warning:    511: RV_bytes("f3.txt")
+#    more than one possible result value
+   512: open_close "f6.txt" [O_CREAT;O_RDWR] 0o666
+   513: Tau
+   514: RV_none
+   515: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+   516: Tau
+   517: RV_none
+   518: readdir (DH 1)
+   519: Tau
+   520: RV_bytes("f2.txt")
+# 
+# Warning:    520: RV_bytes("f2.txt")
+#    more than one possible result value
+   521: readdir (DH 2)
+   522: Tau
+   523: RV_bytes("f2.txt")
+# 
+# Warning:    523: RV_bytes("f2.txt")
+#    more than one possible result value
+   524: readdir (DH 1)
+   525: Tau
+   526: RV_bytes("f4.txt")
+# 
+# Warning:    526: RV_bytes("f4.txt")
+#    more than one possible result value
+   527: readdir (DH 2)
+   528: Tau
+   529: RV_bytes("f4.txt")
+# 
+# Warning:    529: RV_bytes("f4.txt")
+#    more than one possible result value
+   530: unlink "f6.txt"
+   531: Tau
+   532: RV_none
+   533: rename "f2.txt" "f2-changed.txt"
+   534: Tau
+   535: RV_none
+   536: readdir (DH 1)
+   537: Tau
+   538: RV_bytes("f5.txt")
+# 
+# Warning:    538: RV_bytes("f5.txt")
+#    more than one possible result value
+   539: readdir (DH 1)
+   540: Tau
+   541: RV_bytes("f1.txt")
+# 
+# Warning:    541: RV_bytes("f1.txt")
+#    more than one possible result value
+   542: readdir (DH 1)
+   543: Tau
+   544: RV_none
+# 
+# Warning:    544: RV_none
+#    more than one possible result value
+   545: readdir (DH 2)
+   546: Tau
+   547: RV_bytes("f5.txt")
+# 
+# Warning:    547: RV_bytes("f5.txt")
+#    more than one possible result value
+   548: readdir (DH 2)
+   549: Tau
+   550: RV_bytes("f1.txt")
+# 
+# Warning:    550: RV_bytes("f1.txt")
+#    more than one possible result value
+   551: readdir (DH 2)
+   552: Tau
+   553: RV_none
+# 
+# Warning:    553: RV_none
+#    more than one possible result value
+   554: rewinddir (DH 1)
+   555: Tau
+   556: RV_none
+   557: readdir (DH 1)
+   558: Tau
+   559: RV_bytes(".")
+# 
+# Warning:    559: RV_bytes(".")
+#    more than one possible result value
+   560: readdir (DH 2)
+   561: Tau
+   562: RV_none
+# 
+# Warning:    562: RV_none
+#    more than one possible result value
+   563: readdir (DH 1)
+   564: Tau
+   565: RV_bytes("..")
+# 
+# Warning:    565: RV_bytes("..")
+#    more than one possible result value
+   566: readdir (DH 2)
+   567: Tau
+   568: RV_none
+# 
+# Warning:    568: RV_none
+#    more than one possible result value
+   569: readdir (DH 1)
+   570: Tau
+   571: RV_bytes("f3.txt")
+# 
+# Warning:    571: RV_bytes("f3.txt")
+#    more than one possible result value
+   572: readdir (DH 2)
+   573: Tau
+   574: RV_none
+# 
+# Warning:    574: RV_none
+#    more than one possible result value
+   575: readdir (DH 1)
+   576: Tau
+   577: RV_bytes("f2-changed.txt")
+# 
+# Warning:    577: RV_bytes("f2-changed.txt")
+#    more than one possible result value
+   578: readdir (DH 2)
+   579: Tau
+   580: RV_none
+# 
+# Warning:    580: RV_none
+#    more than one possible result value
+   581: readdir (DH 1)
+   582: Tau
+   583: RV_bytes("f4.txt")
+# 
+# Warning:    583: RV_bytes("f4.txt")
+#    more than one possible result value
+   584: readdir (DH 2)
+   585: Tau
+   586: RV_none
+# 
+# Warning:    586: RV_none
+#    more than one possible result value
+   587: closedir (DH 2)
+   588: Tau
+   589: RV_none
+   590: closedir (DH 1)
+   591: Tau
+   592: RV_none
+
+        ####################################
+        # Test 7
+        # rewinddir on not existing DH
+        ####################################
+
+   599: rewinddir (DH 799)
+   600: Tau
+   601: EBADF
+
+        ####################################
+        # Test 8
+        # opendir on file
+        ####################################
+
+   608: open_close "f1.txt" [O_CREAT;O_RDWR] 0o666
+   609: Tau
+   610: RV_none
+   611: opendir "f1.txt"
+   612: Tau
+   613: ENOTDIR
+
+        ####################################
+        # Test 9
+        # opendir on not existing directory
+        ####################################
+
+   620: opendir "/ciaociao"
+   621: Tau
+   622: ENOENT
+
+        ####################################
+        # Test 10
+        # opendir on symlink
+        ####################################
+   628: symlink "/d1" "/my_symlink"
+   629: Tau
+   630: RV_none
+   631: opendir "/my_symlink"
+   632: Tau
+   633: RV_num(1)
+   634: closedir (DH 1)
+   635: Tau
+   636: RV_none
+
+        ####################################
+        # Test 11
+        # opendir on erroneous path
+        ####################################
+
+   643: opendir ""
+   644: Tau
+   645: ENOENT
+
+
+
+# trace accepted

@@ -1,0 +1,18 @@
+< id -u -n
+< id -g -n
+< uname -s
++ mkdir "-p" "/tmp/fs_test"
+$ Acquired lock /tmp/fs_test/pw.lock
+? useradd "-s" "/bin/false" "fs_user_0"
+useradd: user 'fs_user_0' already exists
+? useradd "-s" "/bin/false" "fs_user_1"
+useradd: user 'fs_user_1' already exists
+? useradd "-s" "/bin/false" "fs_user_2"
+$ Released lock /tmp/fs_test/pw.lock
+$ Acquired lock /tmp/fs_test/pw.lock
+? groupadd "fs_group_0"
+$ Released lock /tmp/fs_test/pw.lock
++ adduser "fs_user_2" "fs_group_0"
++ groupdel "fs_group_0"
++ userdel "fs_user_2"
+Fatal error: exception Fs_test_system.Command_failure("/home/andrea/workspace/fs/test-suite/2014-12-10_q0y/ext3_loop/permissions_root", "adduser "fs_user_2" "fs_group_0"", "exit 127")

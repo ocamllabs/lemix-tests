@@ -1,0 +1,37 @@
+# processing file 'exec_adhoc_rmdir_link_count-int.trace' ...
+        # processing file 'adhoc_rmdir_link_count-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after rmdir
+        ###########################################
+
+        # removing a subdir should decrease the count of the dir
+
+    10: mkdir "/dir1" 0o777
+    11: Tau
+    12: RV_none
+    13: stat "/dir1"
+    14: Tau
+    15: RV_stat { st_dev=1792; st_ino=65655; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=303334951;}; st_mtim={tv_sec=1418235762;tv_nsec=303334951;}; st_ctim={tv_sec=1418235762;tv_nsec=303334951;}; }
+    16: mkdir "/dir1/subdir1" 0o777
+    17: Tau
+    18: RV_none
+    19: stat "/dir1"
+    20: Tau
+    21: RV_stat { st_dev=1792; st_ino=65655; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=303334951;}; st_mtim={tv_sec=1418235762;tv_nsec=306668281;}; st_ctim={tv_sec=1418235762;tv_nsec=306668281;}; }
+    22: stat "/dir1/subdir1"
+    23: Tau
+    24: RV_stat { st_dev=1792; st_ino=65656; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=306668281;}; st_mtim={tv_sec=1418235762;tv_nsec=306668281;}; st_ctim={tv_sec=1418235762;tv_nsec=306668281;}; }
+
+    26: rmdir "/dir1/subdir1"
+    27: Tau
+    28: RV_none
+    29: stat "/dir1"
+    30: Tau
+    31: RV_stat { st_dev=1792; st_ino=65655; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=303334951;}; st_mtim={tv_sec=1418235762;tv_nsec=306668281;}; st_ctim={tv_sec=1418235762;tv_nsec=306668281;}; }
+
+
+
+
+# trace accepted

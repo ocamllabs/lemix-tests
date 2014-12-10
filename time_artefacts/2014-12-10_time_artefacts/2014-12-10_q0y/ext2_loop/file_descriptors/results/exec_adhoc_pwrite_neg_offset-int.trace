@@ -1,0 +1,99 @@
+# processing file 'adhoc_pwrite_neg_offset-int.trace' ...
+        @type trace
+
+        # testing pwrite with negative offsets
+        # OS X will send the thread a SIGXFSZ so we sequester these tests here
+
+        # pwrite with negative index
+     7: open "f1.txt" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+     8: write (FD 3) "ABCDEF" 6
+        Tau
+        RV_num(6)
+     9: pwrite (FD 3) "XXX" 3 -2
+        Tau
+        EINVAL
+    10: close (FD 3)
+        Tau
+        RV_none
+
+    12: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    13: read! (FD 3) 100
+        Tau
+        RV_bytes("ABCDEF")
+    14: close (FD 3)
+        Tau
+        RV_none
+
+        # pwrite with negative index and O_APPEND
+    17: open "f1.txt" [O_TRUNC;O_APPEND;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    18: write (FD 3) "ABCDEF" 6
+        Tau
+        RV_num(6)
+    19: pwrite (FD 3) "XXX" 3 -2
+        Tau
+        EINVAL
+    20: close (FD 3)
+        Tau
+        RV_none
+
+    22: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    23: read! (FD 3) 100
+        Tau
+        RV_bytes("ABCDEF")
+    24: close (FD 3)
+        Tau
+        RV_none
+
+
+        # pwrite with large negative index
+    28: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    29: pwrite (FD 3) "XXX" 3 -100
+        Tau
+        EINVAL
+    30: close (FD 3)
+        Tau
+        RV_none
+
+    32: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    33: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+    34: close (FD 3)
+        Tau
+        RV_none
+
+        # deterministic
+
+    38: open "/f1.txt" [O_APPEND;O_RDWR]
+        Tau
+        RV_num(3)
+    39: pwrite! (FD 3) "ABCDF" 5 -1
+        Tau
+        EINVAL
+    40: close (FD 3)
+        Tau
+        RV_none
+
+    42: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    43: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+    44: close (FD 3)
+        Tau
+        RV_none
+
+

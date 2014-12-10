@@ -1,0 +1,65 @@
+# processing file 'exec_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3-int.trace' ...
+        # processing file 'open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3-int.trace' ...
+        @type trace
+        #####################################
+        # Test open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3
+        #####################################
+     6: mkdir "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3" 0o777
+     7: Tau
+     8: RV_none
+     9: chdir "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3"
+    10: Tau
+    11: RV_none
+    12: mkdir "empty_dir" 0o777
+    13: Tau
+    14: RV_none
+    15: mkdir "nonempty_dir" 0o777
+    16: Tau
+    17: RV_none
+    18: open_close "nonempty_dir/f1.txt" [O_CREAT;O_WRONLY] 0o666
+    19: Tau
+    20: RV_none
+    21: open "nonempty_dir/f2.txt" [O_CREAT;O_WRONLY] 0o666
+    22: Tau
+    23: RV_num(3)
+    24: write! (FD 3) "Lorem ipsum dolor sit amet, co" 30
+    25: Tau
+    26: RV_num(30)
+    27: close (FD 3)
+    28: Tau
+    29: RV_none
+    30: symlink "nonempty_dir/f2.txt" "f3_sl.txt"
+    31: Tau
+    32: RV_none
+    33: symlink "broken" "broken_sl"
+    34: Tau
+    35: RV_none
+    36: link "nonempty_dir/f4.txt" "f4_link.txt"
+    37: Tau
+    38: ENOENT
+    39: link "nonempty_dir" "dir_link"
+    40: Tau
+    41: EPERM
+
+    43: open "nonempty_dir/f1.txt/nonexist3" [O_RDONLY;O_NOFOLLOW;O_EXCL;O_DIRECTORY;O_APPEND]
+    44: Tau
+    45: ENOTDIR
+    46: close (FD 3)
+    47: Tau
+    48: EBADF
+
+    50: dump-result "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3"
+           "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3"|D|32641|""|""|""
+           "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3/broken_sl"|L|"broken"|""|""|""
+           "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3/f3_sl.txt"|L|"nonempty_dir/f2.txt"|""|""|""
+           "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3/empty_dir"|D|32642|""|""|""
+           "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3/nonempty_dir"|D|32643|""|""|""
+           "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3/nonempty_dir/f1.txt"|F|13|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"|""|""|""
+           "/test_dir_open___open_nonempty_dir__f1.txt__nonexist3___O_APPEND__O_DIRECTORY__O_EXCL__O_NOFOLLOW__O_SEARCH___none___close_3/nonempty_dir/f2.txt"|F|14|30|"e88ee12dedd1a9c6d9e9e5dea1a43e510dede7d5"|""|""|""
+        end dump-result
+
+
+
+
+
+# trace accepted

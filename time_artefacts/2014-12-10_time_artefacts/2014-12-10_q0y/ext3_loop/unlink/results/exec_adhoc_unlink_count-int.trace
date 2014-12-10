@@ -1,0 +1,74 @@
+# processing file 'adhoc_unlink_count-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after unlink
+        ###########################################
+
+        # a new created file should have link count 1
+
+     9: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+
+        # unlink the file should remove the file
+
+    13: unlink "/f1.txt"
+        Tau
+        RV_none
+    14: stat "/f1.txt"
+        Tau
+        ENOENT
+
+        # removing a linked file should reduce count of the link
+
+    18: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+    19: link "/f1.txt" "/f1_hl.txt"
+        Tau
+        RV_none
+    20: unlink "f1.txt"
+        Tau
+        RV_none
+
+    22: stat "/f1_hl.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=18; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235916;tv_nsec=116668701;}; st_mtim={tv_sec=1418235916;tv_nsec=116668701;}; st_ctim={tv_sec=1418235916;tv_nsec=116668701;}; }
+
+        # unlink the link should delete the file
+
+    26: unlink "/f1_hl.txt"
+        Tau
+        RV_none
+    27: stat "/f1_hl.txt"
+        Tau
+        ENOENT
+
+        # removing the link to a  linked file should reduce count of the file
+
+    31: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+        Tau
+        RV_none
+    32: link "/f1.txt" "/f1_hl.txt"
+        Tau
+        RV_none
+    33: unlink "f1_hl.txt"
+        Tau
+        RV_none
+
+    35: stat "/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=20; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235916;tv_nsec=116668701;}; st_mtim={tv_sec=1418235916;tv_nsec=116668701;}; st_ctim={tv_sec=1418235916;tv_nsec=120002031;}; }
+
+        ## uncomment this test when we have lstat in place
+        # unlinking a linked symlink should decrease the symlink link count
+
+        #symlink "/f1.txt" "f3_sl.txt"
+        #link "f3_sl.txt" "f3_sl_hl.txt"
+        #lstat "f3_sl.txt"
+        #lstat "f3_sl_hl.txt"
+        #unlink "f3_st_hl.txt"
+        #lstat "f3_sl.txt"
+
+

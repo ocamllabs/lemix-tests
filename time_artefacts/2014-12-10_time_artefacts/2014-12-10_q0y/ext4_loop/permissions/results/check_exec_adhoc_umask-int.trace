@@ -1,0 +1,233 @@
+# processing file 'exec_adhoc_umask-int.trace' ...
+        # processing file 'adhoc_umask-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing umask
+        ###########################################
+
+        # for testing umask 
+        # files and dirs are created with different
+        # permission given as arguments.
+
+        # in directory d_xxx 
+        # a f_yyy.txt or 
+        # a directory dir_yyy
+        # are created with umask 0oxxx and
+        # permission argument 0oyyy
+        # after creating stat is used to get
+        # the actual permission of the newly
+        # created file or directory
+
+
+        ###########################################
+        # Initialisation
+        ###########################################
+
+    25: umask 0o000
+    26: Tau
+    27: RV_file_perm(0o022)
+    28: mkdir "/d_022" 0o777
+    29: Tau
+    30: RV_none
+    31: mkdir "/d_000" 0o777
+    32: Tau
+    33: RV_none
+    34: mkdir "/d_444" 0o777
+    35: Tau
+    36: RV_none
+
+
+        ###########################################
+        # umask 0o022
+        ###########################################
+
+    43: umask 0o022
+    44: Tau
+    45: RV_file_perm(0o000)
+    46: chdir "/d_022"
+    47: Tau
+    48: RV_none
+
+    50: open "f_777.txt" [O_CREAT;O_RDWR] 0o777
+    51: Tau
+    52: RV_num(3)
+    53: close (FD 3)
+    54: Tau
+    55: RV_none
+    56: stat "f_777.txt"
+    57: Tau
+    58: RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+    60: open "f_444.txt" [O_CREAT;O_RDWR] 0o444
+    61: Tau
+    62: RV_num(3)
+    63: close (FD 3)
+    64: Tau
+    65: RV_none
+    66: stat "f_444.txt"
+    67: Tau
+    68: RV_stat { st_dev=1792; st_ino=14; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+    70: open "f_322.txt" [O_CREAT;O_RDWR] 0o322
+    71: Tau
+    72: RV_num(3)
+    73: close (FD 3)
+    74: Tau
+    75: RV_none
+    76: stat "f_322.txt"
+    77: Tau
+    78: RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o300; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+    80: mkdir "dir_777" 0o777
+    81: Tau
+    82: RV_none
+    83: stat "dir_777"
+    84: Tau
+    85: RV_stat { st_dev=1792; st_ino=32644; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+    87: mkdir "dir_444" 0o444
+    88: Tau
+    89: RV_none
+    90: stat "dir_444"
+    91: Tau
+    92: RV_stat { st_dev=1792; st_ino=32645; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+    94: mkdir "dir_322" 0o322
+    95: Tau
+    96: RV_none
+    97: stat "dir_322"
+    98: Tau
+    99: RV_stat { st_dev=1792; st_ino=32646; st_kind=S_IFDIR; st_perm=0o300; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+
+
+        ###########################################
+        # umask 0o000
+        ###########################################
+
+   107: umask 0o000
+   108: Tau
+   109: RV_file_perm(0o022)
+   110: chdir "/d_000"
+   111: Tau
+   112: RV_none
+
+   114: open "f_777.txt" [O_CREAT;O_RDWR] 0o777
+   115: Tau
+   116: RV_num(3)
+   117: close (FD 3)
+   118: Tau
+   119: RV_none
+   120: stat "f_777.txt"
+   121: Tau
+   122: RV_stat { st_dev=1792; st_ino=16; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   124: open "f_444.txt" [O_CREAT;O_RDWR] 0o444
+   125: Tau
+   126: RV_num(3)
+   127: close (FD 3)
+   128: Tau
+   129: RV_none
+   130: stat "f_444.txt"
+   131: Tau
+   132: RV_stat { st_dev=1792; st_ino=17; st_kind=S_IFREG; st_perm=0o444; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   134: open "f_322.txt" [O_CREAT;O_RDWR] 0o322
+   135: Tau
+   136: RV_num(3)
+   137: close (FD 3)
+   138: Tau
+   139: RV_none
+   140: stat "f_322.txt"
+   141: Tau
+   142: RV_stat { st_dev=1792; st_ino=18; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   144: mkdir "dir_777" 0o777
+   145: Tau
+   146: RV_none
+   147: stat "dir_777"
+   148: Tau
+   149: RV_stat { st_dev=1792; st_ino=32647; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   151: mkdir "dir_444" 0o444
+   152: Tau
+   153: RV_none
+   154: stat "dir_444"
+   155: Tau
+   156: RV_stat { st_dev=1792; st_ino=32648; st_kind=S_IFDIR; st_perm=0o444; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   158: mkdir "dir_322" 0o322
+   159: Tau
+   160: RV_none
+   161: stat "dir_322"
+   162: Tau
+   163: RV_stat { st_dev=1792; st_ino=32649; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+
+
+
+        ###########################################
+        # umask 0o444
+        ###########################################
+
+   172: umask 0o444
+   173: Tau
+   174: RV_file_perm(0o000)
+   175: chdir "/d_444"
+   176: Tau
+   177: RV_none
+
+   179: open "f_777.txt" [O_CREAT;O_RDWR] 0o777
+   180: Tau
+   181: RV_num(3)
+   182: close (FD 3)
+   183: Tau
+   184: RV_none
+   185: stat "f_777.txt"
+   186: Tau
+   187: RV_stat { st_dev=1792; st_ino=19; st_kind=S_IFREG; st_perm=0o333; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   189: open "f_444.txt" [O_CREAT;O_RDWR] 0o444
+   190: Tau
+   191: RV_num(3)
+   192: close (FD 3)
+   193: Tau
+   194: RV_none
+   195: stat "f_444.txt"
+   196: Tau
+   197: RV_stat { st_dev=1792; st_ino=20; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   199: open "f_322.txt" [O_CREAT;O_RDWR] 0o322
+   200: Tau
+   201: RV_num(3)
+   202: close (FD 3)
+   203: Tau
+   204: RV_none
+   205: stat "f_322.txt"
+   206: Tau
+   207: RV_stat { st_dev=1792; st_ino=21; st_kind=S_IFREG; st_perm=0o322; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   209: mkdir "dir_777" 0o777
+   210: Tau
+   211: RV_none
+   212: stat "dir_777"
+   213: Tau
+   214: RV_stat { st_dev=1792; st_ino=32650; st_kind=S_IFDIR; st_perm=0o333; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   216: mkdir "dir_444" 0o444
+   217: Tau
+   218: RV_none
+   219: stat "dir_444"
+   220: Tau
+   221: RV_stat { st_dev=1792; st_ino=32651; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+   223: mkdir "dir_322" 0o322
+   224: Tau
+   225: RV_none
+   226: stat "dir_322"
+   227: Tau
+   228: RV_stat { st_dev=1792; st_ino=32652; st_kind=S_IFDIR; st_perm=0o322; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235940;tv_nsec=256668806;}; st_mtim={tv_sec=1418235940;tv_nsec=256668806;}; st_ctim={tv_sec=1418235940;tv_nsec=256668806;}; }
+
+
+
+# trace accepted

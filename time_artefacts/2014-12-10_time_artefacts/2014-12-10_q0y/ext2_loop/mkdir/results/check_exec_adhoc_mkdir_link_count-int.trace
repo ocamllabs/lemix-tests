@@ -1,0 +1,51 @@
+# processing file 'exec_adhoc_mkdir_link_count-int.trace' ...
+        # processing file 'adhoc_mkdir_link_count-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after mkdir
+        ###########################################
+
+        # root should have link count 1
+        # FIXME enable when the test infrastructure uses a "real" root dir
+        #stat "/"
+
+        # a new dir should have link count 2
+
+    14: mkdir "/dir1" 0o777
+    15: Tau
+    16: RV_none
+    17: stat "/dir1"
+    18: Tau
+    19: RV_stat { st_dev=1792; st_ino=32998; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=106668233;}; st_mtim={tv_sec=1418235762;tv_nsec=106668233;}; st_ctim={tv_sec=1418235762;tv_nsec=106668233;}; }
+
+        # adding a subdir should increase the link count of the dir
+
+    23: mkdir "/dir1/subdir1" 0o777
+    24: Tau
+    25: RV_none
+    26: stat "/dir1"
+    27: Tau
+    28: RV_stat { st_dev=1792; st_ino=32998; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=106668233;}; st_mtim={tv_sec=1418235762;tv_nsec=106668233;}; st_ctim={tv_sec=1418235762;tv_nsec=106668233;}; }
+    29: stat "/dir1/subdir1"
+    30: Tau
+    31: RV_stat { st_dev=1792; st_ino=32999; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=106668233;}; st_mtim={tv_sec=1418235762;tv_nsec=106668233;}; st_ctim={tv_sec=1418235762;tv_nsec=106668233;}; }
+
+        # adding a subsubdir should leave the link count unaltered of the dir
+
+    35: mkdir "/dir1/subdir1/subsbudir1" 0o777
+    36: Tau
+    37: RV_none
+    38: stat "/dir1"
+    39: Tau
+    40: RV_stat { st_dev=1792; st_ino=32998; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=106668233;}; st_mtim={tv_sec=1418235762;tv_nsec=106668233;}; st_ctim={tv_sec=1418235762;tv_nsec=106668233;}; }
+    41: stat "/dir1/subdir1"
+    42: Tau
+    43: RV_stat { st_dev=1792; st_ino=32999; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=106668233;}; st_mtim={tv_sec=1418235762;tv_nsec=106668233;}; st_ctim={tv_sec=1418235762;tv_nsec=106668233;}; }
+    44: stat "/dir1/subdir1/subsbudir1"
+    45: Tau
+    46: RV_stat { st_dev=1792; st_ino=33000; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1418235762;tv_nsec=106668233;}; st_mtim={tv_sec=1418235762;tv_nsec=106668233;}; st_ctim={tv_sec=1418235762;tv_nsec=106668233;}; }
+
+
+
+# trace accepted

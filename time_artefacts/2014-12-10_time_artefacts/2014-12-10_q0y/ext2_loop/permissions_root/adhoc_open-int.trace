@@ -1,0 +1,219 @@
+@type script
+##################################################
+# Testing open with various flags and permissions
+#
+# This tests user and other permissions and 
+# therefore needs root access
+##################################################
+
+###################################
+# Initialising processes and users
+###################################
+
+# Pid 1 runs as root, we need 3 more processes that run 
+# as non-superusers. The idea is to have 
+#
+# - Pid 2 : creates and owns the files
+# - Pid 3 : tries to access the files while 
+#           being in the right group but not the owner
+# - Pid 4 : tries to access the files while 
+#           not being a group member and not the owner
+
+Pid 2 -> create (User_id 1) (Group_id 1)
+add_user_to_group (User_id 1) (Group_id 1)
+
+# Pid 3 runs as different user in the group of User 1
+Pid 3 -> create (User_id 2) (Group_id 2)
+add_user_to_group (User_id 2) (Group_id 1)
+add_user_to_group (User_id 2) (Group_id 2)
+
+# Pid 4 runs as a different user not in the group of User 1
+Pid 4 -> create (User_id 3) (Group_id 3)
+add_user_to_group (User_id 3) (Group_id 3)
+
+# make sure the permissions below get not modified by umask
+Pid 2 -> umask 0o000
+
+
+###################################
+# Owner tests
+###################################
+
+Pid 2 -> mkdir /dir_u/ <rwxr-xr-x>
+
+Pid 2 -> open /dir_u/f-nonexist.txt [O_RDONLY]
+
+# rwx
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDWR;O_CREAT] <rwx------>
+
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY]
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_WRONLY]
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDWR]
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_WRONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_RDONLY;O_APPEND]
+Pid 2 -> open_close /dir_u/f_rwx.txt [O_WRONLY;O_APPEND]
+
+# r--
+Pid 2 -> open_close /dir_u/f_r.txt [O_RDWR;O_CREAT] <r-------->
+Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY]
+Pid 2 -> open_close /dir_u/f_r.txt [O_WRONLY]
+Pid 2 -> open_close /dir_u/f_r.txt [O_RDWR]
+Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_r.txt [O_WRONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_r.txt [O_RDONLY;O_APPEND]
+Pid 2 -> open_close /dir_u/f_r.txt [O_WRONLY;O_APPEND]
+
+# -w-
+Pid 2 -> open_close /dir_u/f_w.txt [O_RDWR;O_CREAT] <-w------->
+Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY]
+Pid 2 -> open_close /dir_u/f_w.txt [O_WRONLY]
+Pid 2 -> open_close /dir_u/f_w.txt [O_RDWR]
+Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_w.txt [O_WRONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_w.txt [O_RDONLY;O_APPEND]
+Pid 2 -> open_close /dir_u/f_w.txt [O_WRONLY;O_APPEND]
+
+# --x
+Pid 2 -> open_close /dir_u/f_x.txt [O_RDWR;O_CREAT] <--x------>
+Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY]
+Pid 2 -> open_close /dir_u/f_x.txt [O_WRONLY]
+Pid 2 -> open_close /dir_u/f_x.txt [O_RDWR]
+Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_x.txt [O_WRONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_x.txt [O_RDONLY;O_APPEND]
+Pid 2 -> open_close /dir_u/f_x.txt [O_WRONLY;O_APPEND]
+
+# rw-
+Pid 2 -> open_close /dir_u/f_rw.txt [O_RDWR;O_CREAT] <rw------->
+Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY]
+Pid 2 -> open_close /dir_u/f_rw.txt [O_WRONLY]
+Pid 2 -> open_close /dir_u/f_rw.txt [O_RDWR]
+Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_rw.txt [O_WRONLY;O_TRUNC]
+Pid 2 -> open_close /dir_u/f_rw.txt [O_RDONLY;O_APPEND]
+Pid 2 -> open_close /dir_u/f_rw.txt [O_WRONLY;O_APPEND]
+
+
+###################################
+# Group tests
+###################################
+
+Pid 2 -> mkdir /dir_g/ <rwxr-xr-x>
+
+Pid 3 -> open /dir_g/f-nonexist.txt [O_RDONLY]
+
+# rwx
+Pid 2 -> open_close /dir_g/f_rwx.txt [O_RDWR;O_CREAT] <---rwx--->
+
+Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY]
+Pid 3 -> open_close /dir_g/f_rwx.txt [O_WRONLY]
+Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDWR]
+Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_rwx.txt [O_WRONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_rwx.txt [O_RDONLY;O_APPEND]
+Pid 3 -> open_close /dir_g/f_rwx.txt [O_WRONLY;O_APPEND]
+
+# r--
+Pid 2 -> open_close /dir_g/f_r.txt [O_RDWR;O_CREAT] <---r----->
+Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY]
+Pid 3 -> open_close /dir_g/f_r.txt [O_WRONLY]
+Pid 3 -> open_close /dir_g/f_r.txt [O_RDWR]
+Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_r.txt [O_WRONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_r.txt [O_RDONLY;O_APPEND]
+Pid 3 -> open_close /dir_g/f_r.txt [O_WRONLY;O_APPEND]
+
+# -w-
+Pid 2 -> open_close /dir_g/f_w.txt [O_RDWR;O_CREAT] <----w---->
+Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY]
+Pid 3 -> open_close /dir_g/f_w.txt [O_WRONLY]
+Pid 3 -> open_close /dir_g/f_w.txt [O_RDWR]
+Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_w.txt [O_WRONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_w.txt [O_RDONLY;O_APPEND]
+Pid 3 -> open_close /dir_g/f_w.txt [O_WRONLY;O_APPEND]
+
+# --x
+Pid 2 -> open_close /dir_g/f_x.txt [O_RDWR;O_CREAT] <-----x--->
+Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY]
+Pid 3 -> open_close /dir_g/f_x.txt [O_WRONLY]
+Pid 3 -> open_close /dir_g/f_x.txt [O_RDWR]
+Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_x.txt [O_WRONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_x.txt [O_RDONLY;O_APPEND]
+Pid 3 -> open_close /dir_g/f_x.txt [O_WRONLY;O_APPEND]
+
+# rw-
+Pid 2 -> open_close /dir_g/f_rw.txt [O_RDWR;O_CREAT] <---rw---->
+Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY]
+Pid 3 -> open_close /dir_g/f_rw.txt [O_WRONLY]
+Pid 3 -> open_close /dir_g/f_rw.txt [O_RDWR]
+Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_rw.txt [O_WRONLY;O_TRUNC]
+Pid 3 -> open_close /dir_g/f_rw.txt [O_RDONLY;O_APPEND]
+Pid 3 -> open_close /dir_g/f_rw.txt [O_WRONLY;O_APPEND]
+
+
+
+###################################
+# Other tests
+###################################
+
+Pid 2 -> mkdir /dir_o/ <rwxr-xr-x>
+Pid 4 -> open /dir_o/f-nonexist.txt [O_RDONLY]
+
+# rwx
+Pid 2 -> open_close /dir_o/f_rwx.txt [O_RDWR;O_CREAT] <------rwx>
+
+Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY]
+Pid 4 -> open_close /dir_o/f_rwx.txt [O_WRONLY]
+Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDWR]
+Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_rwx.txt [O_WRONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_rwx.txt [O_RDONLY;O_APPEND]
+Pid 4 -> open_close /dir_o/f_rwx.txt [O_WRONLY;O_APPEND]
+
+# r--
+Pid 2 -> open_close /dir_o/f_r.txt [O_RDWR;O_CREAT] <------r-->
+Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY]
+Pid 4 -> open_close /dir_o/f_r.txt [O_WRONLY]
+Pid 4 -> open_close /dir_o/f_r.txt [O_RDWR]
+Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_r.txt [O_WRONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_r.txt [O_RDONLY;O_APPEND]
+Pid 4 -> open_close /dir_o/f_r.txt [O_WRONLY;O_APPEND]
+
+# -w-
+Pid 2 -> open_close /dir_o/f_w.txt [O_RDWR;O_CREAT] <-------w->
+Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY]
+Pid 4 -> open_close /dir_o/f_w.txt [O_WRONLY]
+Pid 4 -> open_close /dir_o/f_w.txt [O_RDWR]
+Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_w.txt [O_WRONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_w.txt [O_RDONLY;O_APPEND]
+Pid 4 -> open_close /dir_o/f_w.txt [O_WRONLY;O_APPEND]
+
+# --x
+Pid 2 -> open_close /dir_o/f_x.txt [O_RDWR;O_CREAT] <--------x>
+Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY]
+Pid 4 -> open_close /dir_o/f_x.txt [O_WRONLY]
+Pid 4 -> open_close /dir_o/f_x.txt [O_RDWR]
+Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_x.txt [O_WRONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_x.txt [O_RDONLY;O_APPEND]
+Pid 4 -> open_close /dir_o/f_x.txt [O_WRONLY;O_APPEND]
+
+# rw-
+Pid 2 -> open_close /dir_o/f_rw.txt [O_RDWR;O_CREAT] <------rw->
+Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY]
+Pid 4 -> open_close /dir_o/f_rw.txt [O_WRONLY]
+Pid 4 -> open_close /dir_o/f_rw.txt [O_RDWR]
+Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_rw.txt [O_WRONLY;O_TRUNC]
+Pid 4 -> open_close /dir_o/f_rw.txt [O_RDONLY;O_APPEND]
+Pid 4 -> open_close /dir_o/f_rw.txt [O_WRONLY;O_APPEND]
+
+
+dump
+

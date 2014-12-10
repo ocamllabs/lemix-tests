@@ -1,0 +1,77 @@
+# processing file 'exec_adhoc_unlink_count-int.trace' ...
+        # processing file 'adhoc_unlink_count-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after unlink
+        ###########################################
+
+        # a new created file should have link count 1
+
+    10: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+    11: Tau
+    12: RV_none
+
+        # unlink the file should remove the file
+
+    16: unlink "/f1.txt"
+    17: Tau
+    18: RV_none
+    19: stat "/f1.txt"
+    20: Tau
+    21: ENOENT
+
+        # removing a linked file should reduce count of the link
+
+    25: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+    26: Tau
+    27: RV_none
+    28: link "/f1.txt" "/f1_hl.txt"
+    29: Tau
+    30: RV_none
+    31: unlink "f1.txt"
+    32: Tau
+    33: RV_none
+
+    35: stat "/f1_hl.txt"
+    36: Tau
+    37: RV_stat { st_dev=1792; st_ino=18; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235916;tv_nsec=116668701;}; st_mtim={tv_sec=1418235916;tv_nsec=116668701;}; st_ctim={tv_sec=1418235916;tv_nsec=116668701;}; }
+
+        # unlink the link should delete the file
+
+    41: unlink "/f1_hl.txt"
+    42: Tau
+    43: RV_none
+    44: stat "/f1_hl.txt"
+    45: Tau
+    46: ENOENT
+
+        # removing the link to a  linked file should reduce count of the file
+
+    50: open_close "/f1.txt" [O_RDONLY;O_CREAT] 0o666
+    51: Tau
+    52: RV_none
+    53: link "/f1.txt" "/f1_hl.txt"
+    54: Tau
+    55: RV_none
+    56: unlink "f1_hl.txt"
+    57: Tau
+    58: RV_none
+
+    60: stat "/f1.txt"
+    61: Tau
+    62: RV_stat { st_dev=1792; st_ino=20; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1418235916;tv_nsec=116668701;}; st_mtim={tv_sec=1418235916;tv_nsec=116668701;}; st_ctim={tv_sec=1418235916;tv_nsec=120002031;}; }
+
+        ## uncomment this test when we have lstat in place
+        # unlinking a linked symlink should decrease the symlink link count
+
+        #symlink "/f1.txt" "f3_sl.txt"
+        #link "f3_sl.txt" "f3_sl_hl.txt"
+        #lstat "f3_sl.txt"
+        #lstat "f3_sl_hl.txt"
+        #unlink "f3_st_hl.txt"
+        #lstat "f3_sl.txt"
+
+
+
+# trace accepted
