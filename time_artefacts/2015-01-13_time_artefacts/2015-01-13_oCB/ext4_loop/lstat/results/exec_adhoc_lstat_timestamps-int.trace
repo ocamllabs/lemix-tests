@@ -1,0 +1,201 @@
+# processing file 'adhoc_lstat_timestamps-int.trace' ...
+        @type trace
+
+        # test mkdir
+
+     5: mkdir "/dir_1" 0o777
+        Tau
+        RV_none
+     6: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+     7: mkdir "/dir_1/dir_11" 0o777
+        Tau
+        RV_none
+     8: lstat "/dir_1/dir_11"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+     9: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+
+    11: mkdir "/dir_2" 0o777
+        Tau
+        RV_none
+
+        # test open
+
+    15: open "/dir_1/f1.txt" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+
+    17: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    18: lstat "/dir_1/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+
+        #test write
+
+    22: write! (FD 3) "content of /dir_1/f1.txt" 24
+        Tau
+        RV_num(24)
+
+    24: lstat "/dir_1/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=24; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+
+    26: close (FD 3)
+        Tau
+        RV_none
+
+        # test open trunc
+
+    30: open "/dir_1/f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    31: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    32: lstat "/dir_1/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    33: write! (FD 3) "content of /dir_1/f1.txt" 24
+        Tau
+        RV_num(24)
+    34: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    35: lstat "/dir_1/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=24; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    36: close (FD 3)
+        Tau
+        RV_none
+
+        # test symlink
+
+    40: symlink "/dir_1/f1.txt" "/symlink_1"
+        Tau
+        RV_none
+    41: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    42: lstat "/symlink_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=14; st_kind=S_IFLNK; st_perm=0o777; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=85; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=386425495;}; st_ctim={tv_sec=1421154202;tv_nsec=386425495;}; }
+
+        # test readlink
+
+    46: readlink "/symlink_1"
+        Tau
+        RV_bytes("/dir_1/f1.txt")
+    47: lstat "/symlink_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=14; st_kind=S_IFLNK; st_perm=0o777; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=85; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=386425495;}; st_ctim={tv_sec=1421154202;tv_nsec=386425495;}; }
+
+        # test read
+
+    51: open "/dir_1/f1.txt" [O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    52: lstat "/dir_1/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=24; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    53: read! (FD 3) 24
+        Tau
+        RV_bytes("content of /dir_1/f1.txt")
+    54: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    55: lstat "/dir_1/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=24; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=379758834;}; }
+    56: close (FD 3)
+        Tau
+        RV_none
+
+        # test link
+
+    60: link "/dir_1/f1.txt" "/dir_1/mylink"
+        Tau
+        RV_none
+    61: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    62: lstat "/dir_1/f1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=24; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+
+        # test rename
+    65: rename "/dir_1/f1.txt" "/dir_2/f2.txt"
+        Tau
+        RV_none
+    66: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    67: lstat "/dir_2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    68: lstat "/dir_2/f2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=24; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+
+        # test unlink
+
+    72: unlink "/dir_1/mylink"
+        Tau
+        RV_none
+    73: lstat "/dir_1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    74: lstat "/dir_2/f2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=24; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=379758834;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+
+        # test truncate
+
+    78: truncate "/dir_2/f2.txt" 5
+        Tau
+        RV_none
+    79: lstat "/dir_2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    80: lstat "/dir_2/f2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=5; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+
+    82: truncate "/dir_2/f2.txt" 0
+        Tau
+        RV_none
+    83: lstat "/dir_2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    84: lstat "/dir_2/f2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=393092155;}; st_ctim={tv_sec=1421154202;tv_nsec=393092155;}; }
+
+        # test chmod
+    87: chmod "/dir_2/f2.txt" 0o777
+        Tau
+        RV_none
+    88: lstat "/dir_2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    89: lstat "/dir_2/f2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=393092155;}; st_ctim={tv_sec=1421154202;tv_nsec=393092155;}; }
+
+        # test chown
+    92: chown "/dir_2/f2.txt" (User_id 0) (Group_id 0)
+        Tau
+        RV_none
+    93: lstat "/dir_2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154202;tv_nsec=379758834;}; st_mtim={tv_sec=1421154202;tv_nsec=389758586;}; st_ctim={tv_sec=1421154202;tv_nsec=389758586;}; }
+    94: lstat "/dir_2/f2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=13; st_kind=S_IFREG; st_perm=0o777; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154202;tv_nsec=386425495;}; st_mtim={tv_sec=1421154202;tv_nsec=393092155;}; st_ctim={tv_sec=1421154202;tv_nsec=393092155;}; }
+
+

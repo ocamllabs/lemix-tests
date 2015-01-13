@@ -1,0 +1,283 @@
+# processing file 'adhoc_lseek_tests-int.trace' ...
+        @type trace
+        # Tests for lseek
+
+
+        ##############################################
+        # reads combined with lseek
+        ##############################################
+
+        # initialise a file with some text
+    10: open "f1.txt" [O_TRUNC;O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    11: write! (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    12: close (FD 3)
+        Tau
+        RV_none
+
+    14: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+
+        # read 2 bytes and then 2 again
+    17: read (FD 3) 2
+        Tau
+        RV_bytes("01")
+    18: read (FD 3) 2
+        Tau
+        RV_bytes("23")
+
+        # jump back to beginning
+    21: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+    22: read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+        # jump to absolute position 4
+    25: lseek (FD 3) 4 SEEK_SET
+        Tau
+        RV_num(4)
+    26: read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+        # jump after end
+    29: lseek (FD 3) 5 SEEK_END
+        Tau
+        RV_num(15)
+    30: read (FD 3) 2
+        Tau
+        RV_bytes("")
+
+        # jump after end
+    33: lseek (FD 3) 5 SEEK_END
+        Tau
+        RV_num(15)
+    34: read (FD 3) 2
+        Tau
+        RV_bytes("")
+
+        # jump 2 before end
+    37: lseek (FD 3) -2 SEEK_END
+        Tau
+        RV_num(8)
+    38: read (FD 3) 2
+        Tau
+        RV_bytes("89")
+
+        # 2 back and try again
+    41: lseek (FD 3) -2 SEEK_CUR
+        Tau
+        RV_num(8)
+    42: read (FD 3) 2
+        Tau
+        RV_bytes("89")
+
+        # jump just to zero
+    45: lseek (FD 3) -10 SEEK_CUR
+        Tau
+        RV_num(0)
+    46: read (FD 3) 2
+        Tau
+        RV_bytes("01")
+
+        # jump too far back (negative resulting offset)
+    49: lseek (FD 3) -10 SEEK_CUR
+        Tau
+        EINVAL
+    50: read (FD 3) 2
+        Tau
+        RV_bytes("23")
+
+        # use wrong whence
+    53: lseek (FD 3) 0 5
+        Tau
+        EINVAL
+    54: read (FD 3) 2
+        Tau
+        RV_bytes("45")
+
+        # check position
+    57: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(6)
+    58: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(6)
+
+    60: close (FD 3)
+        Tau
+        RV_none
+
+        # use closed file-descriptor
+    63: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        EBADF
+
+        # use non-existing file-descriptor
+    66: lseek (FD 4) 0 SEEK_CUR
+        Tau
+        EBADF
+
+        # use non-existing file-descriptor and wrong whence
+    69: lseek (FD 4) 0 5
+        Tau
+        EBADF
+
+
+        ##############################################
+        # write and lseek
+        ##############################################
+
+        # jump after end of file should do nothing by itself
+    77: open "f1.txt" [O_TRUNC;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    78: lseek (FD 3) 5 SEEK_SET
+        Tau
+        RV_num(5)
+    79: close (FD 3)
+        Tau
+        RV_none
+
+    81: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    82: read! (FD 3) 100
+        Tau
+        RV_bytes("")
+    83: close (FD 3)
+        Tau
+        RV_none
+
+
+        # jump after end of file, then write adds 0s
+    87: open "f1.txt" [O_TRUNC;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    88: lseek (FD 3) 5 SEEK_SET
+        Tau
+        RV_num(5)
+    89: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+    90: close (FD 3)
+        Tau
+        RV_none
+
+    92: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+    93: read! (FD 3) 100
+        Tau
+        RV_bytes("\000\000\000\000\0000123456789")
+    94: close (FD 3)
+        Tau
+        RV_none
+
+
+        # write then jump back and write, jump back, read
+    98: open "f1.txt" [O_TRUNC;O_RDWR] 0o666
+        Tau
+        RV_num(3)
+    99: write (FD 3) "0123456789" 10
+        Tau
+        RV_num(10)
+   100: lseek (FD 3) -2 SEEK_CUR
+        Tau
+        RV_num(8)
+   101: write (FD 3) "XX" 2
+        Tau
+        RV_num(2)
+   102: lseek (FD 3) -6 SEEK_CUR
+        Tau
+        RV_num(4)
+   103: read (FD 3) 2
+        Tau
+        RV_bytes("45")
+   104: write (FD 3) "YY" 2
+        Tau
+        RV_num(2)
+   105: close (FD 3)
+        Tau
+        RV_none
+
+   107: open "f1.txt" [O_RDONLY]
+        Tau
+        RV_num(3)
+   108: read! (FD 3) 100
+        Tau
+        RV_bytes("012345YYXX")
+   109: close (FD 3)
+        Tau
+        RV_none
+
+
+        ##############################################
+        # lseek on dirs is not properly supported and 
+        # therefore not tested carefully
+        ##############################################
+
+   117: mkdir "d1" 0o777
+        Tau
+        RV_none
+   118: open_close "d1/f1.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+   119: open_close "d1/f2.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+   120: open_close "d1/f3.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+
+
+   123: open "d1" [O_RDONLY]
+        Tau
+        RV_num(3)
+   124: lseek (FD 3) 0 SEEK_CUR
+        Tau
+        RV_num(0)
+   125: read (FD 3) 10
+        Tau
+        EISDIR
+
+   127: lseek (FD 3) 4 SEEK_CUR
+        Tau
+        RV_num(4)
+   128: read (FD 3) 10
+        Tau
+        EISDIR
+
+        # the following fail with a oveflow
+   131: lseek (FD 3) 0 SEEK_END
+        Tau
+        EOVERFLOW
+   132: lseek (FD 3) -2000 SEEK_END
+        Tau
+        EOVERFLOW
+
+   134: lseek (FD 3) 0 SEEK_SET
+        Tau
+        RV_num(0)
+   135: read (FD 3) 10
+        Tau
+        EISDIR
+
+   137: lseek (FD 3) 10 SEEK_SET
+        Tau
+        RV_num(10)
+   138: read (FD 3) 10
+        Tau
+        EISDIR
+
+   140: close (FD 3)
+        Tau
+        RV_none
+
+

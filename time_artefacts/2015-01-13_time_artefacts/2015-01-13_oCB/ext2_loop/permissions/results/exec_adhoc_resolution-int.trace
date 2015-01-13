@@ -1,0 +1,1087 @@
+# processing file 'adhoc_resolution-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing path resolution with permissions
+        ###########################################
+
+        # create 3 nested dirs /d1/d2/d3,
+        # d2 also contains a file. Then change read and
+        # write permission for d2 and see what files / dirs
+        # can still be accessed. To test path resolution the
+        # command stat is used, to read the dir d2, readdir.
+        # Both relative and absolute paths are tested.
+
+
+        ###########################################
+        # Initialisation
+        ###########################################
+
+    18: mkdir "/d1" 0o777
+        Tau
+        RV_none
+    19: mkdir "/d1/d2/" 0o777
+        Tau
+        RV_none
+    20: mkdir "/d1/d2/d3" 0o777
+        Tau
+        RV_none
+    21: open_close "/d1/file1.txt" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+    22: open_close "/d1/d2/file2.txt" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+    23: open_close "/d1/d2/d3/file3.txt" [O_CREAT;O_RDWR] 0o666
+        Tau
+        RV_none
+
+
+        ###########################################
+        # Absolute paths
+        ###########################################
+
+        # rwx
+    31: chmod "/d1/d2" 0o700
+        Tau
+        RV_none
+    32: opendir "/d1/d2"
+        Tau
+        RV_num(1)
+    33: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+    34: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+    35: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+    36: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+    37: closedir (DH 1)
+        Tau
+        RV_none
+    38: stat "/d1/file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    39: stat "/d1/d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    40: stat "/d1/d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    41: stat "/d1/d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    42: stat "/d1/d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    43: stat "/d1/d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    44: stat "/d1/d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    45: stat "/d1/d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    46: chdir "/d1/d2"
+        Tau
+        RV_none
+    47: chdir "/"
+        Tau
+        RV_none
+
+        # r-x
+    50: chmod "/d1/d2" 0o500
+        Tau
+        RV_none
+    51: opendir "/d1/d2"
+        Tau
+        RV_num(1)
+    52: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+    53: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+    54: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+    55: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+    56: closedir (DH 1)
+        Tau
+        RV_none
+    57: stat "/d1/file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    58: stat "/d1/d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    59: stat "/d1/d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    60: stat "/d1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    61: stat "/d1/d2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    62: stat "/d1/d2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    63: stat "/d1/d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    64: stat "/d1/d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    65: stat "/d1/d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    66: stat "/d1/d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    67: stat "/d1/d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    68: chdir "/d1/d2"
+        Tau
+        RV_none
+    69: chdir "/"
+        Tau
+        RV_none
+
+        # --x
+    72: chmod "/d1/d2" 0o100
+        Tau
+        RV_none
+    73: opendir "/d1/d2"
+        Tau
+        RV_num(1)
+    74: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+    75: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+    76: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+    77: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+    78: closedir (DH 1)
+        Tau
+        RV_none
+    79: stat "/d1/file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    80: stat "/d1/d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    81: stat "/d1/d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    82: stat "/d1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    83: stat "/d1/d2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    84: stat "/d1/d2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    85: stat "/d1/d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    86: stat "/d1/d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    87: stat "/d1/d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    88: stat "/d1/d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    89: stat "/d1/d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+    90: chdir "/d1/d2"
+        Tau
+        RV_none
+
+        # r--
+    93: chmod "/d1/d2" 0o400
+        Tau
+        RV_none
+    94: opendir "/d1/d2"
+        Tau
+        RV_num(1)
+    95: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+    96: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+    97: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+    98: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+    99: closedir (DH 1)
+        Tau
+        RV_none
+   100: stat "/d1/file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   101: stat "/d1/d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   102: stat "/d1/d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   103: stat "/d1"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   104: stat "/d1/d2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   105: stat "/d1/d2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   106: stat "/d1/d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   107: stat "/d1/d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   108: stat "/d1/d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   109: stat "/d1/d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   110: stat "/d1/d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   111: chdir "/d1/d2"
+        Tau
+        RV_none
+   112: chdir "/"
+        Tau
+        RV_none
+
+
+        ###########################################
+        # Relative paths from d1
+        ###########################################
+
+   119: chdir "/d1"
+        Tau
+        RV_none
+
+        # rwx
+   122: chmod "d2" 0o700
+        Tau
+        RV_none
+   123: opendir "d2"
+        Tau
+        RV_num(1)
+   124: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   125: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   126: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   127: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   128: closedir (DH 1)
+        Tau
+        RV_none
+   129: stat "file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   130: stat "d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   131: stat "d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   132: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   133: stat "d2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   134: stat "d2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   135: stat "d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   136: stat "d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   137: stat "d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   138: stat "d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   139: stat "d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   140: chdir "d2"
+        Tau
+        RV_none
+   141: chdir "/d1"
+        Tau
+        RV_none
+
+        # r-x
+   144: chmod "d2" 0o500
+        Tau
+        RV_none
+   145: opendir "d2"
+        Tau
+        RV_num(1)
+   146: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   147: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   148: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   149: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   150: closedir (DH 1)
+        Tau
+        RV_none
+   151: stat "file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   152: stat "d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   153: stat "d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   154: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   155: stat "d2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   156: stat "d2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   157: stat "d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   158: stat "d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   159: stat "d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   160: stat "d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   161: stat "d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   162: chdir "d2"
+        Tau
+        RV_none
+   163: chdir "/d1"
+        Tau
+        RV_none
+
+        # --x
+   166: chmod "d2" 0o100
+        Tau
+        RV_none
+   167: opendir "d2"
+        Tau
+        RV_num(1)
+   168: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   169: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   170: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   171: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   172: closedir (DH 1)
+        Tau
+        RV_none
+   173: stat "file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   174: stat "d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   175: stat "d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   176: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   177: stat "d2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   178: stat "d2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   179: stat "d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   180: stat "d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   181: stat "d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   182: stat "d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   183: stat "d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   184: chdir "d2"
+        Tau
+        RV_none
+   185: chdir "/d1"
+        Tau
+        RV_none
+
+        # r--
+   188: chmod "d2" 0o400
+        Tau
+        RV_none
+   189: opendir "d2"
+        Tau
+        RV_num(1)
+   190: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   191: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   192: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   193: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   194: closedir (DH 1)
+        Tau
+        RV_none
+   195: stat "file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   196: stat "d2/file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   197: stat "d2/d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   198: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   199: stat "d2"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   200: stat "d2/"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   201: stat "d2/d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   202: stat "d2//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   203: stat "d2//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   204: stat "d2/./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   205: stat "d2/./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   206: chdir "d2"
+        Tau
+        RV_none
+   207: chdir "/d1"
+        Tau
+        RV_none
+
+        ###########################################
+        # Relative paths from d2
+        ###########################################
+
+   213: chmod "/d1/d2" 0o700
+        Tau
+        RV_none
+   214: chdir "/d1/d2"
+        Tau
+        RV_none
+
+        # rwx
+   217: chmod "." 0o700
+        Tau
+        RV_none
+   218: opendir "."
+        Tau
+        RV_num(1)
+   219: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   220: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   221: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   222: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   223: closedir (DH 1)
+        Tau
+        RV_none
+   224: stat "../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   225: stat "file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   226: stat "d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   227: stat ".."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   228: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   229: stat "./"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o700; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   230: stat "d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   231: stat ".//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   232: stat ".//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   233: stat "./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   234: stat "./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   235: chdir "."
+        Tau
+        RV_none
+
+        # r-x
+   238: chmod "." 0o500
+        Tau
+        RV_none
+   239: opendir "."
+        Tau
+        RV_num(1)
+   240: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   241: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   242: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   243: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   244: closedir (DH 1)
+        Tau
+        RV_none
+   245: stat "../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   246: stat "file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   247: stat "d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   248: stat ".."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   249: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   250: stat "./"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=416432857;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=416432857;}; }
+   251: stat "d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   252: stat ".//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   253: stat ".//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   254: stat "./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   255: stat "./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   256: chdir "."
+        Tau
+        RV_none
+
+        # --x
+   259: chmod "." 0o100
+        Tau
+        RV_none
+   260: opendir "."
+        Tau
+        RV_num(1)
+   261: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   262: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   263: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   264: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   265: closedir (DH 1)
+        Tau
+        RV_none
+   266: stat "../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   267: stat "file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   268: stat "d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   269: stat ".."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   270: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   271: stat "./"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   272: stat "d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   273: stat ".//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   274: stat ".//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   275: stat "./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   276: stat "./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   277: chdir "."
+        Tau
+        RV_none
+
+
+        # r--
+   281: chmod "." 0o400
+        Tau
+        RV_none
+   282: opendir "."
+        Tau
+        RV_num(1)
+   283: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   284: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   285: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   286: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   287: closedir (DH 1)
+        Tau
+        RV_none
+   288: stat "../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   289: stat "file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   290: stat "d3/file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   291: stat ".."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   292: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   293: stat "./"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   294: stat "d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   295: stat ".//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   296: stat ".//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   297: stat "./file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   298: stat "./d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   299: chdir "."
+        Tau
+        RV_none
+
+
+        ###########################################
+        # Relative paths from d3
+        ###########################################
+
+   306: chmod "/d1/d2" 0o700
+        Tau
+        RV_none
+   307: chdir "/d1/d2/d3"
+        Tau
+        RV_none
+
+        # rwx
+   310: chmod ".." 0o700
+        Tau
+        RV_none
+   311: opendir ".."
+        Tau
+        RV_num(1)
+   312: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   313: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   314: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   315: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   316: closedir (DH 1)
+        Tau
+        RV_none
+   317: stat "../../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   318: stat "../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   319: stat "file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   320: stat "../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   321: stat "..//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   322: stat "..//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   323: stat ".././file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   324: stat ".././d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   325: stat "../d3/../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   326: stat "../d3/../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   327: chdir ".."
+        Tau
+        RV_none
+
+   329: chmod "/d1/d2" 0o700
+        Tau
+        RV_none
+   330: chdir "/d1/d2/d3"
+        Tau
+        RV_none
+
+        # r-x
+   333: chmod ".." 0o500
+        Tau
+        RV_none
+   334: opendir ".."
+        Tau
+        RV_num(1)
+   335: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   336: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   337: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   338: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   339: closedir (DH 1)
+        Tau
+        RV_none
+   340: stat "../../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   341: stat "../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   342: stat "file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   343: stat "../.."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   344: stat ".."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   345: stat "../"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o500; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   346: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   347: stat "../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   348: stat "..//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   349: stat "..//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   350: stat ".././file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   351: stat ".././d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   352: stat "../d3/../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   353: stat "../d3/../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   354: chdir ".."
+        Tau
+        RV_none
+
+   356: chmod "/d1/d2" 0o700
+        Tau
+        RV_none
+   357: chdir "/d1/d2/d3"
+        Tau
+        RV_none
+
+        # --x
+   360: chmod ".." 0o100
+        Tau
+        RV_none
+   361: opendir ".."
+        Tau
+        RV_num(1)
+   362: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   363: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   364: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   365: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   366: closedir (DH 1)
+        Tau
+        RV_none
+   367: stat "../../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   368: stat "../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   369: stat "file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   370: stat "../.."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   371: stat ".."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   372: stat "../"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o100; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   373: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   374: stat "../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   375: stat "..//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   376: stat "..//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   377: stat ".././file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   378: stat ".././d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   379: stat "../d3/../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   380: stat "../d3/../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   381: chdir ".."
+        Tau
+        RV_none
+   382: chdir "/d1"
+        Tau
+        RV_none
+
+   384: chmod "/d1/d2" 0o700
+        Tau
+        RV_none
+   385: chdir "/d1/d2/d3"
+        Tau
+        RV_none
+
+        # r--
+   388: chmod ".." 0o400
+        Tau
+        RV_none
+   389: opendir ".."
+        Tau
+        RV_num(1)
+   390: readdir (DH 1)
+        Tau
+        RV_bytes(".")
+   391: readdir (DH 1)
+        Tau
+        RV_bytes("d3")
+   392: readdir (DH 1)
+        Tau
+        RV_bytes("..")
+   393: readdir (DH 1)
+        Tau
+        RV_bytes("file2.txt")
+   394: closedir (DH 1)
+        Tau
+        RV_none
+   395: stat "../../file1.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33587; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   396: stat "../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   397: stat "file3.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33589; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   398: stat "../.."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33584; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   399: stat ".."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   400: stat "../"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33585; st_kind=S_IFDIR; st_perm=0o400; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=419766187;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=419766187;}; }
+   401: stat "."
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   402: stat "../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   403: stat "..//file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   404: stat "..//d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   405: stat ".././file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   406: stat ".././d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   407: stat "../d3/../file2.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33588; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   408: stat "../d3/../d3"
+        Tau
+        RV_stat { st_dev=1792; st_ino=33586; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421153962;tv_nsec=413099527;}; st_mtim={tv_sec=1421153962;tv_nsec=413099527;}; st_ctim={tv_sec=1421153962;tv_nsec=413099527;}; }
+   409: chdir ".."
+        Tau
+        RV_none
+
+   411: chmod "/d1/d2" 0o700
+        Tau
+        RV_none
+   412: chdir "/d1/d2/d3"
+        Tau
+        RV_none
+
+

@@ -1,0 +1,41 @@
+# processing file 'exec_adhoc_rename_link_count_dir_same_parent-int.trace' ...
+        # processing file 'adhoc_rename_link_count_dir_same_parent-int.trace' ...
+        @type trace
+
+        ###########################################
+        # Test link count of files after rename
+        ###########################################
+     7: mkdir "/nonempty_dir2" 0o777
+     8: Tau
+     9: RV_none
+
+    11: stat "/nonempty_dir2"
+    12: Tau
+    13: RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154185;tv_nsec=399759292;}; st_mtim={tv_sec=1421154185;tv_nsec=399759292;}; st_ctim={tv_sec=1421154185;tv_nsec=399759292;}; }
+
+    15: mkdir "/nonempty_dir2/mydir" 0o777
+    16: Tau
+    17: RV_none
+
+    19: stat "/nonempty_dir2/mydir"
+    20: Tau
+    21: RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154185;tv_nsec=399759292;}; st_mtim={tv_sec=1421154185;tv_nsec=399759292;}; st_ctim={tv_sec=1421154185;tv_nsec=399759292;}; }
+
+
+        # test that renaming a directory in the same parent does not change the count
+
+    26: rename "/nonempty_dir2/mydir" "/nonempty_dir2/mydir2"
+    27: Tau
+    28: RV_none
+
+    30: stat "/nonempty_dir2"
+    31: Tau
+    32: RV_stat { st_dev=1792; st_ino=32641; st_kind=S_IFDIR; st_perm=0o755; st_nlink=3; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154185;tv_nsec=399759292;}; st_mtim={tv_sec=1421154185;tv_nsec=399759292;}; st_ctim={tv_sec=1421154185;tv_nsec=399759292;}; }
+
+    34: stat "/nonempty_dir2/mydir2"
+    35: Tau
+    36: RV_stat { st_dev=1792; st_ino=32642; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154185;tv_nsec=399759292;}; st_mtim={tv_sec=1421154185;tv_nsec=399759292;}; st_ctim={tv_sec=1421154185;tv_nsec=399759292;}; }
+
+
+
+# trace accepted

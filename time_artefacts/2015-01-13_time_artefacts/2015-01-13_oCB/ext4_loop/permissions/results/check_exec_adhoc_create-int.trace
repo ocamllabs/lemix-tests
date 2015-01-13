@@ -1,0 +1,412 @@
+# processing file 'exec_adhoc_create-int.trace' ...
+        # processing file 'adhoc_create-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing mkdir and creating files
+        ###########################################
+
+        # these tests create parent-directories with various permissions and
+        # then try to create files and directories inside these parent
+        # directories.  This should only work, if one has search and 
+        # write permission to the parent dir. However, the search permission
+        # is also needed needed for path resolution. The tests therefore also
+        # try to create the files in the current working directory. 
+        # before removing x permission.
+
+
+        # rwx
+    17: mkdir "/tmp_dir_rwx/" 0o777
+    18: Tau
+    19: RV_none
+    20: chdir "/tmp_dir_rwx"
+    21: Tau
+    22: RV_none
+    23: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    24: Tau
+    25: RV_none
+    26: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    27: Tau
+    28: RV_none
+    29: mkdir "d2" 0o777
+    30: Tau
+    31: RV_none
+    32: mkdir "d4" 0o777
+    33: Tau
+    34: RV_none
+    35: chmod "/tmp_dir_rwx/" 0o700
+    36: Tau
+    37: RV_none
+
+    39: mkdir "d1" 0o777
+    40: Tau
+    41: RV_none
+    42: mkdir "d2" 0o777
+    43: Tau
+    44: EEXIST
+    45: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    46: Tau
+    47: RV_none
+    48: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    49: Tau
+    50: EEXIST
+    51: mkdir "/tmp_dir_rwx/d3" 0o777
+    52: Tau
+    53: RV_none
+    54: mkdir "/tmp_dir_rwx/d4" 0o777
+    55: Tau
+    56: EEXIST
+    57: open_close "/tmp_dir_rwx/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    58: Tau
+    59: RV_none
+    60: open_close "/tmp_dir_rwx/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    61: Tau
+    62: EEXIST
+
+
+        # rw_
+    66: mkdir "/tmp_dir_rw_/" 0o777
+    67: Tau
+    68: RV_none
+    69: chdir "/tmp_dir_rw_"
+    70: Tau
+    71: RV_none
+    72: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    73: Tau
+    74: RV_none
+    75: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    76: Tau
+    77: RV_none
+    78: mkdir "d2" 0o777
+    79: Tau
+    80: RV_none
+    81: mkdir "d4" 0o777
+    82: Tau
+    83: RV_none
+    84: chmod "/tmp_dir_rw_/" 0o600
+    85: Tau
+    86: RV_none
+
+    88: mkdir "d1" 0o777
+    89: Tau
+    90: RV_none
+    91: mkdir "d2" 0o777
+    92: Tau
+    93: EEXIST
+    94: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    95: Tau
+    96: RV_none
+    97: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+    98: Tau
+    99: EEXIST
+   100: mkdir "/tmp_dir_rw_/d3" 0o777
+   101: Tau
+   102: RV_none
+   103: mkdir "/tmp_dir_rw_/d4" 0o777
+   104: Tau
+   105: EEXIST
+   106: open_close "/tmp_dir_rw_/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   107: Tau
+   108: RV_none
+   109: open_close "/tmp_dir_rw_/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   110: Tau
+   111: EEXIST
+
+
+        # r_x
+   115: mkdir "/tmp_dir_r_x/" 0o777
+   116: Tau
+   117: RV_none
+   118: chdir "/tmp_dir_r_x"
+   119: Tau
+   120: RV_none
+   121: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   122: Tau
+   123: RV_none
+   124: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   125: Tau
+   126: RV_none
+   127: mkdir "d2" 0o777
+   128: Tau
+   129: RV_none
+   130: mkdir "d4" 0o777
+   131: Tau
+   132: RV_none
+   133: chmod "/tmp_dir_r_x/" 0o500
+   134: Tau
+   135: RV_none
+
+   137: mkdir "d1" 0o777
+   138: Tau
+   139: RV_none
+   140: mkdir "d2" 0o777
+   141: Tau
+   142: EEXIST
+   143: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   144: Tau
+   145: RV_none
+   146: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   147: Tau
+   148: EEXIST
+   149: mkdir "/tmp_dir_r_x/d3" 0o777
+   150: Tau
+   151: RV_none
+   152: mkdir "/tmp_dir_r_x/d4" 0o777
+   153: Tau
+   154: EEXIST
+   155: open_close "/tmp_dir_r_x/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   156: Tau
+   157: RV_none
+   158: open_close "/tmp_dir_r_x/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   159: Tau
+   160: EEXIST
+
+
+        # r__
+   164: mkdir "/tmp_dir_r__/" 0o777
+   165: Tau
+   166: RV_none
+   167: chdir "/tmp_dir_r__"
+   168: Tau
+   169: RV_none
+   170: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   171: Tau
+   172: RV_none
+   173: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   174: Tau
+   175: RV_none
+   176: mkdir "d2" 0o777
+   177: Tau
+   178: RV_none
+   179: mkdir "d4" 0o777
+   180: Tau
+   181: RV_none
+   182: chmod "/tmp_dir_r__/" 0o400
+   183: Tau
+   184: RV_none
+
+   186: mkdir "d1" 0o777
+   187: Tau
+   188: RV_none
+   189: mkdir "d2" 0o777
+   190: Tau
+   191: EEXIST
+   192: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   193: Tau
+   194: RV_none
+   195: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   196: Tau
+   197: EEXIST
+   198: mkdir "/tmp_dir_r__/d3" 0o777
+   199: Tau
+   200: RV_none
+   201: mkdir "/tmp_dir_r__/d4" 0o777
+   202: Tau
+   203: EEXIST
+   204: open_close "/tmp_dir_r__/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   205: Tau
+   206: RV_none
+   207: open_close "/tmp_dir_r__/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   208: Tau
+   209: EEXIST
+
+
+
+        # _wx
+   214: mkdir "/tmp_dir__wx/" 0o777
+   215: Tau
+   216: RV_none
+   217: chdir "/tmp_dir__wx"
+   218: Tau
+   219: RV_none
+   220: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   221: Tau
+   222: RV_none
+   223: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   224: Tau
+   225: RV_none
+   226: mkdir "d2" 0o777
+   227: Tau
+   228: RV_none
+   229: mkdir "d4" 0o777
+   230: Tau
+   231: RV_none
+   232: chmod "/tmp_dir__wx/" 0o300
+   233: Tau
+   234: RV_none
+
+   236: mkdir "d1" 0o777
+   237: Tau
+   238: RV_none
+   239: mkdir "d2" 0o777
+   240: Tau
+   241: EEXIST
+   242: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   243: Tau
+   244: RV_none
+   245: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   246: Tau
+   247: EEXIST
+   248: mkdir "/tmp_dir__wx/d3" 0o777
+   249: Tau
+   250: RV_none
+   251: mkdir "/tmp_dir__wx/d4" 0o777
+   252: Tau
+   253: EEXIST
+   254: open_close "/tmp_dir__wx/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   255: Tau
+   256: RV_none
+   257: open_close "/tmp_dir__wx/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   258: Tau
+   259: EEXIST
+
+
+
+        # _w_
+   264: mkdir "/tmp_dir__w_/" 0o777
+   265: Tau
+   266: RV_none
+   267: chdir "/tmp_dir__w_"
+   268: Tau
+   269: RV_none
+   270: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   271: Tau
+   272: RV_none
+   273: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   274: Tau
+   275: RV_none
+   276: mkdir "d2" 0o777
+   277: Tau
+   278: RV_none
+   279: mkdir "d4" 0o777
+   280: Tau
+   281: RV_none
+   282: chmod "/tmp_dir__w_/" 0o200
+   283: Tau
+   284: RV_none
+
+   286: mkdir "d1" 0o777
+   287: Tau
+   288: RV_none
+   289: mkdir "d2" 0o777
+   290: Tau
+   291: EEXIST
+   292: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   293: Tau
+   294: RV_none
+   295: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   296: Tau
+   297: EEXIST
+   298: mkdir "/tmp_dir__w_/d3" 0o777
+   299: Tau
+   300: RV_none
+   301: mkdir "/tmp_dir__w_/d4" 0o777
+   302: Tau
+   303: EEXIST
+   304: open_close "/tmp_dir__w_/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   305: Tau
+   306: RV_none
+   307: open_close "/tmp_dir__w_/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   308: Tau
+   309: EEXIST
+
+
+        # __x
+   313: mkdir "/tmp_dir___x/" 0o777
+   314: Tau
+   315: RV_none
+   316: chdir "/tmp_dir___x"
+   317: Tau
+   318: RV_none
+   319: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   320: Tau
+   321: RV_none
+   322: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   323: Tau
+   324: RV_none
+   325: mkdir "d2" 0o777
+   326: Tau
+   327: RV_none
+   328: mkdir "d4" 0o777
+   329: Tau
+   330: RV_none
+   331: chmod "/tmp_dir___x/" 0o100
+   332: Tau
+   333: RV_none
+
+   335: mkdir "d1" 0o777
+   336: Tau
+   337: RV_none
+   338: mkdir "d2" 0o777
+   339: Tau
+   340: EEXIST
+   341: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   342: Tau
+   343: RV_none
+   344: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   345: Tau
+   346: EEXIST
+   347: mkdir "/tmp_dir___x/d3" 0o777
+   348: Tau
+   349: RV_none
+   350: mkdir "/tmp_dir___x/d4" 0o777
+   351: Tau
+   352: EEXIST
+   353: open_close "/tmp_dir___x/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   354: Tau
+   355: RV_none
+   356: open_close "/tmp_dir___x/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   357: Tau
+   358: EEXIST
+
+
+        # ___
+   362: mkdir "/tmp_dir____/" 0o777
+   363: Tau
+   364: RV_none
+   365: chdir "/tmp_dir____"
+   366: Tau
+   367: RV_none
+   368: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   369: Tau
+   370: RV_none
+   371: open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   372: Tau
+   373: RV_none
+   374: mkdir "d2" 0o777
+   375: Tau
+   376: RV_none
+   377: mkdir "d4" 0o777
+   378: Tau
+   379: RV_none
+   380: chmod "/tmp_dir____/" 0o000
+   381: Tau
+   382: RV_none
+
+   384: mkdir "d1" 0o777
+   385: Tau
+   386: RV_none
+   387: mkdir "d2" 0o777
+   388: Tau
+   389: EEXIST
+   390: open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   391: Tau
+   392: RV_none
+   393: open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   394: Tau
+   395: EEXIST
+   396: mkdir "/tmp_dir____/d3" 0o777
+   397: Tau
+   398: RV_none
+   399: mkdir "/tmp_dir____/d4" 0o777
+   400: Tau
+   401: EEXIST
+   402: open_close "/tmp_dir____/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   403: Tau
+   404: RV_none
+   405: open_close "/tmp_dir____/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+   406: Tau
+   407: EEXIST
+
+
+
+# trace accepted

@@ -1,0 +1,197 @@
+# processing file 'adhoc_chmod-int.trace' ...
+        @type trace
+        ###########################################
+        # Testing chmod
+        ###########################################
+
+        # try chmod with different values on an exiting file,
+        # an existing directory, something non-existing and
+        # a symbolic link. Also test that it is not affected
+        # by the current umask
+
+
+        # Initialisation
+
+    14: mkdir "/dir" 0o777
+        Tau
+        RV_none
+    15: open "/file.txt" [O_CREAT;O_RDWR] 0o777
+        Tau
+        RV_num(3)
+    16: close (FD 3)
+        Tau
+        RV_none
+    17: symlink "/file.txt" "/sl"
+        Tau
+        RV_none
+    18: umask 0o022
+        Tau
+        RV_file_perm(0o022)
+
+        # test initial permissions
+
+    22: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+    23: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+    24: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o755; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+
+
+        # Test 1
+    28: chmod "/dir" 0o000
+        Tau
+        RV_none
+    29: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+
+        # Test 2
+    32: chmod "/dir" 0o777
+        Tau
+        RV_none
+    33: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+
+        # Test 3
+    36: chmod "/dir" 0o755
+        Tau
+        RV_none
+    37: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+
+        # Test 4
+    40: chmod "/file.txt" 0o000
+        Tau
+        RV_none
+    41: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+    42: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+
+        # Test 5
+    45: chmod "/file.txt" 0o666
+        Tau
+        RV_none
+    46: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+    47: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+
+        # Test 6
+    50: chmod "/file.txt" 0o644
+        Tau
+        RV_none
+    51: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+    52: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=346425294;}; }
+
+        # Test 7
+    55: chmod "/no_such_dir/" 0o755
+        Tau
+        ENOENT
+
+        # Test 8
+    58: chmod "/no_such_file" 0o755
+        Tau
+        ENOENT
+
+
+        # try again with different umask
+    62: umask 0o000
+        Tau
+        RV_file_perm(0o022)
+
+        # Test 1
+    65: chmod "/dir" 0o000
+        Tau
+        RV_none
+    66: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o000; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+
+        # Test 2
+    69: chmod "/dir" 0o777
+        Tau
+        RV_none
+    70: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o777; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+
+        # Test 3
+    73: chmod "/dir" 0o755
+        Tau
+        RV_none
+    74: stat "/dir"
+        Tau
+        RV_stat { st_dev=1792; st_ino=32643; st_kind=S_IFDIR; st_perm=0o755; st_nlink=2; st_uid=0; st_gid=0; st_rdev=0; st_size=4096; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+
+        # Test 4
+    77: chmod "/file.txt" 0o000
+        Tau
+        RV_none
+    78: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+    79: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o000; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+
+        # Test 5
+    82: chmod "/file.txt" 0o666
+        Tau
+        RV_none
+    83: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+    84: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o666; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+
+        # Test 6
+    87: chmod "/file.txt" 0o644
+        Tau
+        RV_none
+    88: stat "/file.txt"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+    89: stat "/sl"
+        Tau
+        RV_stat { st_dev=1792; st_ino=15; st_kind=S_IFREG; st_perm=0o644; st_nlink=1; st_uid=0; st_gid=0; st_rdev=0; st_size=0; st_atim={tv_sec=1421154204;tv_nsec=346425294;}; st_mtim={tv_sec=1421154204;tv_nsec=346425294;}; st_ctim={tv_sec=1421154204;tv_nsec=349758625;}; }
+
+        # Test 7
+    92: chmod "/no_such_dir/" 0o755
+        Tau
+        ENOENT
+
+        # Test 8
+    95: chmod "/no_such_file" 0o755
+        Tau
+        ENOENT
+
+        # Test 9
+    98: chmod "" 0o755
+        Tau
+        ENOENT
+
+        # Test 10
+   101: symlink "/file.txt" "/my_symlink"
+        Tau
+        RV_none
+   102: chmod "/my_symlink" 0o644
+        Tau
+        RV_none
+
+

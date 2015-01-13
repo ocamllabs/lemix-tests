@@ -1,0 +1,94 @@
+@type script
+
+# test mkdir
+
+mkdir /dir_1 0o777
+lstat /dir_1
+mkdir /dir_1/dir_11 0o777
+lstat /dir_1/dir_11
+lstat /dir_1
+
+mkdir /dir_2 0o777
+
+# test open
+
+open /dir_1/f1.txt [O_RDWR;O_CREAT] 0o666
+
+lstat /dir_1
+lstat /dir_1/f1.txt
+
+#test write
+
+write! (FD 3) "content of /dir_1/f1.txt" 24
+
+lstat /dir_1/f1.txt
+
+close (FD 3)
+
+# test open trunc
+
+open /dir_1/f1.txt [O_RDWR;O_TRUNC] 0o666
+lstat /dir_1
+lstat /dir_1/f1.txt
+write! (FD 3) "content of /dir_1/f1.txt" 24
+lstat /dir_1
+lstat /dir_1/f1.txt
+close (FD 3)
+
+# test symlink
+
+symlink /dir_1/f1.txt /symlink_1
+lstat /dir_1
+lstat /symlink_1
+
+# test readlink
+
+readlink /symlink_1
+lstat /symlink_1
+
+# test read
+
+open /dir_1/f1.txt [O_RDWR] 0o666
+lstat /dir_1/f1.txt
+read! (FD 3) 24
+lstat /dir_1
+lstat /dir_1/f1.txt
+close (FD 3)
+
+# test link
+
+link /dir_1/f1.txt /dir_1/mylink
+lstat /dir_1
+lstat /dir_1/f1.txt
+
+# test rename
+rename /dir_1/f1.txt /dir_2/f2.txt
+lstat /dir_1
+lstat /dir_2
+lstat /dir_2/f2.txt
+
+# test unlink
+
+unlink /dir_1/mylink
+lstat /dir_1
+lstat /dir_2/f2.txt
+
+# test truncate
+
+truncate /dir_2/f2.txt 5
+lstat /dir_2
+lstat /dir_2/f2.txt
+
+truncate /dir_2/f2.txt 0
+lstat /dir_2
+lstat /dir_2/f2.txt
+
+# test chmod
+chmod /dir_2/f2.txt 0o777
+lstat /dir_2/
+lstat /dir_2/f2.txt
+
+# test chown
+chown /dir_2/f2.txt (User_id 0) (Group_id 0)
+lstat /dir_2/
+lstat /dir_2/f2.txt

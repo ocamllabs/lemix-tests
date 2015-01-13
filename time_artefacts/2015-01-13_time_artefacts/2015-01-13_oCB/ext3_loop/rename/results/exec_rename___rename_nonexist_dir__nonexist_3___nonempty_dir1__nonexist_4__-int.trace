@@ -1,0 +1,107 @@
+# processing file 'rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__-int.trace' ...
+        @type trace
+        #####################################
+        # Test rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__
+        #####################################
+     5: mkdir "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__" 0o777
+        Tau
+        RV_none
+     6: chdir "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__"
+        Tau
+        RV_none
+     7: mkdir "empty_dir1" 0o777
+        Tau
+        RV_none
+     8: mkdir "empty_dir2" 0o777
+        Tau
+        RV_none
+     9: mkdir "nonempty_dir1" 0o777
+        Tau
+        RV_none
+    10: mkdir "nonempty_dir1/d2" 0o777
+        Tau
+        RV_none
+    11: open "nonempty_dir1/d2/f3.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    12: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+        Tau
+        RV_num(83)
+    13: close (FD 3)
+        Tau
+        RV_none
+    14: mkdir "nonempty_dir1/d2/d3" 0o777
+        Tau
+        RV_none
+    15: symlink "../f1.txt" "nonempty_dir1/d2/sl_dotdot_f1.txt"
+        Tau
+        RV_none
+    16: symlink "no_such_target" "nonempty_dir1/d2/sl_no_such_target"
+        Tau
+        RV_none
+    17: symlink "../no_such_target" "nonempty_dir1/d2/sl_dotdot_no_such_target"
+        Tau
+        RV_none
+    18: symlink "../d2" "nonempty_dir1/d2/sl_dotdot_d2"
+        Tau
+        RV_none
+    19: open_close "nonempty_dir1/f1.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+    20: symlink "f1.txt" "nonempty_dir1/sl_f1.txt"
+        Tau
+        RV_none
+    21: mkdir "nonempty_dir2" 0o777
+        Tau
+        RV_none
+    22: open_close "nonempty_dir2/f1.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_none
+    23: open "nonempty_dir2/f2.txt" [O_CREAT;O_WRONLY] 0o666
+        Tau
+        RV_num(3)
+    24: write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+        Tau
+        RV_num(167)
+    25: close (FD 3)
+        Tau
+        RV_none
+    26: mkdir "nonempty_dir2/d2" 0o777
+        Tau
+        RV_none
+    27: mkdir "nonempty_dir2/d2/d3" 0o777
+        Tau
+        RV_none
+    28: symlink "../../nonempty_dir1/d2/f3.txt" "nonempty_dir2/d2/sl_f3.txt"
+        Tau
+        RV_none
+
+    30: rename "nonexist_dir/nonexist_3" "nonempty_dir1/nonexist_4/"
+        Tau
+        ENOENT
+
+    32: dump-result "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__"|D|32642|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/empty_dir1"|D|32643|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/empty_dir2"|D|32644|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1"|D|32645|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/f1.txt"|F|32653|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/sl_f1.txt"|L|"f1.txt"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/d2"|D|32646|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/d2/f3.txt"|F|32647|83|"4b535f836f6006423fc132a59e78dfcc4fe6292f"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/d2/sl_dotdot_d2"|L|"../d2"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/d2/sl_dotdot_f1.txt"|L|"../f1.txt"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/d2/sl_dotdot_no_such_target"|L|"../no_such_target"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/d2/sl_no_such_target"|L|"no_such_target"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir1/d2/d3"|D|32648|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir2"|D|32655|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir2/f1.txt"|F|32656|0|"da39a3ee5e6b4b0d3255bfef95601890afd80709"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir2/f2.txt"|F|32657|167|"d09f4e47c22373e56c2369633ac3dcb71d598601"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir2/d2"|D|32658|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir2/d2/sl_f3.txt"|L|"../../nonempty_dir1/d2/f3.txt"|"1421154058.08"|"1421154058.08"|"1421154058.08"
+           "/test_dir_rename___rename_nonexist_dir__nonexist_3___nonempty_dir1__nonexist_4__/nonempty_dir2/d2/d3"|D|32659|"1421154058.08"|"1421154058.08"|"1421154058.08"
+        end dump-result
+
+
+
+
